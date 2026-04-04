@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto p-6 bg-white shadow rounded mt-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        📝 Patient Satisfaction Survey
+    </h2>
+    <p class="text-gray-600 mb-6">
+        Please take a moment to let us know how we did during your visit.
+    </p>
+
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        <!-- Visit Date -->
+        <div>
+            <label for="{{ form.visit_date.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+                Visit Date
+            </label>
+            {{ form.visit_date }}
+            {% if form.visit_date.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.visit_date.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Satisfaction Score -->
+        <div>
+            <label for="{{ form.satisfaction_score.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+                Satisfaction Score
+            </label>
+            {{ form.satisfaction_score }}
+            {% if form.satisfaction_score.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.satisfaction_score.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Comments -->
+        <div>
+            <label for="{{ form.comments.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+                Additional Comments
+            </label>
+            {{ form.comments }}
+            {% if form.comments.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.comments.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-4">
+            <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition">
+                Submit Survey
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

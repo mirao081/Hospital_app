@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+
+{% block title %}All Appointments{% endblock %}
+
+{% block content %}
+<style>
+    .page-container {
+        width: 90%;
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-container h2 {
+        text-align: center;
+        font-size: 28px;
+        color: #003366;
+        margin-bottom: 2rem;
+    }
+
+    .appointment-entry {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .appointment-entry strong {
+        color: #003366;
+    }
+
+    .back-btn {
+        display: block;
+        width: fit-content;
+        margin: 2rem auto 0;
+        padding: 0.6rem 1.2rem;
+        background-color: #003366;
+        color: white;
+        text-align: center;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .back-btn:hover {
+        background-color: #0055a5;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
+
+<div class="page-container">
+    <h2>All Appointments</h2>
+
+    {% if appointments %}
+        {% for appointment in appointments %}
+            <div class="appointment-entry">
+                <p><strong>Patient:</strong> {{ appointment.full_name }}</p>
+                <p><strong>Phone:</strong> {{ appointment.phone }}</p>
+                <p><strong>Email:</strong> {{ appointment.email }}</p>
+                <p><strong>Doctor:</strong> {{ appointment.doctor }}</p>
+                <p><strong>Date:</strong> {{ appointment.date }}</p>
+                <p><strong>Time:</strong> {{ appointment.time }}</p>
+                <p><strong>Status:</strong> {{ appointment.status|title }}</p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No appointments found.</p>
+    {% endif %}
+
+    <a class="back-btn" href="{% url 'receptionist:receptionist_dashboard' %}">← Back to Dashboard</a>
+
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Purchase Orders</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Supplier</th>
+            <th>Medicine Batch</th>
+            <th>Status</th>
+            <th>Order Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for po in purchase_orders %}
+        <tr>
+            <td>{{ po.supplier.name }}</td>
+            <td>{{ po.medicine_batch }}</td>
+            <td>
+                {% if po.status == 'pending' %}
+                <span class="badge bg-warning text-dark">Pending</span>
+                {% else %}
+                <span class="badge bg-success">Received</span>
+                {% endif %}
+            </td>
+            <td>{{ po.order_date }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">No purchase orders found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

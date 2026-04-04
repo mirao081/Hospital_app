@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Patients</h2>
+    <a href="{% url 'nurse_panel:add_nurse_patient' %}" class="btn btn-success">+ Add New Patient</a>
+  </div>
+
+  {% if patients %}
+    <ul class="list-group">
+      {% for patient in patients %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="{% url 'nurse_panel:nurse_patient_detail' patient.id %}" class="text-decoration-none">
+            {{ patient.full_name }}
+          </a>
+          <small class="text-muted">DOB: {{ patient.dob }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No patients found.</div>
+  {% endif %}
+</div>
+{% endblock %}

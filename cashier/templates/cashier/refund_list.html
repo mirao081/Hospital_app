@@ -1,0 +1,67 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+  <h1 class="text-3xl font-bold text-gray-900 mb-6">Refund Management</h1>
+
+  <!-- Refund Creation Form -->
+  <div class="bg-white shadow rounded-lg p-6 mb-10">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Initiate New Refund</h2>
+
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="payment" class="block text-sm font-medium text-gray-700">Select Payment</label>
+          {{ form.payment }}
+        </div>
+        <div>
+          <label for="refund_amount" class="block text-sm font-medium text-gray-700">Refund Amount</label>
+          {{ form.refund_amount }}
+        </div>
+        <div class="md:col-span-2">
+          <label for="reason" class="block text-sm font-medium text-gray-700">Reason</label>
+          {{ form.reason }}
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          Submit Refund
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Refund History Table -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <h2 class="text-xl font-semibold text-gray-800 px-6 py-4">Refund History</h2>
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Patient</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Issued By</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        {% for refund in refunds %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4">{{ refund.payment.patient_name }}</td>
+          <td class="px-6 py-4 text-red-600 font-semibold">${{ refund.refund_amount }}</td>
+          <td class="px-6 py-4">{{ refund.reason|truncatechars:50 }}</td>
+          <td class="px-6 py-4">{{ refund.issued_by }}</td>
+          <td class="px-6 py-4">{{ refund.issue_date|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center px-6 py-4 text-gray-500 italic">No refunds recorded.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

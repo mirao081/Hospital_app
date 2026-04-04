@@ -1,0 +1,232 @@
+{% extends "core/base.html" %}
+{% block content %}
+<style>
+h2, h3 {
+    width: 100%;
+    margin: 30px auto 30px auto; /* centers horizontally, with top & bottom margin */
+    text-align: center;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 28px;
+    background-color: #d6d1cb; /* ashes background */
+    color: #003366; /* dark blue text */
+    padding: 10px 0;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+}
+
+h2:hover, h3:hover {
+    background-color: #bfb9b1; /* slightly darker ashes on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* other styles remain unchanged */
+.summary-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.summary-card {
+    background: #f0f0f0;
+    border-radius: 8px;
+    padding: 20px 30px;
+    width: 180px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.summary-card .icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.summary-card .title {
+    font-weight: 600;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.summary-card .count {
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+    text-align: center;
+    margin-top: 10px;
+}
+
+ul li {
+    margin: 5px 0;
+}
+
+</style>
+
+<h2>Pharmacy Dashboard</h2>
+
+<div class="summary-cards">
+  <div class="summary-card">
+    <div class="icon">🧪</div>
+    <div class="title">Total Medicines in Stock</div>
+    <div class="count">{{ total_medicines }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="icon">⚠</div>
+    <div class="title">Expiring Soon Medicines</div>
+    <div class="count">{{ expiring_soon }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="icon">📋</div>
+    <div class="title">Pending Prescriptions</div>
+    <div class="count">{{ pending_prescriptions }}</div>
+  </div>
+  <div class="summary-card">
+    <div class="icon">❌</div>
+    <div class="title">Out-of-Stock Items</div>
+    <div class="count">{{ out_of_stock }}</div>
+  </div>
+</div>
+
+<h3>✅ Recent Prescription Fulfillments</h3>
+<ul>
+    {% for prescription in recent_fulfillments %}
+        <li>{{ prescription.date }} - {{ prescription.patient_name }} - {{ prescription.medicine.name }}</li>
+    {% empty %}
+        <li>No recent fulfillments</li>
+    {% endfor %}
+</ul>
+
+<h3>🚨 Alerts: Low stock / Expiry</h3>
+<ul>
+    {% for med in alerts %}
+        <li>{{ med.name }} (Stock: {{ med.stock }}, Expiry: {{ med.expiry_date }})</li>
+    {% empty %}
+        <li>No alerts</li>
+    {% endfor %}
+</ul>
+
+<h3>🔹 Quick Actions</h3>
+<a href="{% url 'pharmacist_panel:add_medicine' %}">➕ Add New Medicine</a><br>
+<a href="{% url 'pharmacist_panel:todays_prescriptions' %}">📆 View Today's Prescriptions</a>
+
+
+<h3>📦 Medicine Inventory Management</h3>
+
+<div style="width: 90%; margin: 0 auto; overflow-x: auto;">
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead style="background-color: #d6d1cb; color: #003366;">
+            <tr>
+                <th style="padding: 10px; border: 1px solid #ccc;">Medicine Name</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Batch Number</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Quantity</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Expiry Date</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Category</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for med in medicines %}
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ med.name }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ med.batch_number }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ med.stock }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ med.expiry_date }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">{{ med.category }}</td>
+                <td style="padding: 10px; border: 1px solid #ccc;">
+                    <a href="{% url 'pharmacist_panel:edit_medicine' med.id %}">✏ Edit</a> |
+                    <a href="{% url 'pharmacist_panel:delete_medicine' med.id %}">🗑 Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 10px;">No medicines available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="mt-5 p-4 bg-gray-100 rounded-lg w-[100%] mx-auto">
+    <h2 class=" font-bold text-blue-900 bg-yellow-400 p-2 rounded hover:bg-yellow-300">Prescription Management</h2>
+    
+    <table class="table-auto w-full mt-4 text-left border">
+        <thead class="bg-gray-300 text-blue-900">
+            <tr>
+                <th class="p-2">Patient</th>
+                <th class="p-2">Doctor</th>
+                <th class="p-2">Date Issued</th>
+                <th class="p-2">Status</th>
+                <th class="p-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for prescription in prescriptions %}
+            <tr class="bg-white border-b">
+                <td class="p-2">{{ prescription.patient }}</td>
+                <td class="p-2">{{ prescription.doctor }}</td>
+                <td class="p-2">{{ prescription.date_issued }}</td>
+                <td class="p-2">{{ prescription.status }}</td>
+                <td class="p-2 space-x-2">
+                    <button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">View</button>
+                    <button class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600">Fulfill</button>
+                    <button class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600">Reject</button>
+                    <button class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600">Sign</button>
+                    <button class="bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-800">Print</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="p-4 text-center text-gray-500">No prescriptions found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="background-color: #003366; padding: 15px; color: white;">
+        <h3>🔹 Quick Actions</h3>
+        <a href="{% url 'pharmacist_panel:add_medicine' %}">➕ Add New Medicine</a><br>
+        <a href="{% url 'pharmacist_panel:todays_prescriptions' %}">📆 View Today's Prescriptions</a><br>
+        <a href="{% url 'pharmacist_panel:create_prescription' %}">✍️ Create New Prescription</a><br>
+    </div>
+</div>
+<div style="background-color: #003366; padding: 15px; color: white; width: 95%;margin: auto;">
+    <a href="{% url 'pharmacist_panel:returns_wastage' %}" style="color: white; text-decoration: none; font-weight: bold;">
+        🔄 Returns & Wastage
+    </a>
+</div>
+<div style="margin: 30px auto; width: 90%;">
+  <div class="d-flex justify-content-between">
+    <!-- Suppliers card -->
+    <div style="width: 48%;">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">Supplier & Purchase Management</div>
+        <div class="card-body">
+          <p>Manage suppliers and purchase orders.</p>
+          <a href="{% url 'pharmacist_panel:suppliers_list' %}" class="btn btn-info btn-sm">View Suppliers</a>
+          <a href="{% url 'pharmacist_panel:purchase_orders_list' %}" class="btn btn-outline-info btn-sm ms-2">Purchase Orders</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoices card -->
+    <div style="width: 48%;">
+      <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">Approve Supplier Invoices</div>
+        <div class="card-body">
+          <p>Approve supplier invoices.</p>
+          <a href="{% url 'pharmacist_panel:invoices_list' %}" class="btn btn-success btn-sm">Manage Invoices</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+  {% if patient.marked_for_attention %}
+    <div class="alert alert-warning d-flex align-items-center" role="alert">
+      <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
+        <use xlink:href="#exclamation-triangle-fill"/>
+      </svg>
+      <div>
+        ⚠️ <strong>Attention:</strong> This patient requires special monitoring.
+      </div>
+    </div>
+  {% endif %}
+
+  <h2 class="mb-4">{{ patient.full_name }}</h2>
+  <p><strong>Date of Birth:</strong> {{ patient.dob }}</p>
+
+  <hr>
+
+  <h4>Vitals</h4>
+  {% if vitals %}
+    <ul class="list-group mb-4">
+      {% for v in vitals %}
+        <li class="list-group-item">
+          <strong>{{ v.recorded_at|date:"M d, Y H:i" }}</strong><br>
+          Temp: {{ v.temperature }}°C, BP: {{ v.blood_pressure }}, HR: {{ v.heart_rate }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No vitals recorded.</p>
+  {% endif %}
+
+  <h4>Daily Rounds</h4>
+  {% if rounds %}
+    <ul class="list-group mb-4">
+      {% for r in rounds %}
+        <li class="list-group-item">
+          <strong>{{ r.recorded_at|date:"M d, Y H:i" }}</strong><br>
+          {{ r.notes }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No round notes available.</p>
+  {% endif %}
+
+  <h4>Reminders</h4>
+  {% if reminders %}
+    <ul class="list-group mb-4">
+      {% for rem in reminders %}
+        <li class="list-group-item">
+          <strong>{{ rem.scheduled_time|date:"M d, Y H:i" }}</strong><br>
+          {{ rem.message }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-muted">No upcoming reminders.</p>
+  {% endif %}
+</div>
+{% endblock %}

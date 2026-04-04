@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+{% load static %}
+{% load widget_tweaks %}
+
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Hospital System{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <!-- ✅ Fixed Top Header -->
+  <div class="fixed-header bg-gray-100 px-4 py-2 text-sm">
+  <div class="topbar flex flex-wrap items-center justify-between gap-4 sm:gap-0">
+
+    <!-- Left Section -->
+    <div class="topbar-left flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-4 flex-wrap text-center sm:text-left">
+      {% if header_settings.email %}
+        <span><i class="fas fa-envelope"></i> {{ header_settings.email }}</span>
+      {% endif %}
+      {% if header_settings.phone %}
+        <span><i class="fas fa-phone"></i> {{ header_settings.phone }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Right Section -->
+    <div class="topbar-right flex flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-4 flex-wrap text-center sm:text-left">
+      {% if header_settings.working_hours %}
+        <span><i class="fas fa-clock"></i> {{ header_settings.working_hours }}</span>
+      {% endif %}
+    </div>
+
+    <!-- Messages -->
+    <a href="{% url 'admin_panel:inbox' %}" class="relative text-gray-700 no-print whitespace-nowrap">
+      💬 Messages
+      {% if total_unread_count > 0 %}
+        <span class="absolute -top-1 -right-2 bg-red-500 text-white text-xs font-bold rounded-full px-1.5">
+          {{ total_unread_count }}
+        </span>
+      {% endif %}
+    </a>
+    
+  </div>
+</div>
+
+
+    <header class="header-bar flex items-center justify-between flex-wrap bg-red-950 p-4 shadow-md w-full gap-4 sm:gap-0">
+  
+  <!-- Logo & Hospital Name -->
+  <div class="logo-title flex items-center space-x-3 flex-shrink-0">
+    {% if header_settings.logo %}
+      <img src="{{ header_settings.logo.url }}" alt="Logo" class="logo-img h-10 w-10 object-cover">
+    {% else %}
+      <img src="{% static 'core/img/default_logo.png' %}" alt="Default Logo" class="logo-img h-10 w-10 object-cover">
+    {% endif %}
+    <span class="hospital-name font-bold text-lg leading-tight text-white">
+      <span class="block">{{ header_settings.hospital_name_line1|default:"NewLife Clinic" }}</span>
+    </span>
+  </div>
+
+  <!-- Navigation Toggle + Menu -->
+  <div class="relative flex-1 flex justify-center sm:justify-center">
+    <button id="menu-toggle" class="text-white text-2xl sm:hidden focus:outline-none no-print">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Nav Links -->
+    <nav id="menu-content" class="hidden sm:flex absolute sm:static top-full mt-2 sm:mt-0 bg-red-800 sm:bg-transparent shadow sm:shadow-none rounded px-4 py-2 sm:p-0 sm:rounded-none z-50 overflow-x-auto whitespace-nowrap space-x-4 sm:space-x-6">
+      <a href="{% url 'landing_page' %}" class="text-white hover:text-blue-400">Home</a>
+      <a href="{% url 'blogs' %}" class="text-white hover:text-blue-400">Blogs</a>
+      <a href="{% url 'doctors' %}" class="text-white hover:text-blue-400">Doctors</a>
+      <a href="{% url 'departments' %}" class="text-white hover:text-blue-400">Departments</a>
+      <a href="{% url 'appointment' %}" class="text-white hover:text-blue-400">Appointments</a>
+      <a href="{% url 'testimonials' %}" class="text-white hover:text-blue-400">Testimonials</a>
+      <a href="{% url 'contact' %}" class="text-white hover:text-blue-400">Contact</a>
+    </nav>
+  </div>
+
+  <!-- Auth Buttons -->
+  <div class="auth-buttons flex items-center space-x-4 flex-shrink-0 text-sm">
+    {% if request.path == '/' and not request.user.is_authenticated %}
+      <a href="{% url 'login' %}" class="text-blue-300 hover:underline no-print">Login</a>
+    {% elif request.user.is_authenticated %}
+      <span class="text-white no-print text-sm leading-tight">Welcome<br>{{ request.user.username }}</span>
+      <a href="{% url 'logout' %}" class="text-red-300 hover:underline no-print">Logout</a>
+    {% endif %}
+  </div>
+</header>
+
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block footer %}
+    {% if request.resolver_match.url_name == "landing_page" %}
+      <!-- ✅ Full Footer only for landing page -->
+      <footer class="footer-section">
+        <div class="footer-container">
+          <div class="footer-column">
+            <h3>Contact Info</h3>
+            <div class="footer-underline"></div>
+            <div class="footer-logo">
+              {% if header_settings.logo %}
+                <img src="{{ header_settings.logo.url }}" alt="Logo">
+              {% else %}
+                <img src="{% static 'core/img/default_logo.png' %}" alt="Default Logo">
+              {% endif %}
+              <strong>
+                {{ header_settings.hospital_name_line1|default:"New-Life" }}
+                {{ header_settings.hospital_name_line2|default:"Hospital" }}
+              </strong>
+            </div>
+            <p><i class="fas fa-map-marker-alt"></i> {{ header_settings.address|default:"123 Main Street, City" }}</p>
+            <p><i class="fas fa-phone"></i> {{ header_settings.phone|default:"+123 456 7890" }}</p>
+            <p><i class="fas fa-envelope"></i> {{ header_settings.email|default:"info@hospital.com" }}</p>
+          </div>
+
+          <div class="footer-column">
+            <h3>Explore Pages</h3>
+            <div class="footer-underline"></div>
+            <ul>
+              <li><a href="{% url 'landing_page' %}">Home</a></li>
+              <li><a href="{% url 'blogs' %}">Blogs</a></li>
+              <li><a href="{% url 'doctors' %}">Doctors</a></li>
+              <li><a href="{% url 'departments' %}">Departments</a></li>
+              <li><a href="{% url 'appointment' %}">Appointments</a></li>
+              <li><a href="{% url 'testimonials' %}">Testimonials</a></li>
+              <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h3>Useful Links</h3>
+            <div class="footer-underline"></div>
+            <ul>
+              <li><a href="{% url 'terms' %}">Terms & Conditions</a></li>
+              <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
+              <li><a href="{% url 'refund_policy' %}">Refund Policy</a></li>
+              <li><a href="{% url 'testimonials' %}">Testimonials</a></li>
+            </ul>
+          </div>
+
+          <div class="footer-column">
+            <h3>Book Appointment</h3>
+            <div class="footer-underline"></div>
+            {% if messages %}
+              {% for message in messages %}
+                <div class="footer-message">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+
+            <form method="post" action="{% url 'footer_appointment' %}" class="appointment-form">
+              {% csrf_token %}
+              {% for field in footer_appointment_form %}
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                  <div class="errorlist">{{ field.errors }}</div>
+                {% endif %}
+              {% endfor %}
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+      </footer>
+    {% endif %}
+<!-- Bottom Footer (now visible on all pages) -->
+<div class="bottom-footer" style="min-height: 80px; margin-bottom: 20px;">
+  <div class="bottom-footer-content" style="display: flex; justify-content: space-between; align-items: center; height: 100%;">
+    <div class="left">
+      <p>{{ footer_settings.copyright_text|default:"© 2025 New-Life Clinic" }}</p>
+    </div>
+    <div class="right social-icons">
+      {% if footer_settings.instagram_url %}
+        <a href="{{ footer_settings.instagram_url }}" target="_blank"><i class="fab fa-instagram"></i></a>
+      {% endif %}
+      {% if footer_settings.twitter_url %}
+        <a href="{{ footer_settings.twitter_url }}" target="_blank"><i class="fab fa-twitter"></i></a>
+      {% endif %}
+      {% if footer_settings.facebook_url %}
+        <a href="{{ footer_settings.facebook_url }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
+      {% endif %}
+      {% if footer_settings.linkedin_url %}
+        <a href="{{ footer_settings.linkedin_url }}" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+      {% endif %}
+      {% if footer_settings.youtube_url %}
+        <a href="{{ footer_settings.youtube_url }}" target="_blank"><i class="fab fa-youtube"></i></a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+ 
+  {% endblock %}
+
+  <!-- Back to Top Button -->
+  <a href="#" class="scroll-to-top" id="scrollToTopBtn" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+<!-- for add new return modal view -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    window.onscroll = function () {
+      const btn = document.getElementById("scrollToTopBtn");
+      btn.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+    };
+
+    document.getElementById("scrollToTopBtn").addEventListener("click", function (e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const menuToggle = document.getElementById("menu-toggle");
+      const menuContent = document.getElementById("menu-content");
+
+      menuToggle.addEventListener("click", () => {
+        menuContent.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!menuToggle.contains(e.target) && !menuContent.contains(e.target)) {
+          menuContent.classList.add("hidden");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% block content %}
+<h2>📆 Prescriptions for {{ today }}</h2>
+<ul>
+  {% for prescription in prescriptions %}
+    <li>{{ prescription.patient_name }} - {{ prescription.medicine.name }}</li>
+  {% empty %}
+    <li>No prescriptions for today.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2>Dispensation Records</h2>
+
+<form method="get" class="mb-4">
+    <label>From: <input type="date" name="start_date" value="{{ start_date }}"></label>
+    <label>To: <input type="date" name="end_date" value="{{ end_date }}"></label>
+    <label>Patient: <input type="text" name="patient" value="{{ patient_name }}"></label>
+    <button type="submit">Filter</button>
+    <a href="{% url 'pharmacist_panel:export_dispensation_csv' %}" class="button">Export CSV</a>
+</form>
+
+<table border="1" cellpadding="6">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Patient</th>
+            <th>Medicine</th>
+            <th>Quantity</th>
+            <th>Dispensed By</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td>{{ record.patient_name }}</td>
+                <td>{{ record.medicine.name }}</td>
+                <td>{{ record.quantity }}</td>
+                <td>{{ record.dispensed_by.get_full_name }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="5" style="text-align:center;">No records found.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

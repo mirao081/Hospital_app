@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<h2 class="text-xl font-bold mb-4">Edit Invoice: {{ invoice.invoice_number }}</h2>
+
+<form method="post" class="max-w-xl space-y-4 bg-white p-6 rounded shadow">
+  {% csrf_token %}
+  {{ form.as_p }}
+  
+  <div class="flex gap-4">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save Changes</button>
+    <a href="{% url 'cashier_invoice_list' %}" class="text-gray-600 underline">Cancel</a>
+  </div>
+</form>
+
+{% endblock %}

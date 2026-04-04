@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Patient Onboarding{% endblock %}
+
+{% block content %}
+<style>
+    .page-heading {
+        font-size: 28px;
+        background-color: #d3d3d3;
+        color: #003366;
+        padding: 1rem;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+
+    .content-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        text-align: center;
+    }
+</style>
+
+<h2 class="page-heading">Patient Onboarding</h2>
+
+<div class="content-wrapper">
+    <p>Welcome to the hospital! Here's a quick guide to help you get started:</p>
+    <ul style="text-align: left; display: inline-block;">
+        <li>Check in at the reception desk with your ID.</li>
+        <li>Our staff will guide you through any forms or requirements.</li>
+        <li>You'll be assigned to the right department and informed of your next steps.</li>
+    </ul>
+</div>
+{% endblock %}

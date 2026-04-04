@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div style="font-family: Arial, sans-serif; padding: 20px;">
+    <h2 style="text-align: center;">Prescription</h2>
+    
+    <div style="margin-top: 20px;">
+        <p><strong>Patient:</strong> {{ prescription.patient_name }}</p>
+        <p><strong>Doctor:</strong> {{ prescription.doctor_name }}</p>
+        <p><strong>Medicine:</strong> {{ prescription.medicine.name }}</p>
+        <p><strong>Status:</strong> {{ prescription.get_status_display }}</p>
+        <p><strong>Date:</strong> {{ prescription.date }}</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+{% block content %}
+  <h2 class="text-2xl font-bold mb-4">Issue Refund</h2>
+
+  <div class="bg-white p-6 rounded shadow max-w-md">
+    <p class="mb-4"><strong>Patient:</strong> {{ payment.patient_name }}</p>
+    <p class="mb-4"><strong>Amount Paid:</strong> ${{ payment.amount }}</p>
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Submit Refund</button>
+      <a href="{% url 'cashier_dashboard' %}" class="ml-4 text-blue-600 hover:underline">Cancel</a>
+    </form>
+  </div>
+{% endblock %}

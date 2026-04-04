@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow rounded p-4">
+        <h4 class="mb-4 text-primary"><i class="bi bi-journal-text me-2"></i>Log Daily Round</h4>
+
+        <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label for="patient" class="form-label">Patient</label>
+            <select id="patient" name="patient" class="form-select" required>
+            <option value="" disabled selected>Select a patient</option>
+            {% for patient in patients %}
+                <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="notes" class="form-label">Notes</label>
+            <textarea class="form-control" id="notes" name="notes" rows="4" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

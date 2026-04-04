@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block content %}
+  <h2>Payment Records</h2>
+  <table border="1">
+    <tr>
+      <th>Date</th>
+      <th>Patient</th>
+      <th>Amount</th>
+      <th>Method</th>
+      <th>Reference</th>
+      <th>Received By</th>
+    </tr>
+    {% for payment in payments %}
+    <tr>
+      <td>{{ payment.date_received }}</td>
+      <td>{{ payment.patient_name }}</td>
+      <td>{{ payment.amount }}</td>
+      <td>{{ payment.get_payment_method_display }}</td>
+      <td>{{ payment.reference_number }}</td>
+      <td>{{ payment.received_by.username }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  <a href="{% url 'cashier:cashier_dashboard' %}">← Back to Dashboard</a>
+{% endblock %}

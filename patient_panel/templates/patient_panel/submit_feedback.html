@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto p-6 bg-white shadow rounded mt-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+        💬 Submit Feedback
+    </h2>
+    <p class="text-gray-600 mb-6">
+        We value your feedback. Please share your thoughts or concerns with us.
+    </p>
+
+    <form method="post" class="space-y-5">
+        {% csrf_token %}
+
+        <!-- Feedback Type -->
+        <div>
+            <label for="{{ form.feedback_type.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+                Feedback Type
+            </label>
+            {{ form.feedback_type }}
+            {% if form.feedback_type.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.feedback_type.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Subject -->
+        <div>
+            <label for="{{ form.subject.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+                Subject
+            </label>
+            {{ form.subject }}
+            {% if form.subject.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.subject.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Message -->
+        <div>
+            <label for="{{ form.message.id_for_label }}" class="block text-gray-700 font-medium mb-1">
+                Message
+            </label>
+            {{ form.message }}
+            {% if form.message.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.message.errors.0 }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-4">
+            <button type="submit" class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition">
+                Submit Feedback
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,1481 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+{% load custom_filters %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+
+<div class="bg-red-950 text-center w-full max-w-7xl px-4 mx-auto py-8 shadow-md shadow-red-950">
+    <h1 class="text-4xl font-bold mb-8 text-white">Welcome, {{ admin_name }}!</h1>
+</div>
+
+    {% if user.userprofile.role == "admin" or user.userprofile.role == "doctor" or user.userprofile.role == "nurse" or user.userprofile.role == "pharmacist" %}
+  {% if user_attendance %}
+    {% if not user_attendance.check_in %}
+      <form method="post" action="{% url 'admin_panel:check_in' %}">
+        {% csrf_token %}
+        <button class="btn btn-primary">✅ Check In</button>
+      </form>
+    {% elif not user_attendance.check_out %}
+      <form method="post" action="{% url 'admin_panel:check_out' %}">
+        {% csrf_token %}
+        <button class="btn btn-secondary">⏳ Check Out</button>
+      </form>
+    {% else %}
+      <p class="text-green-600 font-semibold">✅ You have completed your shift.</p>
+    {% endif %}
+  {% else %}
+    <p class="text-gray-500">📅 You are not scheduled today.</p>
+  {% endif %}
+{% endif %}
+
+    <!-- Summary Cards -->
+    <div class="bg-gray-900 min-h-screen py-10 px-6 sm:px-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Total Patients -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-blue-600 text-white p-3 rounded-full">
+                    <!-- Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 14c3.866 0 7-1.343 7-3V7c0-1.657-3.134-3-7-3s-7 1.343-7 3v4c0 1.657 3.134 3 7 3z" />
+                        <path d="M5 21h14a1 1 0 001-1v-2a5 5 0 00-5-5H9a5 5 0 00-5 5v2a1 1 0 001 1z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Patients</h2>
+                    <p class="text-2xl font-bold text-white">{{ total_patients }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Doctors -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-green-600 text-white p-3 rounded-full">
+                    <!-- Same Icon as Patients -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 14c3.866 0 7-1.343 7-3V7c0-1.657-3.134-3-7-3s-7 1.343-7 3v4c0 1.657 3.134 3 7 3z" />
+                        <path d="M5 21h14a1 1 0 001-1v-2a5 5 0 00-5-5H9a5 5 0 00-5 5v2a1 1 0 001 1z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Doctors</h2>
+                    <p class="text-2xl font-bold text-white">{{ total_doctors }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Today -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-purple-600 text-white p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M8 7V3M16 7V3M3 11h18M5 19h14a2 2 0 002-2V7H3v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Appointments Today</h2>
+                    <p class="text-2xl font-bold text-white">{{ appointments_today }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-red-600 text-white p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 8c-1.104 0-2 .896-2 2h2v2h-2v2h2c0 1.104.896 2 2 2s2-.896 2-2H14v-2h2v-2h-2c0-1.104-.896-2-2-2z" />
+                        <path d="M21 12A9 9 0 113 12a9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Revenue</h2>
+                    <p class="text-2xl font-bold text-white">${{ total_revenue }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Nurses -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-teal-600 text-white p-3 rounded-full">
+                    <!-- Same Icon as Doctors -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M12 14c3.866 0 7-1.343 7-3V7c0-1.657-3.134-3-7-3s-7 1.343-7 3v4c0 1.657 3.134 3 7 3z" />
+                        <path d="M5 21h14a1 1 0 001-1v-2a5 5 0 00-5-5H9a5 5 0 00-5 5v2a1 1 0 001 1z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Nurses</h2>
+                    <p class="text-2xl font-bold text-white">{{ total_nurses }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Receptionists -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-yellow-500 text-white p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M16 11c1.657 0 3-.895 3-2s-1.343-2-3-2-3 .895-3 2 1.343 2 3 2zM8 11c1.657 0 3-.895 3-2S9.657 7 8 7s-3 .895-3 2 1.343 2 3 2z" />
+                        <path d="M12 14c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Receptionists</h2>
+                    <p class="text-2xl font-bold text-white">{{ total_receptionists }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Pharmacists -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-pink-600 text-white p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M9 21h6v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2h4z" />
+                        <path d="M9 3h6v6H9z" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Pharmacists</h2>
+                    <p class="text-2xl font-bold text-white">{{ total_pharmacists }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Lab Technicians -->
+        <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+            <div class="flex items-center space-x-4">
+                <div class="bg-indigo-600 text-white p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path d="M9 17v2a2 2 0 002 2h2a2 2 0 002-2v-2" />
+                        <path d="M5 5h14M7 5v10a5 5 0 0010 0V5" />
+                    </svg>
+                </div>
+                <div class="text-left">
+                    <h2 class="text-sm text-gray-400 font-medium uppercase">Total Lab Technicians</h2>
+                    <p class="text-2xl font-bold text-white">{{ total_lab_technicians }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Cashiers -->
+        <div class="col-span-full flex justify-left">
+  <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+    <div class="flex items-center space-x-4">
+      <div class="bg-orange-500 text-white p-3 rounded-full">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M4 6h16M4 10h16M10 14h4" />
+          <path d="M9 18h6v2H9z" />
+        </svg>
+      </div>
+      <div class="text-left">
+        <h2 class="text-sm text-gray-400 font-medium uppercase">Total Cashiers</h2>
+        <p class="text-2xl font-bold text-white">{{ total_cashiers }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div>
+</div>
+
+</div>
+
+
+    <!-- Quick Actions Section -->
+    <div class="mt-0 bg-red-950 py-16 px-6 min-h-[400px] shadow-md">
+    <h2 class="text-2xl font-semibold mb-6 text-white">Quick Actions</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <a href="{% url 'admin_panel:register_user' %}?role=patient" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+            Register Patient
+        </a>
+        <a href="{% url 'admin_panel:register_user' %}?role=doctor" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+            Register Doctor
+        </a>
+        <a href="{% url 'admin_panel:register_user' %}?role=nurse" class="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+            Register Nurse
+        </a>
+        <a href="{% url 'admin_panel:register_user' %}?role=receptionist" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+            Register Receptionist
+        </a>
+        <a href="{% url 'admin_panel:register_user' %}?role=labtech" class="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+            Register Lab Technician
+        </a>
+        <a href="{% url 'admin_panel:register_user' %}?role=pharmacist" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+            Register Pharmacist
+        </a>
+        <a href="{% url 'admin_panel:register_user' %}?role=pharmacist" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3 px-4 rounded-2xl text-center transition duration-200 shadow">
+           Register Cashier
+        </a>
+    </div>
+</div>
+
+    <!-- Charts Section -->
+<div class="mt-0 bg-bwhite-900 py-16 px-6 min-h-[400px] shadow-md">
+    <h2 class="text-2xl font-semibold mb-6 text-blue-950">Appointments & Income Trends</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Column 1 -->
+        <div class="flex flex-col items-center">
+            <canvas id="dailyApptChart" width="200" height="200"></canvas>
+            <p class="mt-2 font-semibold text-sm text-white">Daily Appointments</p>
+            <canvas id="dailyIncomeChart" width="200" height="200" class="mt-6"></canvas>
+            <p class="mt-2 font-semibold text-sm text-white">Daily Income</p>
+        </div>
+
+        <!-- Column 2 -->
+        <div class="flex flex-col items-center">
+            <canvas id="monthlyApptChart" width="200" height="200"></canvas>
+            <p class="mt-2 font-semibold text-sm text-white">Monthly Appointments</p>
+            <canvas id="monthlyIncomeChart" width="200" height="200" class="mt-6"></canvas>
+            <p class="mt-2 font-semibold text-sm text-white">Monthly Income</p>
+        </div>
+
+        <!-- Column 3 -->
+        <div class="flex flex-col items-center">
+            <canvas id="yearlyApptChart" width="200" height="200"></canvas>
+            <p class="mt-2 font-semibold text-sm text-white">Yearly Appointments</p>
+            <canvas id="yearlyIncomeChart" width="200" height="200" class="mt-6"></canvas>
+            <p class="mt-2 font-semibold text-sm text-white">Yearly Income</p>
+        </div>
+    </div>
+</div>
+
+
+<!-- Registered Users Table Section -->
+<div class="mt-0 bg-red-950 px-6 py-10 ">
+  <h2 class="text-3xl font-bold text-center text-white mb-6">
+    Registered Users
+  </h2>
+
+  <div class="overflow-x-auto shadow-lg rounded-2xl border border-white">
+    <table class="min-w-full bg-blue-950 text-white border border-white">
+      <!-- Table Header -->
+      <thead>
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Username
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Email
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Role
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Date Joined
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table Body -->
+      <tbody>
+        {% for user in users %}
+          <tr class="hover:bg-blue-800 transition">
+            <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ user.username }}</td>
+            <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ user.email }}</td>
+            <td class="px-6 py-4 text-sm text-white border border-white text-center">
+              {% if user.is_superuser %}Admin
+              {% elif user.is_staff %}Staff
+              {% else %}User
+              {% endif %}
+            </td>
+            <td class="px-6 py-4 text-sm text-white border border-white text-center">
+              {{ user.date_joined|date:"Y-m-d H:i" }}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="py-6 text-sm text-white border border-white text-center">
+              No registered users found.
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Dashboard content -->
+
+    <!-- Recent Activities Table Section -->
+<div class="bg-red-950 px-6 py-10">
+  <h2 class="text-3xl font-bold text-center text-white mb-6">Recent Activities</h2>
+
+  <div class="overflow-x-auto shadow-lg rounded-2xl border border-white">
+    <table class="min-w-full bg-blue-950 text-white border border-white">
+      <!-- Table Header -->
+      <thead>
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            User
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Action
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Description
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Timestamp
+          </th>
+        </tr>
+      </thead>
+
+      <!-- Table Body -->
+      <tbody>
+        {% for log in activity_logs %}
+        <tr class="hover:bg-blue-800 transition">
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ log.user.username|default:"System" }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ log.get_action_display }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ log.description }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ log.timestamp|naturaltime }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="py-6 text-sm text-white border border-white text-center">
+            No recent activities.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Recent Payments Table Section -->
+<div class="bg-red-950 px-6 py-10">
+  <h3 class="text-3xl font-bold text-center text-white mb-6">Recent Payments</h3>
+
+  <div class="overflow-x-auto shadow-lg rounded-2xl border border-white">
+    <table class="min-w-full bg-blue-950 text-white border border-white">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Patient
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Amount
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Method
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Received By
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Date
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for payment in recent_payments %}
+        <tr class="hover:bg-blue-800 transition">
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.patient_name }}</td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">${{ payment.amount }}</td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.get_payment_method_display }}</td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.received_by }}</td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.date_received|date:"Y-m-d H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="py-6 text-sm text-white border border-white text-center">
+            No payments recorded.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="text-center mt-4">
+  <a href="{% url 'cashier:cashier_payment_list' %}" 
+     class="inline-block bg-blue-950 text-white px-4 py-2 rounded border border-white hover:bg-blue-600 transition">
+    View All Payments
+  </a>
+</div>
+
+
+
+</div>
+
+{% if some_condition %}
+  <div class="bg-blue-900 text-white p-4 rounded mt-4 border border-white">
+    Only payments recorded by the cashier are currently available. No additional payments have been made yet.
+  </div>
+{% endif %}
+
+<!-- Upcoming Appointments Section -->
+<div class="bg-red-950 px-6 py-10 mt-0">
+  <h2 class="text-3xl font-bold text-center text-white mb-6">Upcoming Appointments</h2>
+
+  <div class="overflow-x-auto shadow-lg rounded-2xl border border-white">
+    <table class="min-w-full bg-blue-900 text-white border border-white">
+      <thead>
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Patient
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Doctor
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Scheduled Time
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Status
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for appt in upcoming_appointments %}
+        <tr class="hover:bg-blue-900 transition bg-blue-950">
+          <td class="px-6 py-4 text-sm text-white border border-white text-center font-medium">
+            {{ appt.full_name }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ appt.doctor.user.get_full_name|default:"Unknown Doctor" }}
+          </td>
+
+
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ appt.date|date:"D, M j, Y" }} {{ appt.time|time:"h:i A" }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {% if appt.payment_status == "Paid" %}
+              <span class="text-green-400 font-semibold">Paid</span>
+            {% elif appt.payment_status == "Pending" %}
+              <span class="text-yellow-400 font-semibold">Pending</span>
+            {% elif appt.payment_status == "Cancelled" %}
+              <span class="text-red-400 font-semibold">Cancelled</span>
+            {% else %}
+              <span class="text-gray-300">Unknown</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="py-6 text-sm text-white border border-white text-center">
+            No upcoming appointments.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Outstanding Payments Section -->
+<div class="bg-red-950 px-6 py-10 mt-0">
+  <h2 class="text-3xl font-bold text-center text-white mb-6">Outstanding Payments</h2>
+
+  <div class="overflow-x-auto shadow-lg rounded-2xl border border-white">
+    <table class="min-w-full bg-blue-950 text-white border border-white">
+      <thead class="bg-blue-950">
+        <tr>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Patient
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Doctor
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Date
+          </th>
+          <th class="px-6 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Amount Due
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for bill in pending_payments %}
+        <tr class="hover:bg-blue-800 transition">
+          <td class="px-6 py-4 text-sm text-white border border-white text-center font-medium">
+            {{ bill.full_name }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ bill.doctor.name }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ bill.date|date:"M d, Y" }}
+          </td>
+          <td class="px-6 py-4 text-sm text-red-400 font-semibold border border-white text-center">
+            ₦{{ bill.payment_amount|default:"0.00" }}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="py-6 text-sm text-white border border-white text-center">
+            No outstanding payments.
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+    <!-- Total Pending Summary -->
+<div class="bg-red-950 px-6 pt-6">
+  <div class="text-right pr-4">
+    <span class="text-white text-lg font-semibold">Total Pending: </span>
+    <span class="text-red-400 text-lg font-bold">₦{{ total_pending_amount }}</span>
+  </div>
+</div>
+
+<!-- Low Inventory Alerts Section -->
+<div class="bg-red-950 px-6 py-10 mt-0">
+  <h2 class="text-3xl font-bold text-center text-white mb-6">🚨 Low Inventory Alerts</h2>
+
+  <div class="overflow-x-auto shadow-lg rounded-2xl border border-white">
+    <table class="min-w-full bg-blue-900 text-white border border-white">
+      <thead>
+        <tr>
+          <th class="px-4 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Item Name
+          </th>
+          <th class="px-4 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Category
+          </th>
+          <th class="px-4 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Stock/Quantity
+          </th>
+          <th class="px-4 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Threshold
+          </th>
+          <th class="px-4 py-3 text-center text-sm font-semibold uppercase text-green-400 bg-blue-950 border border-white">
+            Expiry/Last Updated
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if combined_alerts %}
+          {% for alert in combined_alerts %}
+          <tr class="hover:bg-blue-800 transition {% if alert.type == 'Medicine' %}bg-blue-950{% else %}bg-blue-950{% endif %}">
+            <td class="px-4 py-3 border border-white text-center">{{ alert.name }}</td>
+            <td class="px-4 py-3 border border-white text-center">{{ alert.category }}</td>
+            <td class="px-4 py-3 border border-white text-center">{{ alert.quantity }}</td>
+            <td class="px-4 py-3 border border-white text-center">{{ alert.threshold }}</td>
+            <td class="px-4 py-3 border border-white text-center">
+              {% if alert.expiry_date %}
+                {{ alert.expiry_date|date:"F j, Y" }}
+              {% elif alert.last_updated %}
+                {{ alert.last_updated|date:"F j, Y" }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-green-400 font-medium py-6 border border-white">
+              ✅ All inventory items are adequately stocked and within expiry.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="mt-10 mb-5 bg-red-950 shadow-lg rounded-2xl p-8 max-w-3xl mx-auto text-white">
+  <h3 class="text-2xl font-bold mb-6 text-center">🧑‍⚕️ Mark Staff Attendance</h3>
+
+  <form method="POST" action="{% url 'admin_panel:staff_manual_checkin' %}" class="space-y-6">
+    {% csrf_token %}
+
+    <!-- Staff Select -->
+    <div>
+      <label for="staff_id" class="block text-sm font-medium mb-2 text-white">Select Staff:</label>
+      <select name="staff_id" id="staff_id" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400">
+        <option value="">All</option>
+        {% for staff in staff_list %}
+        <option value="{{ staff.id }}">
+          {{ staff.user.get_full_name|default:staff.user.username }} — {{ staff.role|capfirst }}
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Action Select -->
+    <div>
+      <label for="action" class="block text-sm font-medium mb-2 text-white">Action:</label>
+      <select name="action" id="action" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400">
+        <option value="checkin">✅ Check In</option>
+        <option value="checkout">🔴 Check Out</option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-center">
+      <button type="submit"
+              class="bg-white text-red-800 font-semibold px-6 py-2 rounded-md shadow-md hover:bg-gray-100 transition">
+        Submit Attendance
+      </button>
+    </div>
+  </form>
+</div>
+
+
+  <!-- ✅ Role Filter Dropdown (Styled) -->
+<div class="flex justify-end items-center mb-6 bg-red-950 p-4 rounded-lg shadow-md text-white">
+  <label for="roleFilter" class="mr-3 text-sm font-medium">Filter by Role:</label>
+  <select id="roleFilter" onchange="filterByRole()"
+          class="px-3 py-2 bg-white text-red-800 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-400">
+    <option value="All">All</option>
+    <option value="Admin">Admin</option>
+    <option value="Nurse">Nurse</option>
+    <option value="Doctor">Doctor</option>
+    <option value="Pharmacist">Pharmacist</option>
+    <option value="Lab Technician">Lab Technician</option>
+    <option value="Cashier">Cashier</option>
+    <option value="Receptionist">Receptionist</option>
+  </select>
+</div>
+
+  <!-- ✅ Attendance Table (Styled with Dark Blue Theme) -->
+<div class="mt-8 bg-red-950 p-4 rounded-lg shadow-lg text-white">
+  <h3 class="text-lg font-semibold mb-4">📋 Today's Staff Attendance</h3>
+
+  <div class="overflow-x-auto bg-blue-950 shadow rounded-lg">
+    <table class="min-w-full divide-y divide-blue-700 text-sm text-white">
+      <thead class="bg-green-400 !bg-green-400 text-white">
+        <tr>
+          <th class="px-4 py-2 text-left font-semibold">Name</th>
+          <th class="px-4 py-2 text-left font-semibold">Role</th>
+          <th class="px-4 py-2 text-left font-semibold">Check-In</th>
+          <th class="px-4 py-2 text-left font-semibold">Check-Out</th>
+          <th class="px-4 py-2 text-left font-semibold">Status</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-blue-600" id="attendanceTableBody">
+        {% if staff_attendance %}
+          {% for entry in staff_attendance %}
+            <tr class="hover:bg-blue-700" data-role="{{ entry.staff.role|capfirst }}">
+              <td class="px-4 py-2">
+                {{ entry.staff.user.get_full_name|default:entry.staff.user.username }}
+              </td>
+              <td class="px-4 py-2">
+                {{ entry.staff.role|capfirst }}
+              </td>
+              <td class="px-4 py-2">
+                {{ entry.attendance.check_in|default:"—" }}
+              </td>
+              <td class="px-4 py-2">
+                {{ entry.attendance.check_out|default:"—" }}
+              </td>
+              <td class="px-4 py-2">
+                {% if entry.attendance %}
+                  {% if entry.attendance.status == "Present" %}
+                    <span class="text-yellow-300 font-semibold">🟡 On Duty</span>
+                  {% elif entry.attendance.status == "Checked Out" %}
+                    <span class="text-green-300 font-semibold">✅ Completed</span>
+                  {% else %}
+                    <span class="text-red-300 font-semibold">🔴 Absent</span>
+                  {% endif %}
+                {% else %}
+                  <span class="text-red-300 font-semibold">🔴 Absent</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-blue-100 py-4">
+              No attendance records for today yet.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="mt-10 bg-red-950 shadow rounded-lg p-6">
+  <h2 class="text-[20px] font-bold text-white text-center mb-5">🕒 Staff Attendance Overview</h2>
+
+  <div class="overflow-x-auto bg-blue-950 rounded-lg">
+    <table class="min-w-full table-auto text-sm divide-y divide-blue-700 text-white">
+      <thead class="bg-green-400 text-white">
+
+        <tr>
+          <th class="px-4 py-2 text-left font-semibold">Name</th>
+          <th class="px-4 py-2 text-left font-semibold">Role</th>
+          <th class="px-4 py-2 text-left font-semibold">Check-In</th>
+          <th class="px-4 py-2 text-left font-semibold">Check-Out</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-blue-600">
+        {% for entry in staff_attendance %}
+          {% if entry.attendance and entry.attendance.check_in %}
+            <tr class="hover:bg-blue-700">
+              <td class="px-4 py-2">
+                {{ entry.staff.user.get_full_name|default:entry.staff.user.username }}
+              </td>
+              <td class="px-4 py-2">{{ entry.staff.role|capfirst }}</td>
+              <td class="px-4 py-2">{{ entry.attendance.check_in|time:"H:i" }}</td>
+              <td class="px-4 py-2">
+                {% if entry.attendance.check_out %}
+                  {{ entry.attendance.check_out|time:"H:i" }}
+                {% else %} — {% endif %}
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- dashboard.html -->
+
+<div class="mt-10 bg-red-950 shadow rounded-lg p-6 text-white">
+  <div class="flex justify-between items-center mb-4">
+    <a href="{% url 'assign_bed' %}" 
+      class="bg-gray-950 text-white px-4 py-2 rounded border-2 border-white hover:bg-blue-600 transition">
+      🛏️ Assign Bed to Patient
+    </a>
+
+    <h2 class="text-[20px] font-bold">🛏️ Bed Occupancy</h2>
+    <span class="text-sm text-white-200">Last updated: {{ bed_data_last_updated }}</span>
+  </div>
+
+  <h2 class="text-xl font-bold mt-8 mb-4 text-white">🏨 Bed Status by Room</h2>
+
+  {% if selected_room %}
+    <h2 id="room-view" class="text-xl font-bold mb-2">Room {{ selected_room.number }}</h2>
+
+    <div class="overflow-x-auto bg-blue-950 rounded-lg">
+      <table class="min-w-full table-auto text-sm divide-y divide-blue-600 text-white">
+        <thead class="bg-blue-700">
+          <tr>
+            <th class="px-4 py-2 text-left font-semibold">Bed Number</th>
+            <th class="px-4 py-2 text-left font-semibold">Status</th>
+            <th class="px-4 py-2 text-left font-semibold">Patient</th>
+            <th class="px-4 py-2 text-left font-semibold">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-blue-600">
+          {% for bed in beds %}
+          <tr class="hover:bg-blue-700">
+            <td class="px-4 py-2">Bed {{ bed.bed_number }}</td>
+            <td class="px-4 py-2">
+              {% if bed.is_occupied %}
+                <span class="text-yellow-400">Occupied</span>
+              {% else %}
+                <span class="text-green-400">Available</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">
+              {% if bed.patient %}
+                {{ bed.patient.user.get_full_name }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td class="px-4 py-2">
+              {% if bed.is_occupied %}
+                <a href="{% url 'unassign_bed' bed.id %}"  
+                  class="bg-gray-800 text-red-400 underline px-2 py-1 rounded hover:text-red-300 hover:bg-gray-700 transition"
+                  onclick="return confirm('Unassign this bed?');">
+                  Unassign
+                </a>
+
+              {% else %}
+                —
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center mt-4 text-white">
+      {% if room_page.has_previous %}
+        <a href="?room_page={{ room_page.previous_page_number }}#room-view" class="bg-blue-700 px-3 py-1 rounded hover:bg-blue-600 transition">← Previous Room</a>
+      {% else %}
+        <span></span>
+      {% endif %}
+
+      <span>Room {{ room_page.number }} of {{ room_page.paginator.num_pages }}</span>
+
+      {% if room_page.has_next %}
+        <a href="?room_page={{ room_page.next_page_number }}#room-view"
+          class="bg-gray-800 text-white px-3 py-1 rounded border-2 border-white hover:bg-gray-700 transition">
+          Next Room →
+        </a>
+
+      {% else %}
+        <span></span>
+      {% endif %}
+    </div>
+
+  {% else %}
+    <p class="text-blue-100 mt-4">No rooms found.</p>
+  {% endif %}
+</div>
+
+
+<div class="pagination mt-4">
+  {% if beds.has_other_pages %}
+    <div class="flex gap-3 items-center">
+      {% if beds.has_previous %}
+        <a href="?page=1" class="text-blue-500">« First</a>
+        <a href="?page={{ beds.previous_page_number }}" class="text-blue-500">‹ Prev</a>
+      {% endif %}
+
+      <span class="text-gray-700">Page {{ beds.number }} of {{ beds.paginator.num_pages }}</span>
+
+      {% if beds.has_next %}
+        <a href="?page={{ beds.next_page_number }}" class="text-blue-500">Next ›</a>
+        <a href="?page={{ beds.paginator.num_pages }}" class="text-blue-500">Last »</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+  <!-- Summary Table -->
+<div class="overflow-x-auto mb-6 bg-red-950 shadow rounded-lg p-4">
+  <!-- 👇 Bed Occupancy Summary Table -->
+  <table class="min-w-full table-auto border border-white text-sm bg-blue-950 text-white rounded-lg">
+    <thead class="bg-blue-800 text-white">
+      <tr>
+        <th class="px-4 py-2 text-left font-semibold border border-white">Metric</th>
+        <th class="px-4 py-2 text-left font-semibold border border-white">Value</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-white">
+      <tr class="hover:bg-blue-700">
+        <td class="px-4 py-2 border border-white">Total Beds</td>
+        <td class="px-4 py-2 border border-white">{{ total_beds }}</td>
+      </tr>
+      <tr class="hover:bg-blue-700">
+        <td class="px-4 py-2 border border-white">Occupied Beds</td>
+        <td class="px-4 py-2 border border-white">{{ occupied_beds }}</td>
+      </tr>
+      <tr class="hover:bg-blue-700">
+        <td class="px-4 py-2 border border-white">Available Beds</td>
+        <td class="px-4 py-2 border border-white">{{ available_beds }}</td>
+      </tr>
+      <tr class="hover:bg-blue-700">
+        <td class="px-4 py-2 border border-white">Occupancy Rate</td>
+        <td class="px-4 py-2 border border-white">{{ occupancy_rate|floatformat:1 }}%</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+  <!-- Room-Wise Table -->
+  <div class="bg-red-950 shadow-md rounded-lg p-6 text-white">
+  <h3 class="text-lg font-semibold text-white mb-4">🏥 Room-wise Bed Occupancy</h3>
+  <div class="overflow-x-auto">
+    <table class="min-w-full table-auto border border-white text-sm bg-blue-900">
+      <thead class="bg-blue-950 text-white">
+        <tr>
+          <th class="px-4 py-3 text-left font-semibold border border-white">Room</th>
+          <th class="px-4 py-3 text-center font-semibold border border-white">Total</th>
+          <th class="px-4 py-3 text-center font-semibold border border-white">Occupied</th>
+          <th class="px-4 py-3 text-center font-semibold border border-white">Available</th>
+          <th class="px-4 py-3 text-center font-semibold border border-white">Occupancy</th>
+          <th class="px-4 py-3 text-center font-semibold border border-white">Change</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-white text-center">
+        {% for room in rooms %}
+        <tr class="hover:bg-blue-950">
+          <td class="px-4 py-2 text-left border border-white">{{ room.name }}</td>
+          <td class="px-4 py-2 border border-white">{{ room.total_beds }}</td>
+          <td class="px-4 py-2 border border-white text-red-400 font-semibold">{{ room.occupied_beds }}</td>
+          <td class="px-4 py-2 border border-white text-green-400 font-semibold">{{ room.available_beds }}</td>
+          <td class="px-4 py-2 border border-white font-semibold">{{ room.occupancy_rate }}%</td>
+          <td class="px-4 py-2 border border-white">
+            {% if room.occupancy_change > 0 %}
+              <span class="text-red-400 font-semibold">▲ {{ room.occupancy_change }}%</span>
+            {% elif room.occupancy_change < 0 %}
+              <span class="text-green-400 font-semibold">▼ {{ room.occupancy_change|abs_val }}%</span>
+            {% else %}
+              <span class="text-gray-200">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<div class="mt-10 bg-white shadow-md rounded-lg p-6">
+  <h2 class="text-xl font-bold text-blue-700 mb-4 text-center">📬 Unread Messages</h2>
+
+  {% if unread_messages %}
+    <ul class="divide-y divide-gray-200">
+      {% for message in unread_messages %}
+        <li class="py-4 px-3 hover:bg-gray-50 rounded transition bg-yellow-50">
+          <div class="flex justify-between">
+            <div>
+              <p class="text-sm font-semibold text-gray-800">
+                {% if message.sender.is_staff %}
+                  🧑‍⚕️ From Staff:
+                {% else %}
+                  🧑 From Patient:
+                {% endif %}
+                {{ message.sender.get_full_name|default:message.sender.username }}
+              </p>
+              {% if message.subject %}
+                <p class="text-sm text-gray-600">Subject: {{ message.subject }}</p>
+              {% endif %}
+            </div>
+            <div class="text-sm text-gray-500">
+              {{ message.sent_at|naturaltime }}
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-gray-500 text-center">No unread messages.</p>
+  {% endif %}
+</div>
+<h2 class="text-2xl font-semibold text-black mt-10 mb-4 text-center">
+  📊 Performance Indicators
+</h2>
+
+<div class="bg-red-950 p-6 rounded-lg shadow">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+    <div class="bg-blue-950 shadow rounded-lg p-4 text-white">
+      <h3 class="text-base font-medium mb-2">📈 Monthly Revenue Growth</h3>
+      <p class="text-xl font-bold text-green-400">
+        {% if revenue_growth is not None %}
+          {{ revenue_growth }}%
+        {% else %}
+          N/A
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="bg-blue-950 shadow rounded-lg p-4 text-white">
+      <h3 class="text-base font-medium mb-2">🚫 Appointment No-Show Rate</h3>
+      <p class="text-xl font-bold text-red-400">{{ no_show_rate }}%</p>
+    </div>
+
+    <div class="bg-blue-950 shadow rounded-lg p-4 text-white">
+      <h3 class="text-base font-medium mb-2">👥 Patient Growth</h3>
+      <p class="text-xl font-bold text-blue-300">
+        {% if patient_growth is not None %}
+          {{ patient_growth }}%
+        {% else %}
+          N/A
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="bg-blue-950 shadow rounded-lg p-4 text-white">
+      <h3 class="text-base font-medium mb-2">🧑‍⚕️ Avg Appointments per Doctor</h3>
+      <p class="text-xl font-bold text-purple-300">{{ appt_per_doctor }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="mt-10 bg-red-950 shadow rounded-lg p-6 text-white">
+  <h2 class="text-xl font-bold mb-4 text-white text-center">💰 Refund Approval Requests</h2>
+  <table class="min-w-full table-auto border border-white bg-blue-950 text-white text-sm">
+    <thead class="bg-blue-950 text-white">
+      <tr>
+        <th class="px-4 py-2 border border-white">Patient</th>
+        <th class="px-4 py-2 border border-white">Amount</th>
+        <th class="px-4 py-2 border border-white">Reason</th>
+        <th class="px-4 py-2 border border-white">Issued By</th>
+        <th class="px-4 py-2 border border-white">Status</th>
+        <th class="px-4 py-2 border border-white">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for refund in refunds %}
+      <tr class="hover:bg-blue-950">
+        <td class="px-4 py-2 border border-white">{{ refund.payment.patient_name }}</td>
+        <td class="px-4 py-2 border border-white">${{ refund.refund_amount }}</td>
+        <td class="px-4 py-2 border border-white">{{ refund.reason|truncatechars:40 }}</td>
+        <td class="px-4 py-2 border border-white">{{ refund.issued_by }}</td>
+        <td class="px-4 py-2 border border-white">{{ refund.approval_status }}</td>
+        <td class="px-4 py-2 border border-white">
+          <a href="{% url 'admin_panel:approve_refund' refund.id %}" class="underline text-yellow-300 hover:text-yellow-200">Review</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <a href="{% url 'admin_panel:refund_approval_list' %}"
+     class="mt-4 inline-block bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">
+     💰 Manage Refund Requests
+  </a>
+</div>
+<div class="mt-10 bg-red-950 shadow rounded-lg p-6 text-white">
+  <h2 class="text-xl font-bold mb-6 text-white text-center">🔄 Operational Efficiency & Workflow</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Avg Wait Time -->
+    <div class="bg-blue-950 border border-white rounded-lg p-4 flex items-center">
+      <div class="text-yellow-300 text-xl mr-4">🕒</div>
+      <div>
+        <p class="text-sm font-medium text-white">Avg Wait Time</p>
+        <p class="text-lg font-bold">
+          {{ avg_wait_time|default:"N/A" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Avg Appointment Duration -->
+    <div class="bg-blue-950 border border-white rounded-lg p-4 flex items-center">
+      <div class="text-yellow-300 text-xl mr-4">⏱️</div>
+      <div>
+        <p class="text-sm font-medium text-white">Avg Appointment Duration</p>
+        <p class="text-lg font-bold">
+          {{ avg_appointment_duration|default:"N/A" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Time to Bed Assignment -->
+    <div class="bg-blue-950 border border-white rounded-lg p-4 flex items-center">
+      <div class="text-yellow-300 text-xl mr-4">🛏️</div>
+      <div>
+        <p class="text-sm font-medium text-white">Time to Bed Assignment</p>
+        <p class="text-lg font-bold">
+          {{ avg_time_to_bed|default:"N/A" }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Avg Stay Duration -->
+    <div class="bg-blue-950 border border-white rounded-lg p-4 flex items-center">
+      <div class="text-yellow-300 text-xl mr-4">📋</div>
+      <div>
+        <p class="text-sm font-medium text-white">Avg Stay Duration</p>
+        <p class="text-lg font-bold">
+          {{ avg_stay_duration|default:"N/A" }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="bg-white rounded-lg shadow p-4 mt-10">
+  <h2 class="text-xl font-bold mb-4 text-center">📈 Operational Trends</h2>
+  <canvas id="trendChart" width="600" height="300" style="border:1px solid red;"></canvas>
+
+</div>
+<!-- Existing dashboard layout -->
+
+<section class="bg-red-950 text-white p-6 rounded-lg shadow">
+  <h1 class="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-2">
+    📊 Financial & Billing Metrics Dashboard
+  </h1>
+
+  <!-- Cost per Patient -->
+  <div class="border border-red-200 rounded-lg p-4 mb-6">
+    <h2 class="text-xl font-semibold mb-2 text-green-400">💰 Cost per Patient/Visit</h2>
+    <p>Date: <span class="font-medium">{{ cost_summary.date|default:"N/A" }}</span></p>
+    <p><strong>Cost per Visit:</strong> ₦{{ cost_summary.cost_per_visit|floatformat:2 }}</p>
+  </div>
+
+  <div class="border border-red-200 rounded-lg p-4 mb-6">
+  <h2 class="text-xl font-semibold mb-2 text-green-400">📋 Insurance Claims Summary</h2>
+  <ul class="space-y-1">
+    <li>Submitted: <span class="font-semibold">{{ claim_stats.submitted }}</span></li>
+    <li>Approved: <span class="font-semibold">{{ claim_stats.approved }}</span></li>
+    <li>Rejected: <span class="font-semibold">{{ claim_stats.rejected }}</span></li>
+    <li>Total Claimed: <span class="font-semibold">₦{{ claim_stats.total_claimed|floatformat:2 }}</span></li>
+  </ul>
+</div>
+
+  <!-- Revenue Aging Report -->
+  <div class="border border-red-200 rounded-lg p-4 mb-6">
+    <h2 class="text-xl font-semibold mb-2 text-green-400">📅 Outstanding Revenue Aging Report</h2>
+    <table class="min-w-full table-auto text-sm border border-red-300 text-white">
+      <thead class="bg-red-800 text-white">
+        <tr>
+          <th class="px-3 py-2 border border-red-700">Patient</th>
+          <th class="px-3 py-2 border border-red-700">Invoice #</th>
+          <th class="px-3 py-2 border border-red-700">Due Date</th>
+          <th class="px-3 py-2 border border-red-700">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in revenue_data %}
+        <tr class="hover:bg-red-800">
+          <td class="px-3 py-2 border border-red-700">{{ item.patient_name }}</td>
+          <td class="px-3 py-2 border border-red-700">{{ item.bill_reference }}</td>
+          <td class="px-3 py-2 border border-red-700">{{ item.due_date }}</td>
+          <td class="px-3 py-2 border border-red-700">₦{{ item.amount_due|floatformat:2 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center py-3 text-gray-200">No revenue aging data.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Cash Flow Forecast -->
+  <div class="border border-red-200 rounded-lg p-4">
+    <h2 class="text-xl font-semibold mb-2 text-green-400">📈 Cash Flow Forecast</h2>
+    <table class="min-w-full table-auto text-sm border border-red-300 text-white mb-3">
+      <thead class="bg-red-800">
+        <tr>
+          <th class="px-3 py-2 border border-red-700">Month</th>
+          <th class="px-3 py-2 border border-red-700">Cash In</th>
+          <th class="px-3 py-2 border border-red-700">Cash Out</th>
+          <th class="px-3 py-2 border border-red-700">Net Flow</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for forecast in forecasts %}
+        <tr class="hover:bg-red-800">
+          <td class="px-3 py-2 border border-red-700">{{ forecast.forecast_month }}</td>
+          <td class="px-3 py-2 border border-red-700">₦{{ forecast.cash_in|floatformat:2 }}</td>
+          <td class="px-3 py-2 border border-red-700">₦{{ forecast.cash_out|floatformat:2 }}</td>
+          <td class="px-3 py-2 border border-red-700">₦{{ forecast.net_cash_flow|floatformat:2 }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-center py-3 text-gray-200">No cash flow forecast data.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="font-semibold">
+      Total Net Cash Flow: <span class="text-white">₦{{ total_cash_flow|floatformat:2 }}</span>
+    </p>
+  </div>
+</section>
+<div class="bg-red-950 text-gray-100 p-6 mt-8 rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold text-center text-white mb-8">📊 Advanced Analytics & KPI Tracking</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+    
+    <!-- Doctor Utilization Rate -->
+    <div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
+      <h3 class="text-lg font-semibold text-red-200 mb-2">Doctor Utilization Rate</h3>
+      <p class="text-3xl font-extrabold text-white">{{ doctor_utilization }}%</p>
+      <p class="text-white text-sm mt-3 opacity-90">Indicates how effectively doctors' time is being used</p>
+    </div>
+
+    <!-- Staff-to-Patient Ratio -->
+    <div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
+      <h3 class="text-lg font-semibold text-red-200 mb-2">Staff-to-Patient Ratio</h3>
+      <p class="text-3xl font-extrabold text-white">{{ staff_patient_ratio }}</p>
+      <p class="text-white text-sm mt-3 opacity-90">Helps monitor understaffing or overstaffing</p>
+    </div>
+
+    <!-- Revenue by Service Type -->
+    <div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
+      <h3 class="text-lg font-semibold text-red-200 mb-2">Revenue by Service Type</h3>
+      <p class="text-base font-medium text-white leading-relaxed">{{ revenue_summary }}</p>
+      <p class="text-white text-sm mt-3 opacity-90">Identifies high- and low-performing services</p>
+    </div>
+
+    <div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
+    <h3 class="text-lg font-semibold text-red-200 mb-2">Referral Source Tracking</h3>
+    <ul class="list-disc pl-5 text-white text-base font-medium leading-relaxed">
+      {% for item in referral_summary %}
+        <li>{{ item.label }}: {{ item.count }}<span class="text-xs text-gray-400"></span></li>
+      {% empty %}
+        <li>No referral data yet.</li>
+      {% endfor %}
+
+    </ul>
+    <p class="text-white text-sm mt-3 opacity-90">Understand how patients find your hospital</p>
+  </div>
+</div>
+<div>
+  <div class="w-full flex justify-center mt-5">
+  <div class="w-full max-w-5xl h-[75vh] bg-red-950 rounded-lg p-6 overflow-y-auto">
+    
+    <h2 class="text-[30px] font-semibold text-center text-white mb-2">
+      📊 Clinical Quality Metrics
+    </h2>
+    
+    <p class="text-center text-sm text-gray-200 mb-6">
+      Track key indicators related to patient care, safety, and outcomes.
+    </p>
+
+    <div class="bg-blue-950 shadow rounded-md overflow-x-auto">
+      <table class="min-w-full table-auto text-sm text-left">
+        <thead class="text-white">
+          <tr>
+            <th class="px-4 py-3 border-b border-blue-800">Metric</th>
+            <th class="px-4 py-3 border-b border-blue-800">Value</th>
+            <th class="px-4 py-3 border-b border-blue-800">Last Updated</th>
+          </tr>
+        </thead>
+        <tbody class="text-white divide-y divide-blue-800">
+          {% for m in metrics %}
+          <tr class="hover:bg-blue-800">
+            <td class="px-4 py-3">{{ m.get_metric_type_display }}</td>
+            <td class="px-4 py-3">{{ m.value|default:"—" }}</td>
+            <td class="px-4 py-3">{{ m.updated_at|date:"M d, Y H:i" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="px-4 py-3 text-center text-gray-300">No metrics available yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+<div class="bg-red p-6 rounded shadow border border-gray-200 mb-10">
+    <h2 class="mb-2 flex items-center justify-center gap-3 font-semibold text-center text-white-800" style="font-size: 29px;">
+        <span class="text-3xl">📱</span>
+        Patient Engagement & Feedback
+    </h2>
+    <p class="mb-4 text-center text-white-800" style="font-size: 20px;">
+        Track patient experience and communication touchpoints.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-blue-50 p-5 rounded shadow-sm border border-blue-200 flex flex-col justify-between h-full">
+            <div class="min-h-[90px]">
+                <h3 class="text-lg font-semibold text-blue-700 mb-1 text-center">Patient Satisfaction Surveys</h3>
+                <p class="text-sm text-gray-600 mb-2 text-center">Understand and improve patient experience</p>
+            </div>
+            <div class="text-3xl font-bold text-blue-900 text-center">{{ total_surveys }}</div>
+        </div>
+
+        <div class="bg-green-50 p-5 rounded shadow-sm border border-green-200 flex flex-col justify-between h-full">
+            <div class="min-h-[90px]">
+                <h3 class="text-lg font-semibold text-green-700 mb-1 text-center">Appointment Reminders Sent</h3>
+                <p class="text-sm text-gray-600 mb-2 text-center">Helps reduce no-shows</p>
+            </div>
+            <div class="text-3xl font-bold text-green-900 text-center">{{ total_reminders }}</div>
+        </div>
+
+        <div class="bg-yellow-50 p-5 rounded shadow-sm border border-yellow-200 flex flex-col justify-between h-full">
+            <div class="min-h-[90px]">
+                <h3 class="text-lg font-semibold text-yellow-700 mb-1 text-center">Feedback & Complaints</h3>
+                <p class="text-sm text-gray-600 mb-2 text-center">Improve service responsiveness</p>
+            </div>
+            <div class="text-3xl font-bold text-yellow-900 text-center">{{ total_feedback }}</div>
+        </div>
+    </div>
+
+    {% if total_surveys == 0 and total_reminders == 0 and total_feedback == 0 %}
+    <div class="mt-6 text-center text-sm text-white-800">
+        No engagement data yet. Start interacting with patients to see insights here.
+    </div>
+    {% endif %}
+</div>
+
+
+{{ wait_time_chart_data|json_script:"wait-time-data" }}
+
+{{ rooms|json_script:"room-data" }}
+
+
+
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    /* Safely embed JSON as strings, then parse it */
+    const dailyAppt      = JSON.parse('{{ daily_appt_json|escapejs }}');
+    const monthlyAppt    = JSON.parse('{{ monthly_appt_json|escapejs }}');
+    const yearlyAppt     = JSON.parse('{{ yearly_appt_json|escapejs }}');
+    const dailyIncome    = JSON.parse('{{ daily_income_json|escapejs }}');
+    const monthlyIncome  = JSON.parse('{{ monthly_income_json|escapejs }}');
+    const yearlyIncome   = JSON.parse('{{ yearly_income_json|escapejs }}');
+
+    function renderChart(canvasId, chartData, label) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label,
+                    data: chartData.data,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } },
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: { font: { size: 12 } }
+                    }
+                }
+            }
+        });
+    }
+
+    /* Render all six charts */
+    renderChart('dailyApptChart',    dailyAppt,    'Daily Appointments');
+    renderChart('monthlyApptChart',  monthlyAppt,  'Monthly Appointments');
+    renderChart('yearlyApptChart',   yearlyAppt,   'Yearly Appointments');
+    renderChart('dailyIncomeChart',  dailyIncome,  'Daily Income');
+    renderChart('monthlyIncomeChart',monthlyIncome,'Monthly Income');
+    renderChart('yearlyIncomeChart', yearlyIncome, 'Yearly Income');
+
+    // for bed
+
+const roomList = JSON.parse(document.getElementById("room-data").textContent);
+
+    const roomLabels = roomList.map(r => r.name);
+    const roomRates = roomList.map(r => r.occupancy_rate);
+
+    const ctx = document.getElementById("bedOccupancyChart").getContext("2d");
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: roomLabels,
+            datasets: [{
+                label: 'Occupancy Rate (%)',
+                data: roomRates,
+                backgroundColor: 'rgba(96, 165, 250, 0.6)', // Tailwind blue-400
+                borderColor: 'rgba(96, 165, 250, 1)',
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: 'Occupancy %',
+                        font: { size: 14 }
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: context => context.raw + '%'
+                    }
+                }
+            }
+        }
+    });
+    <!-- ✅ JavaScript for Role Filtering -->
+    function filterByRole() {
+    const selectedRole = document.getElementById("roleFilter").value;
+    const rows = document.querySelectorAll("#attendanceTableBody tr[data-role]");
+
+    rows.forEach(row => {
+      const role = row.getAttribute("data-role");
+      if (selectedRole === "All" || role === selectedRole) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+  function filterByRole() {
+    const selectedRole = document.getElementById("roleFilter").value;
+    const rows = document.querySelectorAll("#attendanceTableBody tr[data-role]");
+
+    rows.forEach(row => {
+      const role = row.getAttribute("data-role");
+      if (selectedRole === "All" || role === selectedRole) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+
+ 
+
+  
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const trendCanvas = document.getElementById('trendChart');
+  if (!trendCanvas) {
+    console.error("❌ trendChart canvas not found!");
+    return;
+  }
+
+  const trendCtx = trendCanvas.getContext('2d');
+
+  let chartData;
+  try {
+    chartData = JSON.parse(document.getElementById('wait-time-data').textContent);
+    console.log("✅ Parsed chart data:", chartData);
+  } catch (e) {
+    console.error("❌ Failed to parse wait time data:", e);
+    return;
+  }
+
+  if (!chartData.labels || chartData.labels.length === 0) {
+    console.warn("⚠️ No data to display in chart");
+    return;
+  }
+
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: chartData.labels,
+      datasets: [{
+        label: 'Avg Wait Time (minutes)',
+        data: chartData.data,
+        fill: false,
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        tension: 0.3,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: true },
+        tooltip: { mode: 'index', intersect: false },
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Date' },
+          ticks: { autoSkip: true, maxTicksLimit: 10 }
+        },
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: 'Avg Wait Time (minutes)' }
+        }
+      }
+    }
+  });
+});
+</script>
+
+{% endblock %}

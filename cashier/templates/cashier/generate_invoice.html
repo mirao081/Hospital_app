@@ -1,0 +1,135 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block content %}
+
+<style>
+  .invoice-section {
+    max-width: 800px;
+    margin: auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #ccc;
+  }
+  .invoice-section input, .invoice-section textarea, .invoice-section select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+  }
+  .item-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .item-row input {
+    flex: 1;
+  }
+</style>
+
+<div class="invoice-section">
+  <h2 class="text-2xl font-bold mb-4">Generate Invoice</h2>
+
+  <form method="POST" onsubmit="return prepareFormData();">
+    {% csrf_token %}
+
+    <h3 class="text-lg font-semibold mb-2">Patient</h3>
+    <select name="patient_id" required>
+      <option value="">-- Select Patient --</option>
+      {% for patient in patients %}
+        <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+      {% endfor %}
+    </select>
+
+    <h3 class="text-lg font-semibold mt-6 mb-2">Invoice Info</h3>
+
+    <label for="service_date">Service Date</label>
+    <input type="date" id="service_date" name="service_date" required>
+
+    <label for="invoice_date">Invoice Date</label>
+    <input type="date" id="invoice_date" name="invoice_date" required>
+
+    <label for="due_date">Due Date</label>
+    <input type="date" id="due_date" name="due_date" required>
+
+
+    <h3 class="text-lg font-semibold mt-6 mb-2">Invoice Items</h3>
+    <div id="items-container">
+      <div class="item-row">
+        <input type="text" placeholder="Description" class="item-desc" required>
+        <input type="number" placeholder="Amount" class="item-amount" min="0" step="0.01" required>
+        <button type="button" onclick="removeRow(this)">🗑️</button>
+      </div>
+    </div>
+    <button type="button" onclick="addRow()">+ Add Item</button>
+
+    <h3 class="text-lg font-semibold mt-6 mb-2">Totals</h3>
+    <input type="number" name="discount" placeholder="Discount (optional)" value="0" step="0.01" oninput="calculateTotal()">
+    <p><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
+    <p><strong>Total Due:</strong> $<span id="total">0.00</span></p>
+
+    <input type="hidden" name="items_json" id="items-json">
+
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-4">Generate Invoice</button>
+  </form>
+</div>
+
+<script>
+  function addRow() {
+    const container = document.getElementById("items-container");
+    const row = document.createElement("div");
+    row.classList.add("item-row");
+    row.innerHTML = `
+      <input type="text" placeholder="Description" class="item-desc" required>
+      <input type="number" placeholder="Amount" class="item-amount" min="0" step="0.01" required>
+      <button type="button" onclick="removeRow(this)">🗑️</button>
+    `;
+    container.appendChild(row);
+  }
+
+  function removeRow(btn) {
+    const row = btn.parentElement;
+    row.remove();
+    calculateTotal();
+  }
+
+  function calculateTotal() {
+    let subtotal = 0;
+    document.querySelectorAll('.item-amount').forEach(input => {
+      subtotal += parseFloat(input.value) || 0;
+    });
+
+    const discount = parseFloat(document.querySelector('[name="discount"]').value) || 0;
+    const total = Math.max(subtotal - discount, 0);
+
+    document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+    document.getElementById("total").textContent = total.toFixed(2);
+  }
+
+  function prepareFormData() {
+    const items = [];
+    const descs = document.querySelectorAll('.item-desc');
+    const amounts = document.querySelectorAll('.item-amount');
+
+    for (let i = 0; i < descs.length; i++) {
+      const description = descs[i].value.trim();
+      const amount = parseFloat(amounts[i].value);
+      if (description && !isNaN(amount)) {
+        items.push({ description, amount });
+      }
+    }
+
+    document.getElementById('items-json').value = JSON.stringify(items);
+    return true;
+  }
+
+  // Update totals live
+  document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('item-amount') || e.target.name === 'discount') {
+      calculateTotal();
+    }
+  });
+</script>
+
+{% endblock %}

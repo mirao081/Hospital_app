@@ -1,0 +1,169 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Receptionist Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-header {
+        background-color: #d3d3d3; /* Ash */
+        color: #003366; /* Dark blue */
+        padding: 1rem;
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: center;
+    }
+
+    .dashboard-card {
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        width: 250px;
+        transition: 0.3s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .dashboard-card:hover {
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .dashboard-card a {
+        text-decoration: none;
+        color: #003366;
+        font-weight: bold;
+    }
+
+    .dashboard-card a:hover {
+        text-decoration: underline;
+    }
+
+    /* New Section Styles */
+    .section-heading {
+        text-align: center;
+        font-size: 28px;
+        color: #003366;
+        margin: 3rem 0 1rem;
+    }
+
+    .front-desk-section {
+    margin: 40px auto 0 auto; /* 👈 added 40px top margin */
+    width: 90%;
+    max-width: 1000px;
+    background-color: #eef3f7;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .card-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+        justify-content: space-between;
+    }
+
+    .feature-card {
+        flex: 1 1 calc(48%);
+        background-color: white;
+        border: 1px solid #d4dce3;
+        border-radius: 8px;
+        padding: 1rem 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 140px;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .feature-card h4 {
+        font-size: 18px;
+        color: #003366;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .feature-card h4 i {
+        margin-right: 0.5rem;
+        color: #0055a5;
+    }
+
+    .feature-card p {
+        font-size: 15px;
+        color: #333;
+    }
+
+    .feature-card a {
+        margin-top: 1rem;
+        font-size: 14px;
+        color: #0055a5;
+        text-decoration: underline;
+    }
+</style>
+
+<div class="dashboard-header">Receptionist Dashboard</div>
+
+<div class="card-container">
+    <div class="dashboard-card">
+        <a href="{% url 'receptionist:register_patient' %}">Register New Patient</a>
+    </div>
+    <div class="dashboard-card">
+        <a href="{% url 'receptionist:schedule_appointment' %}">Schedule Appointment</a>
+    </div>
+    <div class="dashboard-card">
+        <a href="{% url 'receptionist:appointment_list' %}">View All Appointments</a>
+    </div>
+</div>
+
+<!-- Front Desk Section -->
+<!-- Front Desk Section -->
+<div class="front-desk-section">
+    <h2 class="section-heading">Front Desk Communication & Coordination</h2>
+
+    <div class="card-row">
+        <div class="feature-card">
+            <h4><i class="fa-solid fa-comments"></i> Communication Hub</h4>
+            <p>Coordinate between nurses, patients, and doctors to ensure accurate information exchange.</p>
+            <a href="{% url 'receptionist:send_internal_message' %}">Learn more</a>
+        </div>
+
+        <div class="feature-card">
+            <h4><i class="fa-solid fa-book-open-reader"></i> Patient Guidance</h4>
+            <p>Assist patients in understanding hospital policies, procedures, and navigation.</p>
+            <a href="{% url 'receptionist:patient_onboarding' %}">Onboarding help</a>
+        </div>
+
+        <div class="feature-card">
+            <h4><i class="fa-solid fa-calendar-check"></i> Smooth Check-ins</h4>
+            <p>Handle registrations and appointment scheduling to streamline patient flow.</p>
+            <a href="{% url 'receptionist:schedule_appointment' %}">Check-in guidelines</a>
+        </div>
+
+        <div class="feature-card">
+            <h4><i class="fa-solid fa-handshake-angle"></i> Friendly Experience</h4>
+            <p>Maintain a warm, welcoming environment and patient-first attitude at all times.</p>
+            <a href="{% url 'receptionist:service_guidelines' %}">Service tips</a>
+        </div>
+    </div>
+</div>
+
+<!-- FontAwesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+{% endblock %}

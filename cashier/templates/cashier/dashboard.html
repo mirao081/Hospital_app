@@ -1,0 +1,164 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2 class="text-2xl font-bold mb-4">
+  Welcome, {{ request.user.get_full_name }}! ({{ request.user.role|capfirst }})
+</h2>
+
+
+<!-- 📑 Patient Billing Summary -->
+<div class="bg-white p-6 shadow rounded mb-6">
+  <h3 class="text-lg font-semibold mb-4">Patient Billing Summary</h3>
+  <table class="min-w-full table-auto border border-gray-300">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Outstanding Balance</th>
+        <th class="border px-4 py-2 text-left">Total Paid</th>
+        <th class="border px-4 py-2 text-left">Invoices</th>
+        <th class="border px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if patients %}
+        {% for patient in patients %}
+          <tr class="hover:bg-gray-50">
+            <td class="border px-4 py-2">
+              {{ patient.user.get_full_name|default:patient.user.username }}
+            </td>
+            <td class="border px-4 py-2 text-red-600">
+              ${{ patient.outstanding_balance|default:"0.00" }}
+            </td>
+            <td class="border px-4 py-2">
+              ${{ patient.total_paid|default:"0.00" }}
+            </td>
+            <td class="border px-4 py-2">
+              {{ patient.invoice_set.count }}
+            </td>
+            <td class="border px-4 py-2">
+              <a href="{% url 'cashier:patient_billing_history' patient.id %}" class="text-blue-600 hover:underline">
+                View History
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5" class="text-center py-4 text-gray-500">No patient billing records available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+
+<!-- 💳 Dashboard Buttons -->
+<div class="mb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <a href="{% url 'cashier:cashier_record_payment' %}" class="block bg-blue-600 text-white px-6 py-4 rounded shadow hover:bg-blue-700 transition">
+    Record New Payment
+  </a>
+  <a href="{% url 'cashier:cashier_payment_list' %}" class="block bg-blue-600 text-white px-6 py-4 rounded shadow hover:bg-blue-700 transition">
+    View All Payments
+  </a>
+  <a href="{% url 'cashier:cashier_generate_invoice' %}" class="block bg-blue-600 text-white px-6 py-4 rounded shadow hover:bg-blue-700 transition">
+    Generate Invoice
+  </a>
+  <a href="{% url 'cashier:cashier_invoice_list' %}" class="block bg-blue-600 text-white px-6 py-4 rounded shadow hover:bg-blue-700 transition">
+    View Invoices
+  </a>
+  <a href="{% url 'cashier:refund_list' %}" class="block bg-blue-600 text-white px-6 py-4 rounded shadow hover:bg-blue-700 transition">
+    View Refunds
+  </a>
+  <a href="{% url 'cashier:record_billing' %}" class="block bg-blue-600 text-white px-6 py-4 rounded shadow hover:bg-blue-700 transition">
+    Record Billing
+  </a>
+
+</div>
+
+<!-- 📋 Recent Payments Table -->
+<div class="bg-white p-6 shadow rounded mb-6">
+  <h3 class="text-lg font-semibold mb-4">Recent Payments</h3>
+  <table class="min-w-full table-auto border border-gray-300">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Amount</th>
+        <th class="border px-4 py-2 text-left">Mode</th>
+        <th class="border px-4 py-2 text-left">Collected By</th>
+        <th class="border px-4 py-2 text-left">Date</th>
+        <th class="border px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for payment in payments %}
+      <tr class="hover:bg-gray-50">
+        <td class="border px-4 py-2">{{ payment.patient_name }}</td>
+        <td class="border px-4 py-2">${{ payment.amount }}</td>
+        <td class="border px-4 py-2">{{ payment.get_payment_method_display }}</td>
+        <td class="border px-4 py-2">{{ payment.received_by }}</td>
+        <td class="border px-4 py-2">{{ payment.date_received|date:"Y-m-d H:i" }}</td>
+        <td class="border px-4 py-2">
+          {% if payment.id %}
+            <a href="{% url 'cashier:issue_refund' payment.id %}" class="text-blue-600 hover:underline">Refund</a>
+          {% else %}
+            <span class="text-gray-400 italic">Unavailable</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-4">No payments recorded.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- 💸 Recent Refunds Section -->
+<div class="bg-white p-6 shadow rounded">
+  <h3 class="text-lg font-semibold mb-4">Recent Refunds & Adjustments</h3>
+  <table class="min-w-full table-auto border border-gray-300">
+    <thead class="bg-gray-100">
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Refund Amount</th>
+        <th class="border px-4 py-2 text-left">Reason</th>
+        <th class="border px-4 py-2 text-left">Issued By</th>
+        <th class="border px-4 py-2 text-left">Date</th>
+        <th class="border px-4 py-2 text-left">Approval</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for refund in refunds %}
+      <tr class="hover:bg-gray-50">
+        <td class="border px-4 py-2">{{ refund.payment.patient_name }}</td>
+        <td class="border px-4 py-2 text-red-600">${{ refund.refund_amount }}</td>
+        <td class="border px-4 py-2">{{ refund.reason|truncatechars:40 }}</td>
+        <td class="border px-4 py-2">{{ refund.issued_by }}</td>
+        <td class="border px-4 py-2">{{ refund.created_at|date:"Y-m-d H:i" }}</td>
+        <td class="border px-4 py-2">
+          <span class="px-2 py-1 rounded text-xs font-semibold
+            {% if refund.approval_status == 'Approved' %}
+              bg-green-100 text-green-800
+            {% elif refund.approval_status == 'Rejected' %}
+              bg-red-100 text-red-800
+            {% else %}
+              bg-yellow-100 text-yellow-800
+            {% endif %}
+          ">
+            {{ refund.approval_status }}
+          </span>
+          {% if refund.admin_note %}
+            <div class="text-sm text-gray-500 italic mt-1">Note: {{ refund.admin_note }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-4">No refunds recorded.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
