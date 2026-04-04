@@ -1,0 +1,49 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Testimonials{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div style="background-color: black; color: white; padding: 40px 0; text-align: center;">
+  <h1>Testimonials</h1>
+  <p>
+    <a href="{% url 'landing_page' %}" style="color: white; text-decoration: underline;">Home</a>
+    <span style="margin: 0 10px;">&raquo;&raquo;</span>
+    <span>Testimonials</span>
+  </p>
+</div>
+
+<!-- Testimonials Cards -->
+<section class="container" style="padding: 50px 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">
+  {% for t in testimonials %}
+    <div style="width: 300px; background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); padding: 20px; position: relative; text-align: center;">
+      
+      <!-- Quote Icon -->
+      <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); background: black; color: white; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 24px;">
+        <i class="fas fa-quote-left"></i>
+      </div>
+
+      <!-- Circular Image -->
+      <img src="{{ t.photo.url }}" alt="{{ t.name }}" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-top: 30px; border: 4px solid #ddd;">
+
+      <!-- Name & Location -->
+      <h3 style="margin: 10px 0 5px;">{{ t.name }}</h3>
+      <p style="color: #777;">{{ t.location }}</p>
+
+      <!-- Quote -->
+      <p style="font-style: italic; margin-top: 15px;">"{{ t.quote }}"</p>
+
+      <!-- Star Rating -->
+      <div style="margin-top: 10px; color: gold;">
+        {% for i in "12345" %}
+          {% if forloop.counter <= t.rating %}
+            <i class="fas fa-star"></i>
+          {% else %}
+            <i class="far fa-star"></i>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ settings.title }}{% endblock %}
+
+{% block content %}
+<!-- Doctors Page Header -->
+<section style="width: 100%; height: 30vh; background-color: black; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <h1 style="font-size: 20px; margin-bottom: 10px; color: white;">{{ settings.title }}</h1>
+  <p style="font-size: 1.1rem;">
+    <a href="{% url 'landing_page' %}" style="color: white; text-decoration: none;">{{ settings.breadcrumb_home_text }}</a> &gt;&gt;
+    <span style="color: white;">{{ settings.title }}</span>
+  </p>
+</section>
+
+<!-- Doctors Count -->
+<section style="padding: 20px; text-align: center;">
+  <h2 style="font-size: 24px;">Total Doctors: {{ doctors|length }}</h2>
+</section>
+
+<!-- Doctors Grid -->
+<section style="padding: 40px; background-color: #f9f9f9;">
+  <div style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;">
+    {% for doctor in doctors %}
+      <div style="width: 250px; background: white; border-radius: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        
+        {% if doctor.photo %}
+          <img src="{{ doctor.photo.url }}" alt="{{ doctor.user.get_full_name|default:'None' }}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+        {% else %}
+          <img src="{% static 'images/default-doctor.jpg' %}" alt="Default doctor" style="width: 100%; height: 250px; object-fit: cover; border-radius: 10px;">
+        {% endif %}
+
+        <h3 style="margin-top: 15px; font-size: 24px; color: goldenrod;">{{ doctor.user.get_full_name|default:'None' }}</h3>
+        <p style="color: #0540ae; font-weight: 700;">{{ doctor.specialty|default:"None" }}</p>
+
+
+        <p style="margin-top: 5px;">Appointments Completed: <strong>{{ doctor.appointments_completed|default:0 }}</strong></p>
+
+        <p style="margin-top: 5px;">Start From: <strong>₦{{ doctor.starting_price|default:"0.00" }}</strong></p>
+      </div>
+    {% empty %}
+      <p>No doctors found.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

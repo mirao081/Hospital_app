@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">📝 Nurse Task List</h2>
+
+  {% if tasks %}
+    <ul class="list-group">
+      {% for task in tasks %}
+        <li class="list-group-item">
+          <strong>{{ task.title }}</strong> - 
+          <span class="badge bg-{{ task.status|yesno:'success,warning,secondary' }}">{{ task.status|capfirst }}</span><br>
+          {% if task.patient %}
+            Patient: {{ task.patient.user.get_full_name }}<br>
+          {% endif %}
+          Due: {{ task.due_time|date:"SHORT_DATETIME_FORMAT" }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="alert alert-info">No tasks assigned for this shift.</div>
+  {% endif %}
+</div>
+{% endblock %}

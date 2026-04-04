@@ -1,0 +1,77 @@
+{% extends "core/base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10 bg-red-950 shadow-md rounded-lg p-10 text-white">
+  <h2 class="text-[29px] font-bold text-white mb-6 text-center">📥 Inbox</h2>
+
+  <!-- Section 1: Internal Messages -->
+  {% if messages %}
+    <h3 class="text-xl font-semibold text-white mb-3">Internal Messages</h3>
+    <ul class="divide-y divide-white border border-white rounded mb-10">
+      {% for msg in messages %}
+      <li class="py-4 px-3 hover:bg-red-900 transition-colors duration-200 {% if not msg.is_read %}bg-yellow-700{% endif %}">
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-sm font-semibold">
+              From: {{ msg.sender.get_full_name|default:msg.sender.username }}
+              {% if msg.sender.is_staff %}
+                <span class="text-xs text-white bg-blue-600 px-2 py-1 rounded ml-2">Staff</span>
+              {% else %}
+                <span class="text-xs text-white bg-green-600 px-2 py-1 rounded ml-2">Patient</span>
+              {% endif %}
+            </p>
+            {% if msg.subject %}
+              <p class="text-sm">Subject: {{ msg.subject }}</p>
+            {% endif %}
+            <p class="text-xs">Received {{ msg.sent_at|naturaltime }}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            {% if not msg.is_read %}
+              <form method="POST" action="{% url 'admin_panel:mark_enquiry_read' enquiry.id %}">
+                {% csrf_token %}
+                <button type="submit" class="text-xs text-blue-300 hover:underline">Mark as read</button>
+              </form>
+            {% endif %}
+            <a href="{% url 'admin_panel:message_detail' msg.id %}" class="text-xs hover:text-blue-300 hover:underline">View</a>
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <!-- Section 2: Contact Form Enquiries -->
+  {% if enquiries %}
+    <h3 class="text-xl font-semibold text-white mb-3">Contact Form Enquiries</h3>
+    <ul class="divide-y divide-white border border-white rounded">
+      {% for enquiry in enquiries %}
+      <li class="py-4 px-3 hover:bg-red-900 transition-colors duration-200 {% if not enquiry.is_read %}bg-yellow-700{% endif %}">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm font-semibold">From: {{ enquiry.name }} ({{ enquiry.email }})</p>
+            <p class="text-sm">Phone: {{ enquiry.phone }} | Country: {{ enquiry.country }}</p>
+            <p class="text-sm mt-1">Message: {{ enquiry.message }}</p>
+            <p class="text-xs mt-1">Received {{ enquiry.created_at|naturaltime }}</p>
+          </div>
+          <div>
+            {% if not enquiry.is_read %}
+              <form method="POST" action="{% url 'admin_panel:mark_message_read' enquiry.id %}">
+                {% csrf_token %}
+                <button type="submit" class="text-xs text-blue-300 hover:underline">Mark as read</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  {% if not messages and not enquiries %}
+    <p class="text-center">No messages or enquiries yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Clinical Quality Metrics</h2>
+
+{% for metric in metrics %}
+    <form method="post" style="margin-bottom: 30px;">
+        {% csrf_token %}
+        <input type="hidden" name="metric_id" value="{{ metric.id }}">
+
+        <h3>{{ metric.get_metric_type_display }}</h3>
+        <p><strong>Why It Matters:</strong></p>
+        <textarea name="description" rows="2" cols="80">{{ metric.description }}</textarea>
+        <p><strong>Current Value:</strong></p>
+        <input type="text" name="value" value="{{ metric.value }}" />
+        <br><br>
+        <button type="submit">Save</button>
+    </form>
+    <hr>
+{% endfor %}
+
+{% endblock %}

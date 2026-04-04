@@ -1,0 +1,110 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+<style>
+  .form-control {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+
+  .map-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 50px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+</style>
+
+<!-- Header Section -->
+<div style="background-color: black; color: white; padding: 40px 0; text-align: center;">
+  <h1>Contact</h1>
+  <p>
+    <a href="{% url 'landing_page' %}" style="color: white; text-decoration: underline;">Home</a>
+    <span style="margin: 0 10px;">&raquo;&raquo;</span>
+    <span>Contact</span>
+  </p>
+</div>
+
+<!-- Main Content -->
+<div class="container" style="display: flex; flex-wrap: wrap; justify-content: space-between; padding: 50px 20px; gap: 30px;">
+
+  <!-- Left: Contact Info -->
+  <div style="flex: 1; min-width: 300px; color: blue;">
+    <h1>Get in Touch for More<br>Information About Preclinic</h1>
+
+    <div style="background: skyblue; color: crimson; padding: 20px; margin-top: 20px; border-radius: 10px;">
+      <p><i class="fas fa-map-marker-alt"></i> <strong>{{ contact.country }}</strong></p>
+      <p>{{ contact.address }}</p>
+    </div>
+
+    <div style="background: skyblue; color: crimson; padding: 20px; margin-top: 20px; border-radius: 10px;">
+      <p><i class="fas fa-envelope"></i> <strong>Email Us</strong></p>
+      <p>{{ contact.email_info }}</p>
+      <p><strong>{{ contact.email }}</strong></p>
+    </div>
+
+    <div style="background: skyblue; color: crimson; padding: 20px; margin-top: 20px; border-radius: 10px;">
+      <p><i class="fas fa-phone"></i> <strong>Call Us</strong></p>
+      <p>{{ contact.phone_info }}</p>
+      <p><strong>{{ contact.phone }}</strong></p>
+    </div>
+  </div>
+
+  <!-- Right: Enquiry Form -->
+  <div style="flex: 1; min-width: 300px; background: white; color: blue; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+    <h2>Enquiry Form</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div style="margin-bottom: 15px;">
+        <label for="id_name">Your Name</label><br>
+        {{ form.name|add_class:"form-control" }}
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label for="id_email">Email Address</label><br>
+        {{ form.email|add_class:"form-control" }}
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label for="id_phone">Phone Number</label><br>
+        {{ form.phone|add_class:"form-control" }}
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label for="id_country">Country</label><br>
+        {{ form.country|add_class:"form-control" }}
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label for="id_message">Message</label><br>
+        {{ form.message|add_class:"form-control" }}
+      </div>
+      <button type="submit" style="width: 100%; background: blue; color: white; padding: 12px 20px; border: none; border-radius: 5px; font-size: 16px;">
+        Send a Message
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Google Map Section -->
+<div class="map-container">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1985.0458205783716!2d3.3792053770494084!3d6.524379793443436!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bf5150012c7b9%3A0x57e51863ff33a93d!2sLagos%2C%20Nigeria!5e0!3m2!1sen!2sng!4v1629201737300!5m2!1sen!2sng"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+  </iframe>
+</div>
+{% endblock %}

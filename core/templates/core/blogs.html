@@ -1,0 +1,56 @@
+{% extends "core/base.html" %}
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+<!-- Banner Section -->
+<div class="blog-banner" style="width: 100%; height: 30vh; background: black; color: white; display: flex; align-items: center; justify-content: center; flex-direction: column; text-align: center;">
+  <div class="blog-banner-content">
+    <h1>{{ settings.title }}</h1>
+    <p style="margin-top: 10px;">
+      <a href="{% url 'landing_page' %}" style="color: lightblue;">Home</a> &raquo; {{ settings.breadcrumb_text }}
+    </p>
+  </div>
+</div>
+
+<div class="blog-container" style="padding: 50px;">
+  <div class="blog-grid" style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
+    {% for blog in blogs %}
+      <div class="blog-card" style="background: white; width: 250px; border-radius: 20px; border: 2px solid crimson; box-shadow: 0 4px 10px aliceblue; overflow: hidden; transition: 0.3s ease-in-out;">
+        
+        <div style="position: relative;">
+          {% if blog.image %}
+            <img src="{{ blog.image.url }}" alt="{{ blog.title }}" style="width: 100%; height: 200px; object-fit: cover;">
+          {% else %}
+            <div style="width: 100%; height: 200px; background: lightgray;"></div>
+          {% endif %}
+
+          <!-- Crimson Overlay Write-up -->
+          
+
+          <!-- Category Label -->
+          <h4 style="position: absolute; top: 10px; left: 10px; padding: 5px 10px; background-color: blue; color: white; border-radius: 5px; font-size: 14px;">
+            {{ blog.category }}
+          </h4>
+        </div>
+
+        <!-- Blog Content -->
+        <div style="padding: 20px;">
+          <!-- Blog Title -->
+          <h1 style="font-size: 18px; font-weight: bold; margin: 10px 0;">{{ blog.title }}</h1>
+
+          <!-- Blog Paragraph -->
+          <p style="font-size: 15px; color: #333;">{{ blog.content|truncatechars:100 }}</p>
+
+          <!-- Date Published -->
+          <div style="margin-top: 10px; font-size: 14px; color: #777;">
+            <span>🕒</span> {{ blog.date_published }}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>No blog posts available.</p>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

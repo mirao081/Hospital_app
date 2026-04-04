@@ -1,0 +1,77 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<!-- Style Block -->
+<style>
+  .vitals-wrapper {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .vitals-title {
+    color: #0d6efd; /* Bootstrap Primary */
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .vitals-icon {
+    color: #dc3545; /* Bootstrap Danger */
+    margin-right: 0.5rem;
+  }
+
+  .vitals-lead {
+    text-align: center;
+    color: #6c757d; /* Bootstrap Muted */
+    margin-bottom: 2rem;
+  }
+
+  .vitals-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+  }
+
+  .vitals-button {
+    padding: 0.5rem 2rem;
+  }
+</style>
+
+<div class="container py-5">
+  <div class="vitals-wrapper">
+
+    <h1 class="vitals-title">
+      <i class="bi bi-thermometer-half vitals-icon"></i> Add / Update Patient Vitals
+    </h1>
+
+    <p class="vitals-lead">
+      Please enter the latest vital signs for the patient. Accurate recording of temperature, blood pressure, and heart rate is essential for ongoing care.
+    </p>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label for="temperature" class="form-label">Temperature (°C)</label>
+        <input type="number" step="0.1" min="30" max="45" class="form-control" id="temperature" name="temperature" placeholder="e.g. 37.0" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="blood_pressure" class="form-label">Blood Pressure (mmHg)</label>
+        <input type="text" class="form-control" id="blood_pressure" name="blood_pressure" placeholder="e.g. 120/80" pattern="^\d{2,3}/\d{2,3}$" title="Format: systolic/diastolic e.g. 120/80" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="heart_rate" class="form-label">Heart Rate (bpm)</label>
+        <input type="number" min="30" max="220" class="form-control" id="heart_rate" name="heart_rate" placeholder="e.g. 75" required>
+      </div>
+
+      <div class="vitals-button-container">
+        <button type="submit" class="btn btn-danger vitals-button">Save Vitals</button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}

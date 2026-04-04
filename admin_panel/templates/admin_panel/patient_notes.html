@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% block content %}
+<section class="bg-white p-4 rounded shadow">
+  <h2 class="text-xl font-bold mb-3">Notes for {{ patient.full_name }}</h2>
+
+  <form method="POST" class="mb-4">
+    {% csrf_token %}
+    <textarea name="note" rows="3" class="w-full border rounded p-2" placeholder="Write a note..."></textarea>
+    <button type="submit" class="mt-2 px-4 py-2 bg-green-600 text-white rounded">Add Note</button>
+  </form>
+
+  <table class="w-full border-collapse">
+    <thead>
+      <tr>
+        <th class="border p-2 text-left">Date</th>
+        <th class="border p-2 text-left">Note</th>
+        <th class="border p-2 text-left">Added By</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for note in notes %}
+        <tr>
+          <td class="border p-2">{{ note.created_at|date:"M d, Y • H:i" }}</td>
+          <td class="border p-2">{{ note.note }}</td>
+          <td class="border p-2">{{ note.created_by.get_full_name|default:note.created_by.username }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3" class="text-center p-2">No notes yet.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

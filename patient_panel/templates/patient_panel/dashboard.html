@@ -1,0 +1,346 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<!-- ✅ Alpine.js for Modal -->
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
+<!-- Heading Section -->
+<!-- Top Header with Welcome Message and Optional Link/Button -->
+<div class="w-full bg-red-950 py-5 px-6 flex items-center justify-between">
+  <!-- Heading -->
+  <h2 class="text-white text-center text-2xl font-semibold flex-1 font-sans">
+    Welcome, {{ request.user.first_name }}!
+  </h2>
+</div>
+
+
+<!-- ✅ Success Message Modal -->
+{% if messages %}
+<div x-data="{ open: true }" x-show="open" x-cloak
+     class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+    <div class="bg-white text-black max-w-md w-full p-6 rounded-lg shadow-lg relative text-center">
+        <button @click="open = false" class="absolute top-2 right-3 text-gray-500 hover:text-black text-xl">&times;</button>
+        {% for message in messages %}
+            <h3 class="text-xl font-bold mb-2 text-green-700">{{ message.tags|title }}</h3>
+            <p class="text-md">{{ message }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Include Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- Custom Styles -->
+<style>
+    body {
+        overflow-x: hidden;
+    }
+
+    .dashboard-container {
+        padding: 40px 15px 30px;
+    }
+
+    .dashboard-card {
+        font-family: 'Poppins', sans-serif;
+        font-size: 20px;
+        text-align: center;
+        color: #333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        border: 2px solid white;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .dashboard-card .card-title {
+        font-weight: 600;
+        color: rgb(129, 87, 2);
+        font-size: 22px;
+        margin-bottom: 15px;
+    }
+
+    .dashboard-card .list-group-item {
+        background-color: transparent;
+        border: none;
+    }
+
+    .dashboard-card .text-muted {
+        font-size: 16px;
+    }
+
+    .card-bg-1 { background-color: #f0f8ff; }
+    .card-bg-2 { background-color: #e6f7ff; }
+    .card-bg-3 { background-color: #fff0f5; }
+    .card-bg-4 { background-color: #f5fff0; }
+    .card-bg-5 { background-color: #fef9e7; }
+    .card-bg-6 { background-color: #f4f4f4; }
+</style>
+
+<!-- Top Section for Survey & Feedback -->
+<section class="w-full bg-red-950 py-10" style="border: 3px solid white;">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto text-center">
+
+        <!-- Survey Card -->
+        <div class="bg-blue-950 text-white shadow p-6 rounded">
+            <h3 class="text-[29px] font-semibold mb-2">📝 Patient Satisfaction Survey</h3>
+            <p class="text-[20px] mb-4">Let us know how your visit went.</p>
+            <a href="{% url 'patient_panel:submit_survey' %}" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+                Fill Survey
+            </a>
+        </div>
+
+        <!-- Feedback Card -->
+        <div class="bg-blue-950 text-white shadow p-6 rounded">
+            <h3 class="text-[29px] font-semibold mb-2">💬 Give Feedback</h3>
+            <p class="text-[20px] mb-4">Tell us what went well or what we can improve.</p>
+            <a href="{% url 'patient_panel:submit_feedback' %}" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
+                Submit Feedback
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Main Dashboard Data -->
+<div class="min-h-screen w-full bg-gradient-to-b from-red-950 to-black text-white px-4 py-6 flex justify-center">
+  <div class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Recent Diagnoses -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Recent Diagnoses</h3>
+      <ul>
+        {% for diagnosis in diagnoses %}
+          <li class="mb-3">
+            {{ diagnosis.diagnosis }}<br>
+            <small class="text-gray-300">Diagnosed on {{ diagnosis.date_diagnosed }}</small>
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No diagnoses found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Ongoing Treatments -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Ongoing Treatments</h3>
+      <ul>
+        {% for treatment in treatments %}
+          <li class="mb-3">
+            <strong>{{ treatment.condition }}</strong><br>
+            {{ treatment.treatment }}<br>
+            <small class="text-gray-300">
+              From {{ treatment.start_date }} to {{ treatment.end_date|default:"Present" }}
+            </small>
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No treatments found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Medications Prescribed -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Medications Prescribed</h3>
+      <ul>
+        {% for med in medications %}
+          <li class="mb-3">
+            {{ med.name }} - {{ med.dosage }} ({{ med.frequency }})<br>
+            <small class="text-gray-300">Prescribed on {{ med.prescribed_date }}</small>
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No medications found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Recent Lab Results -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Recent Lab Results</h3>
+      <ul>
+        {% for lab in lab_results %}
+          <li class="mb-3">
+            <strong>{{ lab.test_name }}</strong><br>
+            {{ lab.result }}<br>
+            <small class="text-gray-300">Taken on {{ lab.date_taken }}</small>
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No lab results found.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Upcoming Visits -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Upcoming Visits</h3>
+      <ul>
+        {% for visit in upcoming_visits %}
+          <li class="mb-3">
+            {{ visit.visit_date }} - {{ visit.reason }}
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No upcoming visits.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Past Visits -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Past Visits</h3>
+      <ul>
+        {% for visit in past_visits %}
+          <li class="mb-3">
+            {{ visit.visit_date }} - {{ visit.reason }}
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No past visits.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+    <h3 class="text-2xl font-semibold mb-4">Upcoming Appointments</h3>
+    <ul>
+        {% for appt in upcoming_appointments %}
+        <li class="mb-3">
+            {{ appt.datetime|date:"M d, Y H:i" }} - {{ appt.reason|default:"No reason provided" }}<br>
+            <small class="text-gray-300">Status: {{ appt.get_status_display }}</small>
+        </li>
+        {% empty %}
+        <li class="text-gray-400">No upcoming appointments.</li>
+        {% endfor %}
+    </ul>
+    </div>
+
+    <!-- Past Appointments -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Past Appointments</h3>
+      <ul>
+        {% for appt in past_appointments %}
+          <li class="mb-3">
+            {{ appt.datetime|date:"M d, Y H:i" }} - {{ appt.reason }}<br>
+            <small class="text-gray-300">Status: {{ appt.get_status_display }}</small><br>
+            {% if appt.send_reminder %}
+              <div class="bg-blue-800 mt-2 rounded p-2 text-sm">
+                📅 Reminder: {{ appt.datetime|date:"M d, Y \\a\\t H:i" }}
+
+                {% if appt.location %}
+                  Location: {{ appt.location }}
+                {% endif %}
+              </div>
+            {% endif %}
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No past appointments.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Outstanding Bills -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Outstanding Bills</h3>
+      <ul>
+        {% for bill in outstanding_bills %}
+          <li class="mb-3">
+            ₦{{ bill.amount }} - {{ bill.description }}<br>
+            <small class="text-gray-300">Issued: {{ bill.date_issued }}</small>
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No outstanding bills.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Payment History -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Payment History</h3>
+      <ul>
+        {% for bill in payment_history %}
+          <li class="mb-3">
+            ₦{{ bill.amount }} - {{ bill.description }}<br>
+            <small class="text-gray-300">Paid on: {{ bill.date_issued }}</small>
+          </li>
+        {% empty %}
+          <li class="text-gray-400">No payments recorded.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Appointment Reminders -->
+    <div class="bg-blue-950 border border-white rounded-xl p-6 shadow text-center">
+
+      <h3 class="text-2xl font-semibold mb-4">Appointment Reminders</h3>
+      <ul>
+        {% for appt in upcoming_appointments %}
+          {% if appt.send_reminder %}
+            <li class="mb-3">
+              <strong>{{ appt.datetime|date:"M d, Y H:i" }}</strong><br>
+
+              Reason: {{ appt.reason }}<br>
+              {% if appt.location %}
+                Location: {{ appt.location }}<br>
+              {% endif %}
+              <small class="text-gray-300">Status: {{ appt.get_status_display }}</small>
+            </li>
+          {% endif %}
+        {% empty %}
+          <li class="text-gray-400">No reminders at this time.</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+
+
+</div>
+<!-- Patient Portal Requests -->
+<section class="bg-red-950 text-white p-6 rounded-lg shadow-lg w-[100%] mx-auto mt-8">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold text-white text-center w-full">My Portal Requests</h2>
+    <a href="{% url 'patient_panel:create_portal_request' %}" 
+       class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors ml-4">
+      + Create New Request
+    </a>
+  </div>
+
+  {% if my_requests %}
+  <table class="w-full border-collapse text-left mt-4">
+    <thead>
+      <tr class="bg-red-800">
+        <th class="p-3">Request Type</th>
+        <th class="p-3">Status</th>
+        <th class="p-3">Message</th>
+        <th class="p-3">Sent On</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for req in my_requests %}
+      <tr class="border-b border-red-900 hover:bg-red-900 transition-colors">
+        <td class="p-3 font-semibold">{{ req.request_type|title }}</td>
+        <td class="p-3">{{ req.status|title }}</td>
+        <td class="p-3">{{ req.message|truncatewords:20 }}</td>
+        <td class="p-3 text-sm opacity-70">{{ req.created_at|date:"M d, Y H:i" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="text-sm opacity-70 mt-4 text-center">You have not made any requests yet.</p>
+  {% endif %}
+</section>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h1>Access Logs</h1>
+<table class="adminlogtable">
+    <tr>
+        <th>User</th>
+        <th>Path</th>
+        <th>Method</th>
+        <th>IP</th>
+        <th>Time</th>
+    </tr>
+    {% for log in logs %}
+    <tr>
+        <td>{{ log.user }}</td>
+        <td>{{ log.path }}</td>
+        <td>{{ log.method }}</td>
+        <td>{{ log.ip_address }}</td>
+        <td>{{ log.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

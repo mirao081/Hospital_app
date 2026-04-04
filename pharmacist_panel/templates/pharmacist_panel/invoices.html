@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Supplier Invoices</h2>
+    {% if invoices %}
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Supplier</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for invoice in invoices %}
+                <tr>
+                    <td>{{ invoice.id }}</td>
+                    <td>{{ invoice.supplier.name }}</td>
+                    <td>{{ invoice.date|date:"Y-m-d" }}</td>
+                    <td>{{ invoice.amount }}</td>
+                    <td>{{ invoice.status }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No invoices found.</p>
+    {% endif %}
+</div>
+{% endblock %}

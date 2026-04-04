@@ -1,0 +1,138 @@
+{% extends "core/base.html" %}
+
+{% block title %}Register {{ role|title }}{% endblock %}
+
+{% block content %}
+<div class="flex justify-center bg-red-950 px-4 py-[30px] min-h-screen">
+  <form method="post" action="?role={{ role }}" class="w-full max-w-md bg-red-950 border-2 border-white p-8 rounded-[20px] shadow-xl text-white">
+    <h2 class="text-3xl font-bold text-white mb-6 text-center">📝 Register {{ role|title }}</h2>
+    {% csrf_token %}
+    <input type="hidden" name="role" value="{{ role }}">
+
+    {{ form.as_p }}
+
+    {% if patient_form %}
+      {{ patient_form.management_form }}
+
+      <!-- Patient info fields -->
+      <p>{{ patient_form.age.label_tag }} {{ patient_form.age }}</p>
+      <p>{{ patient_form.gender.label_tag }} {{ patient_form.gender }}</p>
+      <p>{{ patient_form.phone.label_tag }} {{ patient_form.phone }}</p>
+      <p>{{ patient_form.address.label_tag }} {{ patient_form.address }}</p>
+      <p>{{ patient_form.username.label_tag }} {{ patient_form.username }}</p>
+      <p>{{ patient_form.first_name.label_tag }} {{ patient_form.first_name }}</p>
+      <p>{{ patient_form.last_name.label_tag }} {{ patient_form.last_name }}</p>
+      <p>{{ patient_form.email.label_tag }} {{ patient_form.email }}</p>
+
+      <!-- Referral source dropdown -->
+      <p>
+        {{ patient_form.referral_source.label_tag }}
+        {{ patient_form.referral_source }}
+      </p>
+
+      <!-- Doctor dropdown -->
+      <p id="doctor-wrapper" class="mt-2" style="display:none;">
+        <label for="id_referred_by_doctor">Select Doctor</label>
+        <select name="referred_by_doctor" id="id_referred_by_doctor">
+          <option value="">-- Choose Doctor --</option>
+          {% for d in doctors %}
+            <option value="{{ d.user.id }}">Dr. {{ d.user.get_full_name }}</option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <!-- Nurse dropdown -->
+      <p id="nurse-wrapper" class="mt-2" style="display:none;">
+        <label for="id_referred_by_nurse">Select Nurse</label>
+        <select name="referred_by_nurse" id="id_referred_by_nurse">
+          <option value="">-- Choose Nurse --</option>
+          {% for n in nurses %}
+            <option value="{{ n.id }}">{{ n.get_full_name }}</option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <!-- Pharmacist dropdown -->
+      <p id="pharmacist-wrapper" class="mt-2" style="display:none;">
+        <label for="id_referred_by_pharmacist">Select Pharmacist</label>
+        <select name="referred_by_pharmacist" id="id_referred_by_pharmacist">
+          <option value="">-- Choose Pharmacist --</option>
+          {% for p in pharmacists %}
+            <option value="{{ p.id }}">{{ p.get_full_name }}</option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <!-- Lab Technician dropdown -->
+      <p id="labtech-wrapper" class="mt-2" style="display:none;">
+        <label for="id_referred_by_labtech">Select Lab Technician</label>
+        <select name="referred_by_labtech" id="id_referred_by_labtech">
+          <option value="">-- Choose Lab Tech --</option>
+          {% for l in lab_techs %}
+            <option value="{{ l.id }}">{{ l.get_full_name }}</option>
+          {% endfor %}
+        </select>
+      </p>
+
+      <!-- Free-text referral details for 'other' -->
+      <p id="referral-details-wrapper" class="mt-2" style="display:none;">
+        {{ patient_form.referral_details.label_tag }}
+        {{ patient_form.referral_details }}
+      </p>
+
+      <!-- JS for showing/hiding fields -->
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+          const source = document.getElementById("id_referral_source");
+          const doctorWrapper = document.getElementById("doctor-wrapper");
+          const nurseWrapper = document.getElementById("nurse-wrapper");
+          const pharmacistWrapper = document.getElementById("pharmacist-wrapper");
+          const labtechWrapper = document.getElementById("labtech-wrapper");
+          const detailsWrapper = document.getElementById("referral-details-wrapper");
+
+          function updateVisibility() {
+            if (!source) return;
+            const val = source.value.trim().toLowerCase();
+
+            // hide all by default
+            doctorWrapper.style.display = "none";
+            nurseWrapper.style.display = "none";
+            pharmacistWrapper.style.display = "none";
+            labtechWrapper.style.display = "none";
+            detailsWrapper.style.display = "none";
+
+            if (val === "doctor") doctorWrapper.style.display = "block";
+            if (val === "nurse") nurseWrapper.style.display = "block";
+            if (val === "pharmacist") pharmacistWrapper.style.display = "block";
+            if (val === "labtech") labtechWrapper.style.display = "block";
+            if (val === "other") detailsWrapper.style.display = "block";
+          }
+
+          if (source) {
+            source.addEventListener("change", updateVisibility);
+            updateVisibility(); // run on page load
+          }
+        });
+      </script>
+    {% endif %}
+
+    <button type="submit" class="w-full bg-blue-900 text-white font-semibold py-2 rounded-xl hover:bg-blue-700 transition mt-4">Register</button>
+
+    <div class="text-center mt-4">
+      <a href="{% url 'admin_panel:admin_dashboard' %}" class="text-white hover:underline">← Back to Dashboard</a>
+    </div>
+  </form>
+</div>
+
+<style>
+  input, select, textarea {
+    background-color: white !important;
+    color: black !important;
+    border: 1px solid white !important;
+    padding: 8px;
+    border-radius: 6px;
+    width: 100%;
+  }
+  label { color: white; }
+</style>
+{% endblock %}

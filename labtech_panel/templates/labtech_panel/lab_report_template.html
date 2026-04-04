@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+  <h2>🧾 Lab Report</h2>
+
+  <a href="{% url 'labtech_panel:print_lab_report' test.id %}" class="btn btn-sm btn-outline-secondary" target="_blank">
+    🖨️ Print Report
+  </a>
+
+  <div class="section"><strong>Patient:</strong> {{ test.patient.user.get_full_name }}</div>
+  <div class="section"><strong>Test Type:</strong> {{ test.test_type }}</div>
+  <div class="section"><strong>Date:</strong> {{ test.requested_at }}</div>
+  <div class="section"><strong>Doctor:</strong> {{ test.doctor.user.get_full_name|default:"(Unassigned)" }}</div>
+  <div class="section"><strong>Patient Name:</strong> {{ report.patient.user.get_full_name }}</div>
+  <div class="section"><strong>Patient ID:</strong> {{ report.patient.id }}</div>
+  <div class="section"><strong>Requested Test:</strong> {{ report.test_type }}</div>
+  <div class="section"><strong>Doctor:</strong> {{ report.doctor.user.get_full_name|default:"(Unassigned)" }}</div>
+
+  {% if test.attachment %}
+    <div class="section"><strong>Attachment:</strong><br>
+      <img src="{{ test.attachment.url }}" style="max-width: 400px;">
+    </div>
+  {% endif %}
+{% endblock %}

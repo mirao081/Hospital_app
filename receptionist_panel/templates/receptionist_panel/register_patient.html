@@ -1,0 +1,60 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Register Patient{% endblock %}
+
+{% block content %}
+<style>
+    .form-card {
+        width: 90%;
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-card h2 {
+        text-align: center;
+        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-size: 28px;           /* ✅ Set font size */
+        color: #003366;            /* ✅ Dark blue color */
+        margin-bottom: 1.5rem;
+    }
+
+    .form-card button {
+        background-color: #003366;
+        color: white;
+        padding: 0.6rem 1.2rem;
+        border: none;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .form-card button:hover {
+        background-color: #0055a5;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .form-card a {
+        display: block;
+        text-align: center;
+        margin-top: 1rem;
+        text-decoration: none;
+        color: #003366;
+    }
+</style>
+
+<div class="form-card">
+    <h2>Register New Patient</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Register</button>
+    </form>
+    <a href="{% url 'receptionist:receptionist_dashboard' %}">← Back to Dashboard</a>
+</div>
+{% endblock %}

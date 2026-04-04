@@ -1,0 +1,174 @@
+{% extends 'core/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="bg-blue-950 min-h-screen flex items-center justify-center py-10">
+  <div class="bg-red-950 p-8 rounded-[30px] shadow-lg w-full max-w-lg text-white border-2 border-white">
+
+    <!-- Back to Dashboard Button -->
+    <div class="mb-6">
+      <a href="{% url 'cashier:cashier_dashboard' %}" 
+         class="inline-block bg-blue-950 hover:bg-green-800 text-white px-4 py-2 rounded border border-white">
+        &larr; Back to Dashboard
+      </a>
+    </div>
+
+    <h2 class="text-2xl font-bold mb-6 text-white text-center">Generate Invoice</h2>
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+
+      <!-- Reference Number -->
+      <div>
+        <label for="id_reference_number" class="block font-medium mb-1">Reference Number</label>
+        <input type="text" name="reference_number" id="id_reference_number"
+               class="text-black border border-gray-300 rounded px-2 py-1 w-full" readonly>
+        <button type="button" id="generate-ref-btn"
+                class="mt-2 bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white">
+          Generate Reference Number
+        </button>
+      </div>
+
+      <!-- Patient -->
+      <div>
+        <label for="patient_id" class="block font-medium mb-1">Patient</label>
+        <select name="patient_id" id="patient_id" required
+                class="text-black border border-gray-300 rounded px-2 py-1 w-full">
+          <option value="">-- Select Patient --</option>
+          {% for patient in patients %}
+            <option value="{{ patient.id }}">{{ patient.full_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Dates -->
+      <div>
+        <label for="service_date" class="block font-medium mb-1">Service Date</label>
+        <input type="date" id="service_date" name="service_date" required
+               class="text-black border border-gray-300 rounded px-2 py-1 w-full">
+      </div>
+      <div>
+        <label for="invoice_date" class="block font-medium mb-1">Invoice Date</label>
+        <input type="date" id="invoice_date" name="invoice_date" required
+               class="text-black border border-gray-300 rounded px-2 py-1 w-full">
+      </div>
+      <div>
+        <label for="due_date" class="block font-medium mb-1">Due Date</label>
+        <input type="date" id="due_date" name="due_date" required
+               class="text-black border border-gray-300 rounded px-2 py-1 w-full">
+      </div>
+
+      <!-- Items -->
+      <h3 class="text-lg font-semibold mt-6 mb-2">Invoice Items</h3>
+      <div id="items-container" class="space-y-2">
+        <div class="flex gap-2 items-center">
+          <input type="text" placeholder="Description"
+                 class="item-desc text-black border border-gray-300 rounded px-2 py-1 flex-1" required>
+          <input type="number" placeholder="Amount"
+                 class="item-amount text-black border border-gray-300 rounded px-2 py-1 w-32" min="0" step="0.01" required>
+          <button type="button" onclick="removeRow(this)"
+                  class="text-red-500 hover:text-red-700 text-xl leading-none">🗑️</button>
+        </div>
+      </div>
+      <div class="flex justify-center mt-2">
+        <button type="button" onclick="addRow()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">
+          + Add Item
+        </button>
+      </div>
+
+      <!-- Discount -->
+      <div class="mt-6">
+        <label for="discount" class="block font-medium mb-1">Discount (optional)</label>
+        <input type="number" name="discount" id="discount" placeholder="Discount" value="0"
+               step="0.01" oninput="calculateTotal()"
+               class="text-black border border-gray-300 rounded px-2 py-1 w-full">
+      </div>
+
+      <!-- Totals -->
+      <p class="mt-2"><strong>Subtotal:</strong> $<span id="subtotal">0.00</span></p>
+      <p><strong>Total Due:</strong> $<span id="total">0.00</span></p>
+
+      <!-- Hidden JSON -->
+      <input type="hidden" name="items_json" id="items-json">
+
+      <!-- Submit -->
+      <div class="flex justify-center">
+        <button type="submit" class="bg-blue-950 hover:bg-blue-900 text-white px-6 py-2 rounded border border-white mt-4">
+          Generate Invoice
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function addRow() {
+  const container = document.getElementById("items-container");
+  const row = document.createElement("div");
+  row.classList.add("flex", "gap-2", "items-center");
+  row.innerHTML = `
+    <input type="text" placeholder="Description"
+           class="item-desc text-black border border-gray-300 rounded px-2 py-1 flex-1" required>
+    <input type="number" placeholder="Amount"
+           class="item-amount text-black border border-gray-300 rounded px-2 py-1 w-32" min="0" step="0.01" required>
+    <button type="button" onclick="removeRow(this)"
+            class="text-red-500 hover:text-red-700 text-xl leading-none">🗑️</button>
+  `;
+  container.appendChild(row);
+}
+
+function removeRow(btn) {
+  btn.parentElement.remove();
+  calculateTotal();
+}
+
+function calculateTotal() {
+  let subtotal = 0;
+  document.querySelectorAll('.item-amount').forEach(input => {
+    subtotal += parseFloat(input.value) || 0;
+  });
+
+  const discount = parseFloat(document.getElementById('discount').value) || 0;
+  const total = Math.max(subtotal - discount, 0);
+
+  document.getElementById("subtotal").textContent = subtotal.toFixed(2);
+  document.getElementById("total").textContent = total.toFixed(2);
+}
+
+// 🔹 Always prepare data before submit
+document.querySelector('form').addEventListener('submit', function () {
+  calculateTotal();
+  const items = [];
+  const descs = document.querySelectorAll('.item-desc');
+  const amounts = document.querySelectorAll('.item-amount');
+  for (let i = 0; i < descs.length; i++) {
+    const description = descs[i].value.trim();
+    const amount = parseFloat(amounts[i].value);
+    if (description && !isNaN(amount)) {
+      items.push({ description, amount });
+    }
+  }
+  document.getElementById('items-json').value = JSON.stringify(items);
+  console.log("Submitting items_json:", document.getElementById('items-json').value); // Debug
+});
+
+// Live total updates
+document.addEventListener('input', function(e) {
+  if (e.target.classList.contains('item-amount') || e.target.id === 'discount') {
+    calculateTotal();
+  }
+});
+
+// Reference number button
+document.getElementById('generate-ref-btn').addEventListener('click', function() {
+  fetch("{% url 'cashier:generate_reference_number' %}")
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('id_reference_number').value = data.reference_number;
+    })
+    .catch(error => {
+      console.error('Error fetching reference number:', error);
+      alert('Could not generate reference number. Please try again.');
+    });
+});
+</script>
+{% endblock %}

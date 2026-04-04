@@ -1,0 +1,86 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Book an Appointment{% endblock %}
+
+{% block content %}
+<style>
+  .appointment-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    background-color: #f4f4f4;
+    padding: 40px 0;
+  }
+
+  .appointment-form {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .appointment-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 26px;
+    color: #333;
+  }
+
+  .appointment-form label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+  }
+
+  .appointment-form input,
+  .appointment-form select,
+  .appointment-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+
+  .appointment-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .appointment-form button:hover {
+    background-color: #0056b3;
+  }
+
+  .errorlist {
+    color: red;
+    margin: -10px 0 10px 0;
+    font-size: 14px;
+  }
+</style>
+
+<div class="appointment-wrapper">
+  <form method="post" class="appointment-form">
+    <h2>Book an Appointment</h2>
+    {% csrf_token %}
+    {% for field in form %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+        <div class="errorlist">{{ field.errors }}</div>
+      {% endif %}
+    {% endfor %}
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

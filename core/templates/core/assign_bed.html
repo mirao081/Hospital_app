@@ -1,0 +1,22 @@
+<!-- core/templates/core/assign_bed.html -->
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mx-auto mt-10 max-w-xl bg-white p-6 rounded shadow">
+  <h2 class="text-2xl font-bold mb-4 text-blue-700">🛏️ Assign Bed to Patient</h2>
+  
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-2 rounded hover:bg-blue-700">Assign Bed</button>
+  </form>
+
+  {% if messages %}
+    <ul class="mt-4">
+      {% for message in messages %}
+        <li class="text-green-600">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

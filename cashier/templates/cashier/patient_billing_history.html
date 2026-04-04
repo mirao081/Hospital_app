@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<h2 class="text-xl font-bold mb-4">Billing History for {{ patient.name }}</h2>
+
+{% if invoices %}
+<table class="min-w-full table-auto border border-gray-300">
+  <thead class="bg-gray-100">
+    <tr>
+      <th class="border px-4 py-2">Invoice #</th>
+      <th class="border px-4 py-2">Service</th>
+      <th class="border px-4 py-2">Amount</th>
+      <th class="border px-4 py-2">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for invoice in invoices %}
+    <tr>
+      <td class="border px-4 py-2">{{ invoice.invoice_number }}</td>
+      <td class="border px-4 py-2">{{ invoice.get_service_type_display }}</td>
+      <td class="border px-4 py-2">₦{{ invoice.total_due }}</td>  {# Changed here #}
+      <td class="border px-4 py-2">{{ invoice.service_date }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="text-gray-600">No billing records found for this patient.</p>
+{% endif %}
+
+<a href="{% url 'cashier:cashier_dashboard' %}" class="mt-4 inline-block text-blue-600 hover:underline">← Back to Dashboard</a>
+{% endblock %}

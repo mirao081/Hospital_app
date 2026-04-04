@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% block title %}Blog{% endblock %}
+{% block content %}
+
+<section style="width: 100%; height: 30vh; background: black; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <h1>{{ settings.title }}</h1>
+  <p><a href="{% url 'landing_page' %}" style="color: white;">{{ settings.breadcrumb_home_text }}</a> >> {{ settings.breadcrumb_text }}</p>
+</section>
+
+<section class="highlight-blogs">
+  <div class="blog-highlight-container">
+    {% for blog in blogs %}
+      <div class="highlight-card flash-hover">
+        <img src="{{ blog.image.url }}" alt="{{ blog.title }}">
+        
+        <h4 class="label {{ blog.category }}">{{ blog.category|title }}</h4>
+
+        <div class="meta">
+          <span>🕒</span>
+          <span>{{ blog.date_published }}</span>
+        </div>
+
+        <p>{{ blog.excerpt }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% endblock %}

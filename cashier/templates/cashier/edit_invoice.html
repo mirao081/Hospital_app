@@ -1,0 +1,33 @@
+{% extends 'core/base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class="bg-blue-950 min-h-screen flex items-center justify-center py-10">
+    <div class="bg-red-950 p-8 rounded-[30px] shadow-lg w-full max-w-lg text-white border-2 border-white">
+      <h2 class="text-[17px] font-bold mb-6 text-white text-center">
+        Edit Invoice: {{ invoice.invoice_number }}
+      </h2>
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+          <div>
+            <label for="{{ field.id_for_label }}" class="block font-medium mb-1">{{ field.label }}</label>
+            {{ field|add_class:"text-black border border-gray-300 rounded px-2 py-1 w-full" }}
+            {% if field.errors %}
+              <div class="text-yellow-300 text-sm mt-1">{{ field.errors }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <div class="flex justify-center space-x-4 mt-4">
+          <button type="submit" class="bg-blue-950 hover:bg-blue-900 text-white px-6 py-2 rounded border border-white">
+            Save Changes
+          </button>
+          <a href="{% url 'cashier:cashier_invoice_list' %}" 
+             class="bg-blue-950 hover:bg-blue-900 text-white px-6 py-2 rounded border border-white flex items-center justify-center">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

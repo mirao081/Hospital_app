@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Send Internal Message{% endblock %}
+
+{% block content %}
+<style>
+    .page-heading {
+        font-size: 28px;
+        background-color: #d3d3d3;
+        color: #003366;
+        padding: 1rem;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+
+    .content-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        text-align: center;
+    }
+</style>
+
+<h2 class="page-heading">Communication Hub</h2>
+
+<div class="content-wrapper">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+{% endblock %}

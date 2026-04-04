@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Message Sent{% endblock %}
+
+{% block content %}
+<style>
+    .page-heading {
+        font-size: 28px;
+        background-color: #d3d3d3;
+        color: #003366;
+        padding: 1rem;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+
+    .content-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        text-align: center;
+    }
+
+    .message-box {
+        background-color: #f5fafd;
+        border: 1px solid #cce5ff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        text-align: left;
+    }
+
+    .message-box h4 {
+        color: #003366;
+        margin-bottom: 1rem;
+    }
+
+    .message-details {
+        margin-bottom: 1.5rem;
+    }
+
+    .message-details strong {
+        color: #003366;
+    }
+
+    .message-body {
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 1rem;
+        border-radius: 6px;
+        white-space: pre-wrap;
+    }
+
+    .message-box a {
+        display: inline-block;
+        margin-top: 1.5rem;
+        margin-right: 1rem;
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #007bff;
+        padding: 0.5rem 1.2rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+    .message-box a:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+<h2 class="page-heading">Message Sent Successfully</h2>
+
+<div class="content-wrapper">
+    <div class="message-box">
+        <h4>Message Details:</h4>
+
+        <div class="message-details">
+            <p><strong>To:</strong> {{ recipient }}</p>
+            <p><strong>Subject:</strong> {{ subject }}</p>
+        </div>
+
+        <div class="message-body">
+            {{ message_body }}
+        </div>
+
+        <a href="{% url 'receptionist:send_internal_message' %}">Send Another Message</a>
+        <a href="{% url 'receptionist:receptionist_dashboard' %}">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

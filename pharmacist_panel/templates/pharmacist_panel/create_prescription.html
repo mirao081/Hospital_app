@@ -1,0 +1,11 @@
+<!-- pharmacist_panel/templates/pharmacist_panel/create_prescription.html -->
+{% extends "core/base.html" %}
+
+{% block content %}
+<h2>Create Prescription</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Prescription</button>
+</form>
+{% endblock %}

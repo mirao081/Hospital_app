@@ -1,0 +1,151 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Returns & Wastage</h2>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-3" id="returnsTabs">
+        <li class="nav-item">
+            <a class="nav-link {% if tab == 'returns' or not tab %}active{% endif %}" href="?tab=returns">Returned Medicines</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if tab == 'wastage' %}active{% endif %}" href="?tab=wastage">Wastage Entry</a>
+        </li>
+    </ul>
+
+    <!-- Add Button -->
+    <div class="text-end mb-3">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#logModal">
+            ➕ Add New Return / Wastage Log
+        </button>
+    </div>
+
+    <!-- Content Area -->
+    {% if tab == 'wastage' %}
+    <div class="card">
+        <div class="card-header bg-danger text-white">Expired / Damaged Medicines</div>
+        <div class="card-body">
+            {% if wastage_entries %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Medicine</th>
+                            <th>Quantity</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in wastage_entries %}
+                        <tr>
+                            <td>{{ entry.date|date:"Y-m-d H:i" }}</td>
+                            <td>{{ entry.medicine.name }}</td>
+                            <td>{{ entry.quantity }}</td>
+                            <td>{{ entry.note }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No wastage entries found.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-header bg-warning text-dark">Returned Medicines</div>
+        <div class="card-body">
+            {% if returned_medicines %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Medicine</th>
+                            <th>Quantity</th>
+                            <th>Patient / Ward</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for returned in returned_medicines %}
+                        <tr>
+                            <td>{{ returned.date|date:"Y-m-d H:i" }}</td>
+                            <td>{{ returned.medicine.name }}</td>
+                            <td>{{ returned.quantity }}</td>
+                            <td>{{ returned.patient_or_ward }}</td>
+                            <td>{{ returned.note }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No returned medicines found.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Modal Form -->
+    <div class="modal fade" id="logModal" tabindex="-1" aria-labelledby="logModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="{% url 'pharmacist_panel:add_return_wastage' %}">
+                    {% csrf_token %}
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="logModalLabel">Add New Return / Wastage Log</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="type" class="form-label">Type</label>
+                            <select id="type" name="type" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="return">Return (From Patient/Ward)</option>
+                                <option value="wastage">Wastage (Expired/Damaged)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="medicine" class="form-label">Medicine</label>
+                            <select id="medicine" name="medicine" class="form-select" required>
+                                <option value="">-- Select Medicine --</option>
+                                {% for med in medicines %}
+                                    <option value="{{ med.id }}">{{ med.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" id="quantity" name="quantity" class="form-control" min="1" required>
+                        </div>
+                        <div class="mb-3" id="patientWardDiv" style="display:none;">
+                            <label for="patient_or_ward" class="form-label">Patient / Ward</label>
+                            <input type="text" id="patient_or_ward" name="patient_or_ward" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="note" class="form-label">Note</label>
+                            <textarea id="note" name="note" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('type').addEventListener('change', function() {
+    var patientWardDiv = document.getElementById('patientWardDiv');
+    if(this.value === 'return') {
+        patientWardDiv.style.display = 'block';
+    } else {
+        patientWardDiv.style.display = 'none';
+    }
+});
+</script>
+
+{% endblock %}

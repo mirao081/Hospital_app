@@ -1,0 +1,91 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="w-full bg-gray-100 min-h-screen py-10">
+  <div class="max-w-5xl mx-auto px-6">
+
+    <!-- Header -->
+    <div class="mb-10 flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">🩺 Patient Record</h1>
+        <p class="text-gray-600">
+          Detailed medical record for <span class="font-medium">{{ record.patient.full_name }}</span>
+        </p>
+      </div>
+      <a href="{% url 'doctor_panel:doctor_dashboard' %}" 
+         class="px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition">
+         ⬅ Back to Dashboard
+      </a>
+    </div>
+
+    <!-- Patient Info -->
+    <div class="bg-red-50 border-l-4 border-red-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-red-700 mb-4">👤 Patient Information</h2>
+      <p><span class="font-medium text-gray-700">Name:</span> {{ record.patient.full_name }}</p>
+      <p><span class="font-medium text-gray-700">Age:</span> {{ record.patient.age|default:"-" }}</p>
+      <p><span class="font-medium text-gray-700">Gender:</span> {{ record.patient.gender|default:"-" }}</p>
+      <p><span class="font-medium text-gray-700">Contact:</span> {{ record.patient.phone|default:"-" }}</p>
+    </div>
+
+    <!-- Doctor Info -->
+    <div class="bg-blue-50 border-l-4 border-blue-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-blue-700 mb-4">👨‍⚕️ Attending Doctor</h2>
+      <p><span class="font-medium text-gray-700">Doctor:</span> {{ record.doctor.user.get_full_name }}</p>
+      <p><span class="font-medium text-gray-700">Date Created:</span> {{ record.date_created|date:"Y-m-d H:i" }}</p>
+    </div>
+
+    <!-- Diagnosis -->
+    <div class="bg-green-50 border-l-4 border-green-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-green-700 mb-4">🧾 Diagnosis</h2>
+      <p class="text-gray-700">{{ record.diagnosis|default:"No diagnosis provided." }}</p>
+    </div>
+
+    <!-- Medications -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-yellow-700 mb-4">💊 Medications</h2>
+      {% if record.medications %}
+        <p class="text-gray-700">{{ record.medications }}</p>
+      {% else %}
+        <p class="text-gray-500 italic">No medications recorded.</p>
+      {% endif %}
+    </div>
+
+    <!-- Prescription -->
+    <div class="bg-purple-50 border-l-4 border-purple-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-purple-700 mb-4">📋 Prescription</h2>
+      {% if record.prescription %}
+        <p class="text-gray-700">{{ record.prescription }}</p>
+      {% else %}
+        <p class="text-gray-500 italic">No prescription added.</p>
+      {% endif %}
+    </div>
+
+    <!-- Lab Results -->
+    <div class="bg-indigo-50 border-l-4 border-indigo-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-indigo-700 mb-4">🔬 Lab Results</h2>
+      {% if record.lab_results %}
+        <p class="text-gray-700">{{ record.lab_results }}</p>
+      {% else %}
+        <p class="text-gray-500 italic">No lab results available.</p>
+      {% endif %}
+    </div>
+
+    <!-- Imaging -->
+    <div class="bg-pink-50 border-l-4 border-pink-400 shadow rounded-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold text-pink-700 mb-4">🖼️ Imaging</h2>
+      {% if record.imaging %}
+        <p class="text-gray-700">{{ record.imaging }}</p>
+      {% else %}
+        <p class="text-gray-500 italic">No imaging results available.</p>
+      {% endif %}
+    </div>
+
+    <!-- Notes -->
+    <div class="bg-gray-50 border-l-4 border-gray-400 shadow rounded-lg p-6">
+      <h2 class="text-xl font-semibold text-gray-700 mb-4">📝 Additional Notes</h2>
+      <p class="text-gray-700">{{ record.notes|default:"No additional notes provided." }}</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

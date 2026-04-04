@@ -1,0 +1,600 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+{% block content %}
+{% load widget_tweaks %}   
+<h2 class="text-2xl font-bold bg-red-950 text-white p-4 rounded-none m-0">
+  Welcome, {{ request.user.get_full_name }}! ({{ request.user.role|capfirst }})
+</h2>
+
+<section class="bg-red-950 text-white rounded">
+
+  <!-- Header -->
+  <h2 class="text-2xl font-semibold p-6 m-0 rounded-t text-white bg-green-950 border-2 border-white">
+    Cashier Summary / KPIs
+  </h2>
+
+  <!-- KPI Cards Grid -->
+<div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 rounded-b">
+
+  <div class="bg-teal-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Total Collected (All Time)</h3>
+    <p class="text-xl font-bold text-center">₦{{ total_collected_all_time }}</p>
+  </div>
+
+  <div class="bg-blue-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Total Collected Today</h3>
+    <p class="text-xl font-bold text-center">₦{{ total_collected_today }}</p>
+  </div>
+
+  <div class="bg-indigo-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Total Collected This Week</h3>
+    <p class="text-xl font-bold text-center">₦{{ total_collected_week }}</p>
+  </div>
+
+  <div class="bg-purple-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Total Collected This Month</h3>
+    <p class="text-xl font-bold text-center">₦{{ total_collected_month }}</p>
+  </div>
+
+  <div class="bg-red-800 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Outstanding Balance</h3>
+    <p class="text-xl font-bold text-red-300 text-center">₦{{ total_outstanding }}</p>
+  </div>
+
+  <div class="bg-green-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Payments Processed</h3>
+    <p class="text-xl font-bold text-center">{{ payments_processed }}</p>
+  </div>
+
+  <div class="bg-yellow-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Pending Invoices</h3>
+    <p class="text-xl font-bold text-center">{{ pending_invoices }}</p>
+  </div>
+
+  <div class="bg-pink-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Total Refunds Issued</h3>
+    <p class="text-xl font-bold text-center">₦{{ total_refunds }}</p>
+  </div>
+
+  <div class="bg-teal-900 rounded p-4 border" style="border-color: skyblue;">
+    <h3 class="font-semibold mb-2 text-[18px] text-center">Total Revenue (All Time)</h3>
+    <p class="text-xl font-bold text-center">₦{{ total_revenue }}</p>
+  </div>
+
+</div>
+
+
+  <!-- Quick Actions Heading -->
+  <h3 class="font-semibold mt-8 mb-4 text-white border-t border-white pt-4" style="font-size: 30px;">
+    Quick Actions
+  </h3>
+
+
+  <!-- 💳 Dashboard Buttons -->
+  <div class="w-[100%] bg-red-950 p-4 m-0 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <a href="{% url 'cashier:cashier_record_payment' %}" class="block bg-blue-950 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      Record New Payment
+    </a>
+    <a href="{% url 'cashier:cashier_payment_list' %}" class="block bg-green-950 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      View All Payments
+    </a>
+    <a href="{% url 'cashier:cashier_generate_invoice' %}" class="block bg-purple-950 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      Generate Invoice
+    </a>
+    <a href="{% url 'cashier:cashier_invoice_list' %}" class="block bg-yellow-800 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      View Invoices
+    </a>
+    <a href="{% url 'cashier:refund_list' %}" class="block bg-pink-950 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      View Refunds
+    </a>
+    <a href="{% url 'cashier:record_billing' %}" class="block bg-teal-950 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      Record Billing
+    </a>
+    <a href="{% url 'cashier:patient_list' %}" 
+     class="block bg-orange-900 text-white px-6 py-4 rounded-[20px] border-2 border-white shadow hover:opacity-90 transition">
+      Patient Billing List
+    </a>
+  </div>
+
+</section>
+
+<!-- 📑 Patient Billing Summary -->
+<div class="bg-red-950 text-white p-6 shadow rounded border-2 border-white mb-0">
+  <h3 class="text-lg font-semibold mb-4">Patient Billing Summary</h3>
+  <table class="min-w-full table-auto border border-gray-300 bg-blue-950">
+    <thead class="bg-blue-950">
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Outstanding Balance</th>
+        <th class="border px-4 py-2 text-left">Total Paid</th>
+        <th class="border px-4 py-2 text-left">Invoices</th>
+        <th class="border px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+      <tbody>
+    {% if patients %}
+      {% for patient in patients %}
+        <tr class="hover:bg-blue-950">
+          <td class="border px-4 py-2">
+            {{ patient.user.get_full_name|default:patient.user.username }}
+          </td>
+          <td class="border px-4 py-2 text-red-300">
+            ₦{{ patient.outstanding_balance|default:"0.00"|floatformat:2|intcomma }}
+          </td>
+          <td class="border px-4 py-2">
+            ₦{{ patient.total_paid|default:"0.00"|floatformat:2|intcomma }}
+          </td>
+          <td class="border px-4 py-2">
+            {{ patient.invoices.count }}
+          </td>
+          <td class="border px-4 py-2">
+            <a href="{% url 'cashier:patient_billing_history' patient.id %}" class="text-blue-300 hover:underline">
+              View History
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="5" class="text-center py-4 text-gray-300">No patient billing records available.</td>
+      </tr>
+    {% endif %}
+  </tbody>
+
+</table>
+</div>
+
+<!-- 📋 Recent Payments Table -->
+<div class="bg-red-950 text-white p-6 shadow rounded border-2 border-white mb-0">
+  <h3 class="text-lg font-semibold mb-4">Recent Payments</h3>
+  <table class="min-w-full table-auto border border-gray-300 bg-blue-950">
+    <thead class="bg-blue-950">
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Amount</th>
+        <th class="border px-4 py-2 text-left">Mode</th>
+        <th class="border px-4 py-2 text-left">Collected By</th>
+        <th class="border px-4 py-2 text-left">Date</th>
+        <th class="border px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for payment in payments %}
+      <tr class="hover:bg-blue-950">
+        <td class="border px-4 py-2">{{ payment.patient_name }}</td>
+        <td class="border px-4 py-2">${{ payment.amount }}</td>
+        <td class="border px-4 py-2">{{ payment.get_payment_method_display }}</td>
+        <td class="border px-4 py-2">{{ payment.received_by }}</td>
+        <td class="border px-4 py-2">{{ payment.date_received|date:"Y-m-d H:i" }}</td>
+        <td class="border px-4 py-2">
+          {% if payment.id %}
+            <a href="{% url 'cashier:issue_refund' payment.id %}" class="text-blue-300 hover:underline">Refund</a>
+          {% else %}
+            <span class="text-gray-300 italic">Unavailable</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-4 text-gray-300">No payments recorded.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- 💸 Invoice List Section -->
+<div class="bg-red-950 text-white p-6 shadow rounded border-2 border-white mb-0">
+  <h3 class="text-[29px] text-white font-semibold mb-4">Invoice List</h3>
+  <table class="min-w-full table-auto border border-reen-300 bg-blue-950">
+    <thead class="bg-blue-950 text-green-900">
+      <tr>
+        <th class="border px-4 py-2 text-left">Invoice Number</th>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Amount Due (₦)</th>
+        <th class="border px-4 py-2 text-left">Amount Paid (₦)</th>
+        <th class="border px-4 py-2 text-left">Status</th>
+        <th class="border px-4 py-2 text-left">Due Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for invoice in invoices %}
+      <tr class="hover:bg-blue-950">
+        <td class="border px-4 py-2">{{ invoice.invoice_number }}</td>
+        <td class="border px-4 py-2">{{ invoice.patient }}</td>
+        <td class="border px-4 py-2">
+          ₦{{ invoice.total_due|default:"0.00"|floatformat:2 }}
+        </td>
+        <td class="border px-4 py-2">
+          ₦{{ invoice.amount_paid|default:"0.00"|floatformat:2 }}
+        </td>
+        <td class="border px-4 py-2">{{ invoice.payment_status_display|safe }}</td>
+        <td class="border px-4 py-2">{{ invoice.due_date }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-4 text-gray-300">No invoices available.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="bg-red-950 text-white p-6 shadow rounded border-2 border-white mb-0">
+  <h3 class="text-lg font-semibold mb-4">Recent Refunds & Adjustments</h3>
+
+  <!-- Filter Buttons -->
+  <div class="flex gap-2 mb-4">
+    <button onclick="filterRefunds('all')" class="px-3 py-1 rounded bg-blue-700 text-white hover:bg-blue-600">All</button>
+    <button onclick="filterRefunds('approved')" class="px-3 py-1 rounded bg-green-700 text-white hover:bg-green-600">Approved</button>
+    <button onclick="filterRefunds('declined')" class="px-3 py-1 rounded bg-red-700 text-white hover:bg-red-600">Declined</button>
+    <button onclick="filterRefunds('pending')" class="px-3 py-1 rounded bg-yellow-600 text-black hover:bg-yellow-500">Pending</button>
+  </div>
+
+  <!-- Refunds Table -->
+  <table class="min-w-full table-auto border border-gray-300 bg-blue-950">
+    <thead>
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Refund Amount</th>
+        <th class="border px-4 py-2 text-left">Reason</th>
+        <th class="border px-4 py-2 text-left">Issued By</th>
+        <th class="border px-4 py-2 text-left">Date</th>
+        <th class="border px-4 py-2 text-left">Approval</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for refund in refunds %}
+      <tr class="hover:bg-blue-950" data-status="{{ refund.approval_status|lower }}">
+        <td class="border px-4 py-2">{{ refund.payment.patient_name }}</td>
+        <td class="border px-4 py-2 text-red-300">${{ refund.refund_amount }}</td>
+        <td class="border px-4 py-2">{{ refund.reason|truncatechars:40 }}</td>
+        <td class="border px-4 py-2">{{ refund.issued_by }}</td>
+        <td class="border px-4 py-2">{{ refund.issue_date|date:"Y-m-d H:i" }}</td>
+        <td class="border px-4 py-2">
+          <span class="px-2 py-1 rounded text-xs font-semibold
+            {% if refund.approval_status|lower == 'approved' %} bg-green-700 text-white
+            {% elif refund.approval_status|lower == 'declined' or refund.approval_status|lower == 'rejected' %} bg-red-700 text-white
+            {% else %} bg-yellow-600 text-black
+            {% endif %}">
+            {{ refund.approval_status|title }}
+          </span>
+          {% if refund.admin_note %}
+            <div class="text-sm italic mt-1 text-gray-300">Note: {{ refund.admin_note }}</div>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="text-center py-4 text-gray-300">No refunds recorded.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<div class="bg-red-900 min-h-screen p-6">
+    
+    <!-- Payment Mode Breakdown -->
+    <section class="mb-10 bg-red-950 p-6 rounded-lg shadow-lg text-white">
+        <h2 class="text-2xl font-semibold mb-4 text-center text-white">
+            💳 Payment Mode Breakdown
+        </h2>
+
+        <table class="table-auto w-full border-collapse border border-[aliceblue] shadow-md">
+            <thead>
+                <tr class="bg-blue-900">
+                    <th class="border border-[aliceblue] px-4 py-2">Payment Mode</th>
+                    <th class="border border-[aliceblue] px-4 py-2">Total Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for p in payment_summary %}
+              <tr class="hover:bg-blue-800 transition duration-200">
+                  <td class="border border-[aliceblue] px-4 py-2">{{ p.mode }}</td>
+                  <td class="border border-[aliceblue] px-4 py-2">
+                      ₦{{ p.total|floatformat:2|intcomma }}
+                  </td>
+              </tr>
+              {% empty %}
+              <tr>
+                  <td colspan="2" class="text-center border border-[aliceblue] px-4 py-2">
+                      No payments recorded
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+
+        </table>
+
+        <!-- Reports Links -->
+        <div class="mt-6 flex justify-center space-x-4">
+            <a href="{% url 'cashier:daily_report' %}" 
+               class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded transition duration-200">
+               Daily Report
+            </a>
+            <a href="{% url 'cashier:monthly_report' %}" 
+               class="bg-green-600 hover:bg-green-800 text-white px-4 py-2 rounded transition duration-200">
+               Monthly Report
+            </a>
+        </div>
+
+        <!-- Export Options -->
+        <div class="mt-4 flex justify-center space-x-4">
+            <a href="{% url 'cashier:export_csv' %}" 
+               class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded transition duration-200">
+               Export CSV
+            </a>
+            <a href="{% url 'cashier:export_pdf' %}" 
+               class="bg-yellow-600 hover:bg-yellow-800 text-white px-4 py-2 rounded transition duration-200">
+               Export PDF
+            </a>
+        </div>
+       <div style="background-color: #001f3f; padding: 10px;">
+
+    </section>
+       <!-- Insurance & Third-Party Payer Information (editable) -->
+
+    <section class="bg-red-950 text-white border border-white mt-5 rounded-xl p-4">
+      <h2 class="font-bold text-[29px] text-center mb-3 flex items-center justify-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8c1.657 0 3-1.343 3-3S13.657 2 12 2 9 3.343 9 5s1.343 3 3 3zM4 22a8 8 0 0116 0H4z" />
+        </svg>
+        {{ insurance_section.title|default:"Insurance & Third-Party Payer Information" }}
+      </h2>
+
+      {% if insurance_section.body %}
+      <div class="opacity-90 mb-4 leading-relaxed">
+        {{ insurance_section.body }}
+      </div>
+      {% endif %}
+
+      <div class="flex gap-4 flex-wrap mt-2">
+        <div class="flex-1 min-w-[260px] bg-white/5 border border-white/30 rounded-xl p-3">
+          <div class="font-semibold opacity-90">Insurance Total (All Time)</div>
+          <div class="text-lg font-bold">
+            ₦{{ insurance_total|floatformat:2|intcomma }}
+          </div>
+        </div>
+
+        <div class="flex-1 min-w-[260px] bg-white/5 border border-white/30 rounded-xl p-3">
+          <div class="font-semibold opacity-90">Out-of-Pocket Total (All Time)</div>
+          <div class="text-lg font-bold">
+            ₦{{ out_of_pocket_total|floatformat:2|intcomma }}
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr class="bg-white/10">
+              <th class="border border-white/30 p-2 text-left">Patient</th>
+              <th class="border border-white/30 p-2 text-left">Amount</th>
+              <th class="border border-white/30 p-2 text-left">Payment Method</th>
+              <th class="border border-white/30 p-2 text-left">Date Received</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pay in recent_insurance_payments %}
+            <tr class="hover:bg-white/5 transition">
+              <td class="border border-white/30 p-2 font-semibold">{{ pay.patient_name }}</td>
+              <td class="border border-white/30 p-2">₦{{ pay.amount|floatformat:2|intcomma }}</td>
+              <td class="border border-white/30 p-2">{{ pay.payment_method }}</td>
+              <td class="border border-white/30 p-2">{{ pay.date_received }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="border border-white/30 p-3 text-center opacity-80">
+                No insurance payments yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <!--  Patient Account History & Notes (editable) -->
+<section class="bg-red-950 text-white border border-white mt-5 rounded-xl p-4">
+  <div class="flex items-center justify-center gap-3 mb-3">
+    <!-- Clipboard icon -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 5h6m-1-2H10a2 2 0 00-2 2v1H7a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2V8a2 2 0 00-2-2h-1V5a2 2 0 00-2-2z"/>
+    </svg>
+    <h2 class="font-bold text-[29px] text-center">
+      Recent Patient Notes &amp;  History
+    </h2>
+  </div>
+
+
+  <!-- Recent Notes -->
+  <div class="mt-5 overflow-x-auto"> 
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-white/10">
+        <th class="border border-white/30 p-2 text-left">Pinned</th>
+        <th class="border border-white/30 p-2 text-left">Patient</th>
+        <th class="border border-white/30 p-2 text-left">Note</th>
+        <th class="border border-white/30 p-2 text-left">By</th>
+        <th class="border border-white/30 p-2 text-left">Date</th>
+        <th class="border border-white/30 p-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for n in recent_notes %}
+      <tr class="hover:bg-white/5 transition">
+        <td class="border border-white/30 p-2">
+          {% if n.is_pinned %}
+            <span class="inline-flex items-center gap-1">
+              <!-- star icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.48 3.499a.75.75 0 0 1 1.04 0l2.435 2.39a.75.75 0 0 0 .564.218l3.377-.27a.75.75 0 0 1 .788.982l-1.07 3.21a.75.75 0 0 0 .213.78l2.55 2.47a.75.75 0 0 1-.43 1.283l-3.37.506a.75.75 0 0 0-.6.47l-1.28 3.14a.75.75 0 0 1-1.37.06l-1.66-3.02a.75.75 0 0 0-.66-.38h-3.5a.75.75 0 0 1-.53-1.28l2.45-2.42a.75.75 0 0 0 .21-.74l-.93-3.28a.75.75 0 0 1 1.02-.88l3.12 1.1a.75.75 0 0 0 .77-.17l2.31-2.26a.75.75 0 0 1 1.06 1.06l-2.31 2.26a2.25 2.25 0 0 1-2.31.51l-3.12-1.1a2.25 2.25 0 0 0-3.06 2.64l.93 3.28a2.25 2.25 0 0 1-.62 2.22l-2.45 2.42a2.25 2.25 0 0 0 1.59 3.84h3.5a2.25 2.25 0 0 1 1.98 1.13l1.66 3.02" />
+              </svg>
+              Pinned
+            </span>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td class="border border-white/30 p-2 font-semibold">
+          {{ n.patient.user.get_full_name|default:n.patient }}
+        </td>
+        <td class="border border-white/30 p-2">
+          {{ n.note }}
+        </td>
+        <td class="border border-white/30 p-2">
+          {{ n.created_by.get_full_name|default:n.created_by.username }}
+        </td>
+        <td class="border border-white/30 p-2">
+          {{ n.created_at|date:"M d, Y • H:i" }}
+        </td>
+        <td class="border border-white/30 p-2">
+          <a href="{% url 'cashier:toggle_account_note_pin' n.id %}"
+          class="text-green-300 hover:underline">
+          {% if n.is_pinned %}Unpin{% else %}Pin{% endif %}
+        </a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="6" class="border border-white/30 p-3 text-center opacity-80">
+          No notes yet.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- Exchange Rate Section(for testing purpose cus i'm still learning) -->
+
+<div class="mt-6 bg-white/10 rounded-xl shadow p-6"> 
+  <h2 class="mb-6 font-bold text-center text-white-300" style="font-size:29px;">
+    💱 Exchange Rates (Test Data)
+  </h2>
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-blue-900/40">
+        <th class="border border-white/30 p-3 text-left text-green-300 uppercase">Currency</th>
+        <th class="border border-white/30 p-3 text-left text-green-300 uppercase">Symbol</th>
+        <th class="border border-white/30 p-3 text-left text-green-300 uppercase">Rate (per USD)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for code, data in exchange_rates.items %}
+      <tr class="hover:bg-white/5 transition">
+        <td class="border border-white/30 p-2 font-semibold">
+          {{ code }} {% if data.is_base %}<span class="text-green-300 font-bold">(Base)</span>{% endif %}
+        </td>
+        <td class="border border-white/30 p-2">{{ data.symbol }}</td>
+        <td class="border border-white/30 p-2">{{ data.rate }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3" class="border border-white/30 p-3 text-center opacity-80">
+          No exchange rate data.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- Security & Audit Trails -->
+<div class="mt-6 bg-white/10 rounded-xl shadow p-4">
+  <h2 class="text-[29px] font-bold text-center mb-4">🔐 Security & Audit Trails</h2>
+
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-green-800/40 text-green-300">
+        <th class="border border-white/30 p-2 text-left">User</th>
+        <th class="border border-white/30 p-2 text-left">Action</th>
+        <th class="border border-white/30 p-2 text-left">Model</th>
+        <th class="border border-white/30 p-2 text-left">Details</th>
+        <th class="border border-white/30 p-2 text-left">Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for log in audit_logs %}
+      <tr class="hover:bg-white/5 transition">
+        <td class="border border-white/30 p-2 font-semibold">{{ log.user.get_full_name|default:log.user.username }}</td>
+        <td class="border border-white/30 p-2">{{ log.get_action_display }}</td>
+        <td class="border border-white/30 p-2">{{ log.model }}</td>
+        <td class="border border-white/30 p-2">{{ log.description }}</td>
+        <td class="border border-white/30 p-2">{{ log.timestamp|date:"M d, Y • H:i" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="border border-white/30 p-3 text-center opacity-80">
+          No audit logs yet.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<!-- Session Activity Section -->
+<div class="mt-6 bg-white/10 rounded-xl shadow p-4">
+  <h2 class="text-[29px] font-bold text-center text-green-300 mb-4">
+    🔐 User Session Activity
+  </h2>
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-green-800/20 text-green-300">
+        <th class="border border-white/30 p-2 text-left">User</th>
+        <th class="border border-white/30 p-2 text-left">Login Time</th>
+        <th class="border border-white/30 p-2 text-left">Last Seen</th>
+        <th class="border border-white/30 p-2 text-left">Logout Time</th>
+        <th class="border border-white/30 p-2 text-left">IP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in recent_sessions %}
+      <tr class="hover:bg-white/5 transition">
+        <td class="border border-white/30 p-2 font-semibold">{{ s.user.get_full_name|default:s.user.username }}</td>
+        <td class="border border-white/30 p-2">{{ s.login_time|date:"M d, Y H:i" }}</td>
+        <td class="border border-white/30 p-2">{{ s.last_seen|date:"M d, Y H:i" }}</td>
+        <td class="border border-white/30 p-2">
+          {% if s.logout_time %}
+            {{ s.logout_time|date:"M d, Y H:i" }}
+          {% else %}
+            <span class="text-yellow-400">Active</span>
+          {% endif %}
+        </td>
+        <td class="border border-white/30 p-2">{{ s.ip_address|default:"—" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="border border-white/30 p-3 text-center opacity-80">
+          No session data.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+
+
+
+
+
+<script>
+function filterRefunds(status) {
+  const rows = document.querySelectorAll('table tbody tr[data-status]');
+  const filterStatus = status.toLowerCase();
+
+  rows.forEach(row => {
+    const rowStatus = row.dataset.status.toLowerCase().trim();
+
+    const match =
+      filterStatus === 'all' ||
+      rowStatus === filterStatus ||
+      (filterStatus === 'declined' && rowStatus === 'rejected') ||
+      (filterStatus === 'pending' && rowStatus.includes('pending'));
+
+    row.style.display = match ? '' : 'none';
+  });
+}
+
+</script>
+
+{% endblock %}
