@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.conf import settings
 from cashier.models import Payment
+<<<<<<< HEAD
+=======
+from django.utils.timezone import now
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 
 
@@ -20,12 +24,22 @@ class User(AbstractUser):
         ('patient', 'Patient'),
         ('cashier', 'Cashier'),
     ]
+<<<<<<< HEAD
     role = models.CharField(max_length=20, choices=ROLE_CHOICES)
+=======
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='patient')
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
     def get_full_name(self):
         full_name = f"{self.first_name} {self.last_name}".strip()
         return full_name if full_name else self.username
 
+<<<<<<< HEAD
+=======
+    def __str__(self):
+        return self.get_full_name() or self.username
+    
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 class HeaderSettings(models.Model):
     hospital_name = models.CharField(max_length=100, default='My Hospital')
     logo = models.ImageField(upload_to='logos/', blank=True, null=True)
@@ -80,6 +94,7 @@ class Doctor(models.Model):
 
 # models.py
 class Appointment(models.Model):
+<<<<<<< HEAD
     patient = models.ForeignKey('Patient', on_delete=models.CASCADE, related_name='appointments', null=True, blank=True)
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -89,10 +104,33 @@ class Appointment(models.Model):
     reason = models.CharField(max_length=255, blank=True)  # ✅ Add this
     location = models.CharField(max_length=255, blank=True, null=True)  # ✅ Add this
     send_reminder = models.BooleanField(default=False)  # ✅ Add this
+=======
+    patient = models.ForeignKey(
+        'Patient',
+        on_delete=models.CASCADE,
+        related_name='appointments',
+        null=True,
+        blank=True
+    )
+    full_name = models.CharField(max_length=100)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20)
+    doctor = models.ForeignKey(
+        'Doctor',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='appointments'
+    )
+    datetime = models.DateTimeField()
+    reason = models.CharField(max_length=255, blank=True)  # ✅ Reason for visit
+    location = models.CharField(max_length=255, blank=True, null=True)  # ✅ Location
+    send_reminder = models.BooleanField(default=False)  # ✅ Reminder flag
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     comment = models.TextField(blank=True)
     date_created = models.DateTimeField(auto_now_add=True)
 
     payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+<<<<<<< HEAD
     payment_status = models.CharField(max_length=20, default="Pending", choices=[
         ('Pending', 'Pending'),
         ('Confirmed', 'Confirmed'),
@@ -105,6 +143,39 @@ class Appointment(models.Model):
         ('Missed', 'Missed'),
         ('Cancelled', 'Cancelled'),
     ])
+=======
+    payment_status = models.CharField(
+        max_length=20,
+        default="Pending",
+        choices=[
+            ('Pending', 'Pending'),
+            ('Confirmed', 'Confirmed'),
+            ('Cancelled', 'Cancelled'),
+        ]
+    )
+
+    status = models.CharField(
+        max_length=20,
+        default="Scheduled",
+        choices=[
+            ('Scheduled', 'Scheduled'),
+            ('Completed', 'Completed'),
+            ('Missed', 'Missed'),
+            ('Cancelled', 'Cancelled'),
+        ]
+    )
+
+    # ✅ NEW FIELD
+    appointment_type = models.CharField(
+        max_length=20,
+        default="Regular",
+        choices=[
+            ("Regular", "Regular"),
+            ("Emergency", "Emergency"),
+            ("Walk-in", "Walk-in"),
+        ]
+    )
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
     def __str__(self):
         patient_name = self.full_name or "Unknown"
@@ -114,7 +185,10 @@ class Appointment(models.Model):
             doctor_name = "Unknown Doctor"
         return f"{patient_name} with {doctor_name} on {self.datetime.strftime('%Y-%m-%d %H:%M')}"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 class Specialty(models.Model):
     name = models.CharField(max_length=100)
     doctor_count = models.PositiveIntegerField()
@@ -318,13 +392,21 @@ class Bed(models.Model):
     def __str__(self):
         return f"Bed {self.bed_number} in {self.room.number}"
 
+<<<<<<< HEAD
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+=======
+# core/models.py
+class Patient(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    doctor = models.ForeignKey('core.Doctor', on_delete=models.SET_NULL, null=True, blank=True)
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     age = models.PositiveIntegerField()
     gender = models.CharField(max_length=10)
     phone = models.CharField(max_length=20)
     address = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+<<<<<<< HEAD
     REFERRAL_CHOICES = [
         ('walk-in', 'Walk-in'),
         ('referral', 'Referral'),
@@ -340,6 +422,43 @@ class Patient(models.Model):
 )
 
     
+=======
+
+    # include staff types and 'other'
+    REFERRAL_CHOICES = [
+        ('walk-in', 'Walk-in'),
+        ('advertisement', 'Advertisement'),
+        ('online', 'Online Search'),
+        ('doctor', 'Doctor'),
+        ('nurse', 'Nurse'),
+        ('pharmacist', 'Pharmacist'),
+        ('labtech', 'Lab Technician'),
+        ('other', 'Other'),
+    ]
+    referral_source = models.CharField(max_length=30, choices=REFERRAL_CHOICES, default='walk-in')
+
+    # actual staff user who referred (optional)
+    referred_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='patients_referred'
+    )
+
+    # free-text details when 'other' or extra context
+    referral_details = models.CharField(max_length=255, null=True, blank=True)
+
+    # admin who registered the patient in the system
+    registered_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='patients_registered'
+    )
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     @property
     def full_name(self):
         if self.user.first_name or self.user.last_name:
@@ -348,7 +467,11 @@ class Patient(models.Model):
 
     def __str__(self):
         return self.full_name
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 class ActivityLog(models.Model):
     ACTION_CHOICES = [
         ('REGISTER', 'User Registered'),
@@ -436,15 +559,40 @@ class StaffAttendance(models.Model):
         return f"{self.user.username} - {self.date}"
 
 class Message(models.Model):
+<<<<<<< HEAD
     sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
     recipient = models.ForeignKey(User, related_name='received_messages', on_delete=models.CASCADE)
     subject = models.CharField(max_length=255, blank=True)
+=======
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='sent_messages',
+        on_delete=models.SET_NULL,
+        null=True,  # allow sender deletion
+        blank=True
+    )
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='received_messages',
+        on_delete=models.SET_NULL,
+        null=True,  # allow recipient deletion
+        blank=True
+    )
+    subject = models.CharField(max_length=255, blank=True, null=True)
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     body = models.TextField()
     is_read = models.BooleanField(default=False)
     sent_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+<<<<<<< HEAD
         return f"Message from {self.sender} to {self.recipient}"
+=======
+        sender_name = self.sender.get_full_name() if self.sender else "Unknown"
+        recipient_name = self.recipient.get_full_name() if self.recipient else "Unknown"
+        return f"Message from {sender_name} to {recipient_name}"
+    
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     
 class RefundRequest(models.Model):
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE)
@@ -583,5 +731,54 @@ class Feedback(models.Model):
 
     def __str__(self):
         return f"{self.feedback_type.title()} - {self.subject}"
+<<<<<<< HEAD
+=======
+    
+class AccessLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    path = models.CharField(max_length=255)
+    method = models.CharField(max_length=10)
+    ip_address = models.GenericIPAddressField()
+    timestamp = models.DateTimeField(default=now)
+    
+    def __str__(self):
+        return f"{self.user} accessed {self.path} on {self.timestamp}"
+    
+class FailedLoginAttempt(models.Model):
+    username = models.CharField(max_length=150)
+    ip_address = models.GenericIPAddressField()
+    user_agent = models.CharField(max_length=255, blank=True, null=True)
+    timestamp = models.DateTimeField(default=now)
+
+    def __str__(self):
+        return f"{self.username} failed login from {self.ip_address} at {self.timestamp}"
+    
+class PatientNote(models.Model):
+    patient = models.ForeignKey('Patient', on_delete=models.CASCADE, related_name='notes')
+    note = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    is_pinned = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-is_pinned', '-created_at']
+
+    def __str__(self):
+        return f"Note for {self.patient.full_name} - {self.created_at.strftime('%Y-%m-%d %H:%M')}"
+
+class PatientAccountNote(models.Model):
+    patient = models.ForeignKey("core.Patient", on_delete=models.CASCADE, related_name="account_notes")
+    note = models.TextField()
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Note for {self.patient.full_name} - {self.created_at.strftime('%Y-%m-%d')}"
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 # Create your models here.

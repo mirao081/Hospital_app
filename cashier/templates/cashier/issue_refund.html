@@ -1,5 +1,6 @@
 {% extends 'core/base.html' %}
 {% block content %}
+<<<<<<< HEAD
   <h2 class="text-2xl font-bold mb-4">Issue Refund</h2>
 
   <div class="bg-white p-6 rounded shadow max-w-md">
@@ -13,4 +14,45 @@
       <a href="{% url 'cashier_dashboard' %}" class="ml-4 text-blue-600 hover:underline">Cancel</a>
     </form>
   </div>
+=======
+<div class="flex items-center justify-center min-h-screen bg-red-950 py-5"> <!-- py-5 = 20px top & bottom -->
+  <div class="bg-blue-950 p-8 rounded-lg shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-white">Issue Refund</h2>
+
+    <p class="mb-4 text-white"><strong>Patient:</strong> {{ payment.patient_name }}</p>
+    <p class="mb-6 text-white"><strong>Amount Paid:</strong> ${{ payment.amount }}</p>
+
+    <form method="post" class="space-y-4 my-5"> <!-- my-5 = 20px space inside form too -->
+      {% csrf_token %}
+      <div class="space-y-4">
+        {% for field in form %}
+          <div>
+            <label class="block text-white font-semibold mb-1" for="{{ field.id_for_label }}">
+              {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+              <p class="text-red-300 text-sm mt-1">{{ field.errors|join:", " }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="flex justify-center">
+        <button type="submit" class="bg-blue-950 text-white px-6 py-2 border border-white rounded hover:bg-blue-800">
+          Submit Refund
+        </button>
+      </div>
+
+      <div class="text-center mt-4">
+        <a href="{% url 'cashier:cashier_dashboard' %}" class="text-blue-300 hover:underline">
+          Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 {% endblock %}

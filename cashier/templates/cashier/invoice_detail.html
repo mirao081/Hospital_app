@@ -30,10 +30,17 @@
 
   <h2 class="text-xl font-semibold">Services</h2>
   <table class="w-full table-auto border border-gray-300 my-2">
+<<<<<<< HEAD
     <thead class="bg-gray-100">
       <tr>
         <th class="border px-2 py-1 text-left">Description</th>
         <th class="border px-2 py-1 text-right">Amount</th>
+=======
+    <thead>
+      <tr>
+        <th class="bg-blue-950 text-white px-4 py-2 rounded text-left">Description</th>
+        <th class="bg-blue-950 text-white px-4 py-2 rounded text-right">Amount</th>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
       </tr>
     </thead>
     <tbody>
@@ -56,7 +63,11 @@
   <p><strong>Generated At:</strong> {{ invoice.date_generated|date:"Y-m-d H:i" }}</p>
 
   <div class="mt-6 no-print">
+<<<<<<< HEAD
     <a href="{% url 'cashier_invoice_list' %}" class="bg-gray-300 text-black px-4 py-2 rounded">Back</a>
+=======
+    <a href="{% url 'cashier:cashier_invoice_list' %}" class="bg-gray-300 text-black px-4 py-2 rounded">Back</a>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     <button onclick="window.print()" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">Print</button>
   </div>
 </div>

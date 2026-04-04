@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<<<<<<< HEAD
 <div class="container mt-4">
 
   <!-- Heading -->
@@ -65,11 +66,252 @@
             </div>
             <div class="text-right">
               <a href="{% url 'admin_panel:message_detail' msg.id %}" class="text-xs text-blue-600 hover:underline">View</a>
+=======
+<!-- ================= HEADER ================= -->
+<div class="w-full bg-red-950 text-white p-6 shadow-md mb-6">
+  <h2 class="text-center font-bold text-2xl text-white">
+    👨‍⚕️ Welcome, Dr. {{ request.user.get_full_name|default:request.user.username }}
+  </h2>
+</div>
+<section class="bg-red-950 p-8">
+  <!-- ====== APPOINTMENT STATS ====== -->
+  <div class="p-6 shadow-md rounded-lg mb-8" style="background-color: aliceblue;">
+    <h3 class="text-2xl font-bold mb-6 text-center text-blue-950">📊 Appointment Stats</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+      
+      <!-- Total -->
+      <div class="p-6 rounded-lg border-2 border-blue-500 shadow-sm bg-blue-50">
+        <h5 class="text-lg font-semibold">📋 Total Appointments</h5>
+        <p class="text-gray-500">All-time</p>
+        <h2 class="text-3xl font-bold text-blue-600">{{ stats.total_appointments }}</h2>
+      </div>
+
+      <!-- Confirmed -->
+      <div class="p-6 rounded-lg border-2 border-green-500 shadow-sm bg-green-50">
+        <h5 class="text-lg font-semibold">✅ Confirmed</h5>
+        <p class="text-gray-500">Appointments</p>
+        <h2 class="text-3xl font-bold text-green-600">{{ stats.confirmed }}</h2>
+      </div>
+
+      <!-- Pending -->
+      <div class="p-6 rounded-lg border-2 border-yellow-500 shadow-sm bg-yellow-50">
+        <h5 class="text-lg font-semibold">⏳ Pending</h5>
+        <p class="text-gray-500">Awaiting confirmation</p>
+        <h2 class="text-3xl font-bold text-yellow-600">{{ stats.pending }}</h2>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  <!-- ====== APPOINTMENT SECTIONS ====== -->
+  <section class="w-full mb-10 bg-red-950 py-8">
+  <h2 class="text-2xl font-bold text-white mb-8 px-6">📋 Appointment Overview</h2>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-6">
+    
+    <!-- Today’s Schedule -->
+    <div class="p-6 rounded-lg shadow-md bg-blue-50 border-l-4 border-blue-500">
+      <h3 class="font-bold text-[19px] text-blue-600 mb-4">📅 Today’s Schedule</h3>
+      {% if todays_schedule %}
+        <ul class="divide-y divide-gray-200">
+          {% for appt in todays_schedule %}
+            <li class="py-2 flex justify-between">
+              <span class="font-semibold">{{ appt.full_name }}</span>
+              <span class="italic text-gray-600">{{ appt.reason|default:"No reason given" }}</span>
+              <span class="text-gray-500">{{ appt.datetime|date:"H:i" }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No appointments scheduled today.</p>
+      {% endif %}
+    </div>
+
+    <!-- Missed / Cancelled -->
+    <div class="p-6 rounded-lg shadow-md bg-yellow-50 border-l-4 border-yellow-500">
+      <h3 class="font-bold text-[19px] text-yellow-600 mb-4">⚠️ Missed / Cancelled</h3>
+      {% if missed_cancelled %}
+        <ul class="divide-y divide-gray-200">
+          {% for appt in missed_cancelled %}
+            <li class="py-2 flex justify-between">
+              <span class="font-semibold">{{ appt.full_name }}</span>
+              <span class="italic text-gray-600">{{ appt.status }}</span>
+              <span class="text-gray-500">{{ appt.datetime|date:"H:i" }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No missed or cancelled appointments.</p>
+      {% endif %}
+    </div>
+
+    <!-- Emergency / Walk-in -->
+    <div class="p-6 rounded-lg shadow-md bg-red-50 border-l-4 border-red-500">
+      <h3 class="font-bold text-[19px] text-red-600 mb-4">🚨 Emergency / Walk-in</h3>
+      {% if emergency_cases %}
+        <ul class="divide-y divide-gray-200">
+          {% for appt in emergency_cases %}
+            <li class="py-2 flex justify-between">
+              <span class="font-semibold">{{ appt.full_name }}</span>
+              <span class="italic text-gray-600">{{ appt.reason }}</span>
+              <span class="text-red-500">{{ appt.datetime|date:"H:i" }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No emergency or walk-in cases today.</p>
+      {% endif %}
+    </div>
+
+    <!-- Patient Queue -->
+    <div class="p-6 rounded-lg shadow-md bg-green-50 border-l-4 border-green-500">
+      <h3 class="font-bold text-[19px] text-green-600 mb-4">👥 Patient Queue Tracker</h3>
+      {% if patient_queue %}
+        <ol class="list-decimal pl-5 space-y-2">
+          {% for appt in patient_queue %}
+            <li>
+              <span class="font-semibold">{{ appt.full_name }}</span>
+              - <span class="italic text-gray-600">{{ appt.reason }}</span>
+              <span class="ml-2 text-gray-500">({{ appt.datetime|date:"H:i" }})</span>
+              <a href="{% url 'doctor_panel:view_record' appt.id %}" 
+                 class="ml-3 text-blue-600 hover:underline text-sm">Start Consultation</a>
+            </li>
+          {% endfor %}
+        </ol>
+      {% else %}
+        <p class="italic text-gray-500">No patients in queue.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+<!-- ================= CLINICAL & MEDICAL DATA ================= -->
+<section class="w-full mb-10 bg-red-950 py-8"><!-- dark red bg -->
+  <h3 class="text-center font-bold mb-4" style="font-size: 29px; color: white;">
+    🩺 Clinical & Medical Data
+  </h3>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 px-6">
+    
+    <!-- Recent Patient Interactions -->
+    <div class="p-6 rounded-lg shadow-md bg-blue-50 border-l-4 border-blue-500">
+      <h4 class="font-semibold mb-3" style="font-size: 19px; color: #1D4ED8;">
+        📋 Recent Interactions
+      </h4>
+      {% if clinical_data.recent_interactions %}
+        <ul class="list-disc list-inside text-gray-700">
+          {% for interaction in clinical_data.recent_interactions %}
+            <li>
+              {{ interaction.patient_name }} - {{ interaction.summary|truncatechars:40 }}
+              <span class="text-gray-500 text-sm">({{ interaction.date|date:"M d" }})</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No recent interactions.</p>
+      {% endif %}
+    </div>
+
+    <!-- Critical Alerts -->
+    <div class="p-6 rounded-lg shadow-md bg-red-50 border-l-4 border-red-500">
+      <h4 class="font-semibold mb-3" style="font-size: 19px; color: #DC2626;">
+        ⚠️ Critical Alerts
+      </h4>
+      {% if clinical_data.critical_alerts %}
+        <ul class="list-disc list-inside text-gray-700">
+          {% for alert in clinical_data.critical_alerts %}
+            <li>
+              {{ alert.patient_name }} - {{ alert.issue|truncatechars:40 }}
+              <span class="text-gray-500 text-sm">({{ alert.date|date:"M d" }})</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No critical alerts.</p>
+      {% endif %}
+    </div>
+
+    <!-- Pending Diagnostic Tests -->
+    <div class="p-6 rounded-lg shadow-md bg-yellow-50 border-l-4 border-yellow-500">
+      <h4 class="font-semibold mb-3" style="font-size: 19px; color: #CA8A04;">
+        🧪 Pending Tests
+      </h4>
+      {% if clinical_data.pending_tests %}
+        <ul class="list-disc list-inside text-gray-700">
+          {% for test in clinical_data.pending_tests %}
+            <li>
+              {{ test.patient_name }} - {{ test.test_name|truncatechars:40 }}
+              <span class="text-gray-500 text-sm">({{ test.due_date|date:"M d" }})</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No pending tests.</p>
+      {% endif %}
+    </div>
+
+    <!-- Medication Management -->
+    <div class="p-6 rounded-lg shadow-md bg-green-50 border-l-4 border-green-500">
+      <h4 class="font-semibold mb-3" style="font-size: 19px; color: #16A34A;">
+        💊 Medication Management
+      </h4>
+      {% if clinical_data.medications %}
+        <ul class="list-disc list-inside text-gray-700">
+          {% for med in clinical_data.medications %}
+            <li>
+              {{ med.patient_name }} - {{ med.medication|truncatechars:40 }}
+              <span class="text-gray-500 text-sm">{{ med.status }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="italic text-gray-500">No medication updates.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+  <!-- ================= MESSAGES SECTION ================= -->
+  <section class="w-full bg-blue-950 py-4 px-6 rounded-md mb-6">
+  <h3 class="text-[29px] font-bold mb-3 text-white">📬 Messages</h3>
+
+  {% if messages %}
+    <ul class="divide-y divide-gray-700">
+      {% for msg in messages %}
+        <li class="py-3 px-4 hover:bg-green-950 {% if not msg.is_read %}bg-yellow-800{% endif %} rounded-md mb-2">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <p class="text-sm text-green-300">
+                <span class="font-semibold">From:</span> 
+                {% if msg.sender.first_name or msg.sender.last_name %}
+                  {{ msg.sender.first_name }} {{ msg.sender.last_name }}
+                {% else %}
+                  {{ msg.sender.username }}
+                {% endif %}
+              </p>
+
+              {% if msg.subject %}
+                <p class="text-sm text-green-300">
+                  <span class="font-semibold">Subject:</span> {{ msg.subject }}
+                </p>
+              {% endif %}
+
+              <p class="text-sm text-green-300">{{ msg.body|truncatewords:20 }}</p>
+              <p class="text-xs text-green-200">Received {{ msg.sent_at|date:"M d, Y H:i" }}</p>
+            </div>
+
+            <div class="ml-4 flex-shrink-0 text-right">
+              <a href="{% url 'doctor_panel:message_detail' msg.id %}" 
+                 class="text-xs text-green-300 hover:underline">View</a>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             </div>
           </div>
         </li>
       {% endfor %}
     </ul>
+<<<<<<< HEAD
   </div>
 {% else %}
   <p class="text-sm text-gray-500 mt-4">No messages yet.</p>
@@ -187,4 +429,391 @@
 
 
 </div>
+=======
+  {% else %}
+    <p class="text-sm text-green-300 mt-4">No messages yet.</p>
+  {% endif %}
+</section>
+<!-- ================= ENQUIRIES SECTION ================= -->
+<section class="w-full bg-purple-950 py-4 px-6 rounded-md mb-6">
+  <h3 class="text-[29px] font-bold mb-3 text-white">📩 Contact Form Enquiries</h3>
+
+  {% if enquiries %}
+    <ul class="divide-y divide-gray-700">
+      {% for enquiry in enquiries %}
+        <li class="py-3 px-4 hover:bg-green-950 {% if not enquiry.is_read %}bg-yellow-800{% endif %} rounded-md mb-2">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <p class="text-sm text-green-300">
+                <span class="font-semibold">From:</span> {{ enquiry.name }} ({{ enquiry.email }})
+              </p>
+              <p class="text-sm text-green-300">
+                <span class="font-semibold">Phone:</span> {{ enquiry.phone }} | 
+                <span class="font-semibold">Country:</span> {{ enquiry.country }}
+              </p>
+              <p class="text-sm text-green-300 mt-1">{{ enquiry.message|truncatewords:25 }}</p>
+              <p class="text-xs text-green-200">Received {{ enquiry.created_at|date:"M d, Y H:i" }}</p>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-sm text-green-300 mt-4">No enquiries yet.</p>
+  {% endif %}
+</section>
+
+
+
+
+  <!-- ================= RECENT MEDICAL RECORDS ================= -->
+  <section class="w-full bg-red-950 mt-[30px]">
+  <h3 class="text-[29px] font-bold text-white text-center py-3">📝 Recent Medical Records</h3>
+  <div class="flex justify-end mb-2 px-4">
+    <a href="{% url 'doctor_panel:add_medical_record' %}" class="btn btn-primary">➕ Add Medical Record</a>
+  </div>
+  <div class="overflow-x-auto px-4">
+    {% if recent_records %}
+      <table class="w-full text-green-300 table-auto border-collapse border border-green-500">
+        <thead>
+          <tr class="bg-green-900 text-green-200">
+            <th class="border border-green-500 px-3 py-2 text-left">Patient Name</th>
+            <th class="border border-green-500 px-3 py-2 text-left">Diagnosis</th>
+            <th class="border border-green-500 px-3 py-2 text-left">Date Created</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for record in recent_records %}
+            <tr class="hover:bg-red-950">
+              <td class="border border-green-500 px-3 py-2 text-white">{{ record.patient.user.get_full_name }}</td>
+              <td class="border border-green-500 px-3 py-2 text-white">{{ record.diagnosis|truncatechars:60 }}</td>
+              <td class="border border-green-500 px-3 py-2 text-white">{{ record.date_created|date:"Y-m-d H:i" }}</td>
+
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-green-300 text-center my-3">No medical records found.</p>
+    {% endif %}
+  </div>
+</section>
+
+
+  <!-- ================= PATIENT SUMMARIES ================= -->
+<section class="w-full mb-10 bg-blue-950 py-8">
+  <!-- Section Heading -->
+  <h3 class="text-[29px] font-bold text-center mb-6 text-white">📝 Patient Medical Summaries</h3>
+
+  {% if recent_records %}
+    <div class="w-full max-w-4xl mx-auto space-y-6">
+      {% for record in recent_records %}
+        <div class="record-card border border-white rounded-lg p-6 shadow-md bg-blue-950 flex flex-col md:flex-row md:justify-between md:items-start">
+          
+          <!-- Left: Text Content -->
+          <div class="md:w-2/3">
+            <!-- Patient Name -->
+            <h4 class="text-white text-lg font-semibold mb-3">{{ record.patient.user.get_full_name }}</h4>
+
+            <!-- Patient Info -->
+            <p class="text-white mb-2">
+              <strong>Basic Info:</strong><br>
+              Age: {{ record.patient_age|default:"N/A" }}<br>
+              Gender: {{ record.patient_gender|default:"N/A" }}<br>
+              Contact: {{ record.patient_contact|default:"N/A" }}<br>
+              Insurance: {{ record.patient_insurance|default:"N/A" }}
+            </p>
+
+            <p class="text-white mb-1"><strong>Diagnosis:</strong> {{ record.diagnosis|default:"N/A" }}</p>
+            <p class="text-white mb-1"><strong>Medications:</strong> {{ record.medications|default:"N/A" }}</p>
+            <p class="text-white mb-1"><strong>Lab Results:</strong> {{ record.lab_results|default:"N/A" }}</p>
+            <p class="text-white mb-1"><strong>Visit Notes:</strong> {{ record.notes|default:"N/A" }}</p>
+
+            <!-- Timestamp -->
+            <p class="text-white text-sm mt-2"><em>Created on: {{ record.date_created|date:"M d, Y H:i" }}</em></p>
+          </div>
+
+          <!-- Right: Image -->
+          {% if record.imaging %}
+            <div class="md:w-1/3 flex justify-end mt-4 md:mt-0">
+              <img src="{{ record.imaging.url }}" alt="Imaging" class="max-w-xs rounded shadow-md">
+            </div>
+          {% endif %}
+          
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-white text-center">No medical records found.</p>
+  {% endif %}
+</section>
+
+
+<!-- ================= TASKS & REMINDERS ================= -->
+<section class="w-full mb-10 bg-red-950 py-8">
+  <h3 class="text-[29px] font-bold text-center mb-6 text-white">📌 Tasks & Reminders</h3>
+
+  <div class="w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Follow-up Reminders -->
+    <div class="bg-[aliceblue] rounded-lg shadow-md text-center py-6">
+      <h5 class="font-semibold mb-2">📅 Follow-up Reminders</h5>
+      <p class="text-green-800 font-bold text-2xl">{{ tasks.reminders }}</p>
+    </div>
+
+    <!-- Pending Lab Reviews -->
+    <div class="bg-[aliceblue] rounded-lg shadow-md text-center py-6">
+      <h5 class="font-semibold mb-2">🧪 Pending Lab Reviews</h5>
+      <p class="text-green-800 font-bold text-2xl">{{ tasks.lab_reviews }}</p>
+    </div>
+
+    <!-- Prescriptions -->
+    <div class="bg-[aliceblue] rounded-lg shadow-md text-center py-6">
+      <h5 class="font-semibold mb-2">💊 Prescriptions to Approve or Renew</h5>
+      <p class="text-green-800 font-bold text-2xl">{{ tasks.prescriptions }}</p>
+    </div>
+
+    <!-- Messages -->
+    <div class="bg-[aliceblue] rounded-lg shadow-md text-center py-6">
+      <h5 class="font-semibold mb-2">📨 Messages or Requests from Patients</h5>
+      <p class="text-green-800 font-bold text-2xl">{{ tasks.messages }}</p>
+    </div>
+  </div>
+</section>
+
+</div>
+<section class="bg-red-950 py-10 px-5">
+  <div class="container mx-auto">
+    <!-- Heading -->
+    <h2 class="flex items-center justify-center gap-3 text-white text-[29px] font-semibold mb-8">
+      <svg class="w-8 h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v1H2V5zm0 3h16v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8zm4 2a1 1 0 100 2h6a1 1 0 100-2H6z" />
+      </svg>
+      Communication & Collaboration
+    </h2>
+
+    <!-- Cards Row -->
+    <div class="flex justify-center gap-6">
+
+      <!-- Staff Messages -->
+      <div class="flex-1 max-w-sm scale-[1.02] bg-slate-800 rounded-lg shadow-lg text-white p-5 border-2 border-white flex flex-col">
+        <div class="flex items-center mb-3 border-b border-white/30 pb-2">
+          <svg class="w-6 h-6 mr-2 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M18 10c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zM9 7h2v6H9V7zm0 8h2v2H9v-2z" />
+          </svg>
+          <h3 class="text-lg font-bold">Internal Staff Messages</h3>
+        </div>
+
+        <!-- Scrollable content -->
+        <div class="flex-1 overflow-y-auto space-y-3">
+          {% for msg in staff_messages %}
+            <div>
+              <p>
+                <strong>{{ msg.title }}</strong> - {{ msg.created_at|date:"M d, Y H:i" }}<br>
+                {{ msg.message|truncatewords:25 }}
+              </p>
+              <hr class="border-white/20">
+            </div>
+          {% empty %}
+            <p>No announcements.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Referrals -->
+      <div class="flex-1 max-w-sm scale-[1.02] bg-teal-700 rounded-lg shadow-lg text-white p-5 border-2 border-white flex flex-col">
+        <div class="flex items-center mb-3 border-b border-white/30 pb-2">
+          <svg class="w-6 h-6 mr-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 7H7v6h6V7z" />
+            <path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0-2h10a4 4 0 014 4v10a4 4 0 01-4 4H5a4 4 0 01-4-4V5a4 4 0 014-4z" clip-rule="evenodd" />
+          </svg>
+          <h3 class="text-lg font-bold">Referrals & Consult Requests</h3>
+        </div>
+
+        <!-- Scrollable content -->
+        <div class="flex-1 overflow-y-auto space-y-3">
+          {% for r in referral_cards %}
+            <div class="p-2 border-b border-white/20">
+              <strong>Patient:</strong> {{ r.patient_name }} <br>
+              <strong>From:</strong> {{ r.from_staff }} <br>
+              <strong>To:</strong> {{ r.to_staff }} <br>
+              <strong>Status:</strong> {{ r.status }} <br>
+              {% if r.reason %}
+                <strong>Reason:</strong> {{ r.reason }}
+              {% endif %}
+            </div>
+          {% empty %}
+            <p>No referrals found.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Patient Portal Requests -->
+      <div id="portal-requests" class="flex-1 max-w-sm scale-[1.02] bg-purple-700 rounded-lg shadow-lg text-white p-5 border-2 border-white flex flex-col">
+        <div class="flex items-center mb-3 border-b border-white/30 pb-2">
+          <svg class="w-6 h-6 mr-2 text-pink-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 0H4v10h12V5z" />
+          </svg>
+          <h3 class="text-lg font-bold">Patient Portal Requests</h3>
+        </div>
+
+        <!-- Scrollable content -->
+        <div class="flex-1 overflow-y-auto space-y-4">
+          {% for req in patient_requests %}
+            <div class="pb-3 border-b border-white/20">
+              <p><strong>{{ req.patient_name }}</strong> ({{ req.get_request_type_display }})</p>
+              <p><strong>Status:</strong> {{ req.status|title }}</p>
+              <p class="italic break-words">{{ req.message|truncatewords:20 }}</p>
+
+              <form method="post" action="{% url 'doctor_panel:update_request' req.id %}" class="mt-2 space-y-2">
+                {% csrf_token %}
+                <input type="datetime-local" name="schedule_datetime" class="rounded border px-2 py-1 text-black w-full" placeholder="Optional schedule">
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <button type="submit" name="action" value="schedule" class="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">Accept & Schedule</button>
+                  <button type="submit" name="action" value="in_progress" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded">In Progress</button>
+                  <button type="submit" name="action" value="resolved" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white px-3 py-1 rounded">Resolve</button>
+                </div>
+              </form>
+            </div>
+          {% empty %}
+            <p>No patient requests.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+</section>
+<section class="bg-red-950 text-white p-6 rounded-lg shadow-lg">
+  <h2 class="text-2xl font-bold mb-4 text-white">Analytics & Insights</h2>
+
+  <!-- Stats Table -->
+  <table class="w-full border-collapse mb-6">
+    <thead>
+      <tr class="bg-red-800">
+        <th class="p-3 text-left">Metric</th>
+        <th class="p-3 text-right">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="border-b border-red-950">
+        <td class="p-3">Patients Today</td>
+        <td class="p-3 text-right">{{ analytics.stats.today }}</td>
+      </tr>
+      <tr class="border-b border-red-950">
+        <td class="p-3">Patients This Week</td>
+        <td class="p-3 text-right">{{ analytics.stats.week }}</td>
+      </tr>
+      <tr class="border-b border-red-950">
+        <td class="p-3">Patients This Month</td>
+        <td class="p-3 text-right">{{ analytics.stats.month }}</td>
+      </tr>
+      <tr class="border-b border-red-95 font-bold">
+        <td class="p-3">Revenue</td>
+        <td class="p-3 text-right">₦{{ analytics.revenue.total|floatformat:2 }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Case Mix -->
+  <h3 class="text-xl font-semibold mb-2">Case Mix</h3>
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-red950">
+        <th class="p-3 text-left">Diagnosis</th>
+        <th class="p-3 text-right">%</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for case in analytics.case_mix %}
+      <tr class="border-b border-red-950">
+        <td class="p-3">{{ case.diagnosis }}</td>
+        <td class="p-3 text-right">{{ case.pct }}%</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td class="p-3" colspan="2">No cases yet.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+<!-- <section class="bg-red-950 py-10 px-5 mt-8 rounded-lg">
+  <div class="container mx-auto">
+    <h2 class="text-center text-white text-2xl font-bold mb-6">Doctor Productivity & Workflow</h2>
+
+    <div class="flex flex-wrap gap-6 justify-center">
+
+      Task List / To-do Items
+      <div class="flex-1 max-w-sm bg-slate-800 text-white rounded-lg shadow-lg p-5 border-2 border-white flex flex-col">
+        <h3 class="font-bold text-lg mb-3 border-b border-white/30 pb-2">Tasks / To-Do</h3>
+        <div class="flex-1 overflow-y-auto space-y-2">
+          {% for task in tasks %}
+          <div class="p-2 border-b border-white/20">
+            <p class="font-semibold">{{ task.title }}</p>
+            {% if task.due_date %}<p class="text-sm opacity-70">Due: {{ task.due_date|date:"M d, Y H:i" }}</p>{% endif %}
+            <p class="text-sm">{{ task.description|truncatewords:15 }}</p>
+            <p class="text-sm text-green-400">{% if task.is_completed %}Completed{% else %}Pending{% endif %}</p>
+          </div>
+          {% empty %}
+          <p>No tasks.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+     <!--Reminders -->
+      <!-- <div class="flex-1 max-w-sm bg-purple-700 text-white rounded-lg shadow-lg p-5 border-2 border-white flex flex-col">
+        <h3 class="font-bold text-lg mb-3 border-b border-white/30 pb-2">Reminders</h3>
+        <div class="flex-1 overflow-y-auto space-y-2">
+          {% for reminder in reminders %}
+          <div class="p-2 border-b border-white/20">
+            <p>{{ reminder.message }}</p>
+            <p class="text-sm opacity-70">Follow-up in {{ reminder.follow_up_days }} day(s)</p>
+          </div>
+          {% empty %}
+          <p>No reminders.</p>
+          {% endfor %}
+        </div>
+      </div> -->
+
+      <!-- On-Call Schedule -->
+      <!-- <div class="flex-1 max-w-sm bg-teal-700 text-white rounded-lg shadow-lg p-5 border-2 border-white flex flex-col">
+        <h3 class="font-bold text-lg mb-3 border-b border-white/30 pb-2">On-Call Schedule</h3>
+        <div class="flex-1 overflow-y-auto space-y-2">
+          {% for shift in oncall_shifts %}
+          <div class="p-2 border-b border-white/20">
+            <p>{{ shift.start_time|date:"M d, Y H:i" }} - {{ shift.end_time|date:"M d, Y H:i" }}</p>
+            <p class="text-sm">{{ shift.notes }}</p>
+          </div>
+          {% empty %}
+          <p>No scheduled shifts.</p>
+          {% endfor %}
+        </div>
+      </div> -->
+
+      <!-- Knowledge Base -->
+      <!-- <div class="flex-1 max-w-sm bg-indigo-800 text-white rounded-lg shadow-lg p-5 border-2 border-white flex flex-col">
+        <h3 class="font-bold text-lg mb-3 border-b border-white/30 pb-2">Knowledge Base</h3>
+        <div class="flex-1 overflow-y-auto space-y-2">
+          {% for kb in knowledge_base %}
+          <div class="p-2 border-b border-white/20">
+            <p class="font-semibold">{{ kb.title }}</p>
+            <p class="text-sm">{{ kb.content|truncatewords:15 }}</p>
+            <p class="text-xs opacity-60">Updated: {{ kb.updated_at|date:"M d, Y" }}</p>
+          </div>
+          {% empty %}
+          <p>No entries.</p>
+          {% endfor %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section> -->
+
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 {% endblock %}

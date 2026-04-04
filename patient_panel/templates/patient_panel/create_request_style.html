@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+<div class="max-w-md mx-auto mt-10 bg-blue-950 p-6 rounded-lg shadow-lg space-y-6">
+  <h2 class="text-2xl font-bold text-white text-center mb-4">Create Portal Request</h2>
+
+  <form method="post" class="space-y-4">
+    {% csrf_token %}
+    
+    <!-- Doctor -->
+    <div class="flex flex-col">
+      <label for="id_doctor" class="text-white font-semibold mb-1">Doctor</label>
+      {{ form.doctor|add_class:"bg-blue-950 text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+    </div>
+
+    <!-- Request Type -->
+    <div class="flex flex-col">
+      <label for="id_request_type" class="text-white font-semibold mb-1">Request Type</label>
+      {{ form.request_type|add_class:"bg-blue-950 text-white px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+    </div>
+
+    <!-- Message -->
+    <div class="flex flex-col">
+      <label for="id_message" class="text-white font-semibold mb-1">Message</label>
+      {{ form.message|add_class:"red-950 text-black px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" 
+            class="w-full bg-red-950 hover:bg-green-950 text-white font-bold py-2 rounded-lg transition-colors">
+      Send Request
+    </button>
+  </form>
+</div>
+{% endblock %}

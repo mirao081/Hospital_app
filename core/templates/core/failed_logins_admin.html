@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<h1>Failed Login Attempts</h1>
+<table class="adminlogtable">
+    <tr>
+        <th>Username</th>
+        <th>IP</th>
+        <th>User Agent</th>
+        <th>Time</th>
+    </tr>
+    {% for attempt in attempts %}
+    <tr>
+        <td>{{ attempt.username }}</td>
+        <td>{{ attempt.ip_address }}</td>
+        <td>{{ attempt.user_agent }}</td>
+        <td>{{ attempt.timestamp }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

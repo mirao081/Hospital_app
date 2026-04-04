@@ -1,4 +1,5 @@
 {% extends 'core/base.html' %}
+<<<<<<< HEAD
 
 {% block content %}
   <div class="form-container">
@@ -20,4 +21,63 @@
       <a href="{% url 'cashier:cashier_dashboard' %}">← Back to Dashboard</a>
     </div>
   </div>
+=======
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class="bg-blue-950 min-h-screen flex items-center justify-center py-10">
+    <div class="bg-red-950 p-8 rounded-[30px] shadow-lg w-full max-w-lg text-white border-2 border-white">
+      <h2 class="text-2xl font-bold mb-6 text-white text-center">Record Payment</h2>
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {% for field in form %}
+          {% if field.name == 'reference_number' %}
+            <div>
+              <label for="{{ field.id_for_label }}" class="block font-medium mb-1">{{ field.label }}</label>
+              {{ field|add_class:"text-black border border-gray-300 rounded px-2 py-1 w-full" }}
+              <button type="button" id="generate-ref-btn" class="mt-2 bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white">
+                Generate Reference Number
+              </button>
+              {% if field.errors %}
+                <div class="text-yellow-300 text-sm mt-1">{{ field.errors }}</div>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="{% if field.name == 'remarks' %}col-span-2{% endif %}">
+              <label for="{{ field.id_for_label }}" class="block font-medium mb-1">{{ field.label }}</label>
+              {{ field|add_class:"text-black border border-gray-300 rounded px-2 py-1 w-full" }}
+              {% if field.errors %}
+                <div class="text-yellow-300 text-sm mt-1">{{ field.errors }}</div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+        <div class="flex justify-center">
+          <button type="submit" class="bg-blue-950 hover:bg-blue-900 text-white px-6 py-2 rounded border border-white">
+            Submit Payment
+          </button>
+        </div>
+      </form>
+      <div class="mt-4 text-center">
+        <a href="{% url 'cashier:cashier_dashboard' %}" class="text-white hover:underline">
+          ← Back to Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generate-ref-btn').addEventListener('click', function() {
+      fetch("{% url 'cashier:generate_reference_number' %}")
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('id_reference_number').value = data.reference_number;
+        })
+        .catch(error => {
+          console.error('Error fetching reference number:', error);
+          alert('Could not generate reference number. Please try again.');
+        });
+    });
+  </script>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 {% endblock %}

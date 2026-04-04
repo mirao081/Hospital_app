@@ -4,6 +4,28 @@
 {% load widget_tweaks %}
 
 <head>
+<<<<<<< HEAD
+=======
+  <style>
+    @media print {
+  /* Hide menu toggle button */
+  #menu-toggle {
+    display: none !important;
+  }
+
+  /* Hide nav menu links */
+  #menu-content {
+    display: none !important;
+  }
+
+  /* Hide auth buttons */
+  .auth-buttons {
+    display: none !important;
+  }
+}
+
+  </style>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
   <meta charset="UTF-8" />
   <title>{% block title %}Hospital System{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
@@ -200,9 +222,23 @@
   {% endblock %}
 
   <!-- Back to Top Button -->
+<<<<<<< HEAD
   <a href="#" class="scroll-to-top" id="scrollToTopBtn" title="Back to top">
     <i class="fas fa-arrow-up"></i>
   </a>
+=======
+  <!-- Scroll Down Button -->
+<a href="#" class="scroll-to-down" id="scrollToDownBtn" title="Scroll down">
+  <i class="fas fa-arrow-down"></i>
+</a>
+
+<!-- Scroll Up Button -->
+<a href="#" class="scroll-to-top" id="scrollToTopBtn" title="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</a>
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 <!-- for add new return modal view -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -231,6 +267,26 @@
         }
       });
     });
+<<<<<<< HEAD
+=======
+  window.onscroll = function () {
+  const btnUp = document.getElementById("scrollToTopBtn");
+  const btnDown = document.getElementById("scrollToDownBtn");
+
+  // Show top button when not at top
+  btnUp.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+
+  // Show down button when not at bottom
+  btnDown.style.display = (window.innerHeight + window.scrollY < document.body.offsetHeight - 200) ? "block" : "none";
+};
+
+// Scroll to bottom smoothly
+document.getElementById("scrollToDownBtn").addEventListener("click", function (e) {
+  e.preventDefault();
+  window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+});
+  
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
   </script>
 </body>
 </html>

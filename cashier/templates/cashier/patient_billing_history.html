@@ -18,7 +18,11 @@
     <tr>
       <td class="border px-4 py-2">{{ invoice.invoice_number }}</td>
       <td class="border px-4 py-2">{{ invoice.get_service_type_display }}</td>
+<<<<<<< HEAD
       <td class="border px-4 py-2">${{ invoice.total_due }}</td>
+=======
+      <td class="border px-4 py-2">₦{{ invoice.total_due }}</td>  {# Changed here #}
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
       <td class="border px-4 py-2">{{ invoice.service_date }}</td>
     </tr>
     {% endfor %}

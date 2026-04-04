@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="bg-red-950 min-h-screen flex flex-col items-center justify-center p-6 space-y-6">
+    <div class="bg-blue-950 text-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h2 class="text-3xl font-bold mb-6 text-center">💰 Approve/Reject Refund</h2>
+
+        {% if error %}
+            <p class="text-red-400 mb-4 text-center">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="{% url 'admin_panel:refund_approve' refund.id %}" class="flex flex-col space-y-4">
+            {% csrf_token %}
+
+            <p class="text-center">Patient: <span class="font-semibold">{{ refund.payment.patient_name }}</span></p>
+            <p class="text-center">Amount: <span class="font-semibold">${{ refund.refund_amount }}</span></p>
+            <p class="text-center">Reason: <span class="font-semibold">{{ refund.reason }}</span></p>
+
+            <textarea name="admin_note" placeholder="Add a note..." 
+                      class="border border-gray-300 rounded p-2 w-full text-black" rows="4">{{ refund.admin_note }}</textarea>
+
+            <div class="flex justify-center space-x-4 mt-4">
+                <button type="submit" name="action" value="approve" 
+                        class="bg-green-600 hover:bg-green-950 text-white px-6 py-2 rounded transition duration-200">
+                    Approve
+                </button>
+                <button type="submit" name="action" value="reject" 
+                        class="bg-red-600 hover:bg-red-950 text-white px-6 py-2 rounded transition duration-200">
+                    Reject
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Back to Dashboard Button -->
+    <a href="{% url 'admin_panel:admin_dashboard' %}"
+       class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition duration-200">
+        ⬅ Back to Dashboard
+    </a>
+</div>
+{% endblock %}

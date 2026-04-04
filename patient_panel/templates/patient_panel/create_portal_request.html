@@ -1,0 +1,41 @@
+{% extends "core/base.html" %}
+{% load crispy_forms_tags %} <!-- if using crispy, optional -->
+
+{% block content %}
+<div class="max-w-lg mx-auto mt-10 bg-white p-6 rounded shadow">
+  <h2 class="text-2xl font-bold mb-4">New Portal Request</h2>
+
+  <form method="post">
+    {% csrf_token %}
+    
+    <div class="mb-4">
+      <label class="block text-gray-700">Doctor</label>
+      {{ form.doctor }}
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700">Your Name</label>
+      {{ form.patient_name }}
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700">Contact Info</label>
+      {{ form.patient_contact }}
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700">Request Type</label>
+      {{ form.request_type }}
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-gray-700">Message</label>
+      {{ form.message }}
+    </div>
+
+    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+      Submit Request
+    </button>
+  </form>
+</div>
+{% endblock %}

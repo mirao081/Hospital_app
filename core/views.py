@@ -10,15 +10,23 @@ from django.contrib.auth import get_user_model
 from django.views.decorators.http import require_POST
 from core.models import Message 
 from core.models import Patient
+<<<<<<< HEAD
 
 
 
+=======
+from django.contrib.admin.views.decorators import staff_member_required
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 from .forms import AppointmentForm, EnquiryForm,AssignBedForm
 from .models import (
     AboutSection, FeaturedDoctor, HighlightItem, InfoCard, UserReview,
     Article, DoctorCTA, HeaderSettings, FooterSettings, Doctor,
     DoctorsPageSettings, Blog, FeaturedBlog, Department, Testimonial, ContactInfo,
+<<<<<<< HEAD
     Specialty, Appointment, ActivityLog,Bed  # Ensure ActivityLog is imported
+=======
+    Specialty, Appointment, ActivityLog,Bed, AccessLog, FailedLoginAttempt  # Ensure ActivityLog is imported
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     
 )
 
@@ -102,6 +110,7 @@ def signup_view(request):
 
 
 def logout_view(request):
+<<<<<<< HEAD
     ActivityLog.objects.create(
         user=request.user,
         action='LOGOUT',
@@ -111,6 +120,17 @@ def logout_view(request):
     return redirect('landing_page')
 
 
+=======
+    if request.user.is_authenticated:
+        ActivityLog.objects.create(
+            user=request.user,
+            action='LOGOUT',
+            description='User logged out.'
+        )
+    logout(request)
+    return redirect('landing_page')
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # ========================
 # LANDING & HOME
 # ========================
@@ -329,7 +349,12 @@ def appointment_view(request):
                     sender=request.user if request.user.is_authenticated else None,
                     recipient=doctor_user,
                     subject="New Appointment",
+<<<<<<< HEAD
                     body=f"You have a new appointment with {appointment.full_name} on {appointment.date} at {appointment.time}.",
+=======
+                    body=f"You have a new appointment with {appointment.full_name} on {appointment.datetime.strftime('%Y-%m-%d %H:%M')}.",
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                 )
                 print("📨 Doctor notified.")
             except Exception as e:
@@ -421,3 +446,20 @@ def unassign_bed_view(request, bed_id):
         return redirect('assign_bed')
 
     return render(request, 'core/unassign_bed_confirm.html', {'bed': bed})
+<<<<<<< HEAD
+=======
+
+
+@staff_member_required
+def admin_access_logs(request):
+    logs = AccessLog.objects.all().order_by('-timestamp')[:100]
+    return render(request, 'admin/core/access_logs_admin.html', {'logs': logs})
+
+@staff_member_required
+def admin_failed_logins(request):
+    attempts = FailedLoginAttempt.objects.all().order_by('-timestamp')[:100]
+    return render(request, 'admin/core/failed_logins_admin.html', {'attempts': attempts})
+
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf

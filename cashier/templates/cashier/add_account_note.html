@@ -1,0 +1,45 @@
+{% extends 'core/base.html' %}
+{% load widget_tweaks %}   
+{% block content %}
+
+<section class="w-full bg-red-950">
+  <!-- Heading -->
+  <div class="flex flex-col items-center justify-center bg-blue-950 py-4 mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-green-50 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M9 5h6m-1-2H10a2 2 0 00-2 2v1H7a2 2 0 00-2 2v9a2 2 0 002 2h10a2 2 0 002-2V8a2 2 0 00-2-2h-1V5a2 2 0 00-2-2z"/>
+    </svg>
+    <h2 class="text-[29px] font-bold text-white text-center">
+        Patient Account History &amp; Notes
+        </h2>
+
+  </div>
+
+  <!-- Helper text -->
+  <p class="text-gray-200 mb-5 px-4 text-center">
+    Quick access to patient payment history, billing notes, payment disputes, or adjustments.
+    Add cashier notes per patient to improve communication between staff.
+  </p>
+
+  <!-- Create Note Form -->
+  <form method="post" action="{% url 'cashier:add_account_note' %}" 
+        class="space-y-4 bg-red-950 p-5 rounded-lg text-white">
+    {% csrf_token %}
+    <div>
+      <label class="block text-sm font-medium mb-1">Patient</label>
+      {{ form.patient|add_class:"w-full rounded-md border border-blue-700 bg-red-950 text-white placeholder-gray-300 shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300" }}
+    </div>
+    <div>
+      <label class="block text-sm font-medium mb-1">Note</label>
+      {{ form.note|add_class:"w-full rounded-md border border-blue-950 bg-red-950 text-white placeholder-gray-300 shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300" }}
+    </div>
+    <div class="flex justify-end">
+      <button type="submit"
+              class="px-5 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 focus:ring-2 focus:ring-green-400">
+        Save Note
+      </button>
+    </div>
+  </form>
+</section>
+
+{% endblock %}

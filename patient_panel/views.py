@@ -5,7 +5,11 @@ from core.models import Patient
 from .models import Diagnosis, Treatment, Medication, LabResult, Visit,Bill
 from django.utils import timezone
 from .forms import SurveyResponseForm
+<<<<<<< HEAD
 from .forms import FeedbackForm
+=======
+from .forms import FeedbackForm,PatientPortalRequestForm
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 from core.models import Feedback
 from django.contrib import messages
 from core.models import Message,Patient
@@ -13,6 +17,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from django.http import HttpResponse
 from django.contrib.auth import get_user_model
+<<<<<<< HEAD
+=======
+from doctor_panel.models import PatientPortalRequest
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 User = get_user_model()
 
@@ -42,6 +50,12 @@ def patient_dashboard(request):
     upcoming_appointments = patient.appointments.filter(datetime__gte=now).order_by('datetime')
     past_appointments = patient.appointments.filter(datetime__lt=now).order_by('-datetime')
 
+<<<<<<< HEAD
+=======
+    # ✅ Add portal requests here
+    from doctor_panel.models import PatientPortalRequest
+    my_requests = PatientPortalRequest.objects.filter(patient=patient).order_by('-created_at')
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     context = {
         'diagnoses': diagnoses,
         'treatments': treatments,
@@ -54,9 +68,19 @@ def patient_dashboard(request):
         'upcoming_appointments': upcoming_appointments,
         'past_appointments': past_appointments,
         'payment_history': paid_bills,
+<<<<<<< HEAD
     }
     return render(request, 'patient_panel/dashboard.html', context)
 
+=======
+
+        # ✅ new key
+        'my_requests': my_requests,
+    }
+    return render(request, 'patient_panel/dashboard.html', context)
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @login_required
 def submit_survey(request):
     patient = Patient.objects.get(user=request.user)
@@ -121,4 +145,31 @@ def submit_feedback(request):
     else:
         form = FeedbackForm()
 
+<<<<<<< HEAD
     return render(request, 'patient_panel/submit_feedback.html', {'form': form})
+=======
+    return render(request, 'patient_panel/submit_feedback.html', {'form': form})
+
+@login_required
+def create_portal_request(request):
+    patient = get_object_or_404(Patient, user=request.user)
+
+    if request.method == "POST":
+        form = PatientPortalRequestForm(request.POST)
+        if form.is_valid():
+            pr = form.save(commit=False)
+            pr.patient = patient
+            pr.patient_name = patient.user.get_full_name()
+            pr.save()
+            messages.success(request, "Your request has been sent!")
+            return redirect('patient_panel:patient_dashboard')
+    else:
+        form = PatientPortalRequestForm()
+
+    # make sure this matches your actual template
+    return render(request, 'patient_panel/create_request_style.html', {'form': form})
+
+
+def portal_request_success(request):
+    return render(request, "patient_panel/portal_request_success.html")
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf

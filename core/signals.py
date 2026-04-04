@@ -1,4 +1,5 @@
 from django.db.models.signals import post_save
+<<<<<<< HEAD
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.dispatch import receiver
 from django.utils.timezone import localdate, localtime
@@ -14,17 +15,43 @@ from admin_panel.utils.metrics import (
 User = get_user_model()
 
 # ✅ Create staff profile automatically when user is created
+=======
+from django.contrib.auth.signals import user_logged_in, user_logged_out, user_login_failed
+from django.dispatch import receiver
+from django.utils.timezone import localdate, localtime, now
+from django.contrib.auth import get_user_model
+from admin_panel.utils.session_logger import login_logger, logout_logger
+from doctor_panel.models import Notification
+from core.models import Appointment, FailedLoginAttempt, Patient, StaffProfile, Attendance, Admission, RefundRequest, Message
+from cashier.models import Alert
+from admin_panel.utils.metrics import update_readmission_rate, update_infection_rate, update_outcome_trend
+
+User = get_user_model()
+
+# -------------------------------
+# Staff profile auto-create
+# -------------------------------
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @receiver(post_save, sender=User)
 def create_user_profiles(sender, instance, created, **kwargs):
     if not created:
         return
+<<<<<<< HEAD
 
+=======
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     role = getattr(instance, 'role', None)
     if role in ['admin', 'nurse', 'pharmacist', 'labtech', 'receptionist', 'cashier']:
         if not hasattr(instance, 'staffprofile'):
             StaffProfile.objects.create(user=instance, role=role)
 
+<<<<<<< HEAD
 # ✅ Automatically check in on login
+=======
+# -------------------------------
+# Attendance logging
+# -------------------------------
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @receiver(user_logged_in)
 def auto_check_in(sender, request, user, **kwargs):
     try:
@@ -38,7 +65,10 @@ def auto_check_in(sender, request, user, **kwargs):
     except StaffProfile.DoesNotExist:
         pass
 
+<<<<<<< HEAD
 # ✅ Automatically check out on logout
+=======
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @receiver(user_logged_out)
 def auto_check_out(sender, request, user, **kwargs):
     try:
@@ -51,7 +81,10 @@ def auto_check_out(sender, request, user, **kwargs):
     except StaffProfile.DoesNotExist:
         pass
 
+<<<<<<< HEAD
 # ✅ Ensure attendance entry on login
+=======
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @receiver(user_logged_in)
 def staff_logged_in_signal(sender, user, request, **kwargs):
     try:
@@ -60,11 +93,18 @@ def staff_logged_in_signal(sender, user, request, **kwargs):
     except StaffProfile.DoesNotExist:
         pass
 
+<<<<<<< HEAD
 # ✅ NEW: Auto-update clinical metrics when patient is discharged
+=======
+# -------------------------------
+# Update metrics on patient discharge
+# -------------------------------
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @receiver(post_save, sender=Admission)
 def update_metrics_on_discharge(sender, instance, **kwargs):
     if instance.discharged_at:
         print("📈 Patient discharged — updating clinical metrics...")
+<<<<<<< HEAD
 
         try:
             update_readmission_rate()
@@ -80,3 +120,84 @@ def update_metrics_on_discharge(sender, instance, **kwargs):
             update_outcome_trend()
         except Exception as e:
             print("⚠️ update_outcome_trend failed:", e)
+=======
+        try: update_readmission_rate()
+        except Exception as e: print("⚠️ update_readmission_rate failed:", e)
+        try: update_infection_rate()
+        except Exception as e: print("⚠️ update_infection_rate failed:", e)
+        try: update_outcome_trend()
+        except Exception as e: print("⚠️ update_outcome_trend failed:", e)
+
+# -------------------------------
+# Failed login logging
+# -------------------------------
+@receiver(user_login_failed)
+def log_failed_login(sender, credentials, request, **kwargs):
+    ip = get_client_ip(request)
+    user_agent = request.META.get('HTTP_USER_AGENT', '') if request else ''
+    FailedLoginAttempt.objects.create(
+        username=credentials.get('username', 'Unknown'),
+        ip_address=ip,
+        user_agent=user_agent,
+        timestamp=now()
+    )
+
+def get_client_ip(request):
+    if request is None: return '0.0.0.0'
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    return x_forwarded_for.split(',')[0] if x_forwarded_for else request.META.get('REMOTE_ADDR')
+
+# -------------------------------
+# Refund request alerts
+# -------------------------------
+@receiver(post_save, sender=RefundRequest)
+def create_refund_alert(sender, instance, created, **kwargs):
+    if created and instance.approval_status == 'Pending':
+        print(f"Signal: Creating alert for NEW RefundRequest #{instance.id}")
+        Alert.objects.create(
+            alert_type='refund_approval',
+            description=f"Refund request #{instance.id} for payment #{instance.payment.id} awaiting approval",
+            is_resolved=False
+        )
+    elif not created and instance.approval_status == 'Pending':
+        exists = Alert.objects.filter(
+            alert_type='refund_approval',
+            description__icontains=f"Refund request #{instance.id}",
+            is_resolved=False
+        ).exists()
+        if not exists:
+            Alert.objects.create(
+                alert_type='refund_approval',
+                description=f"Refund request #{instance.id} for payment #{instance.payment.id} awaiting approval",
+                is_resolved=False
+            )
+
+@receiver(post_save, sender=RefundRequest)
+def clear_refund_alert_on_approval(sender, instance, created, **kwargs):
+    if not created and instance.approval_status in ['Approved', 'Rejected']:
+        alerts = Alert.objects.filter(
+            alert_type='refund_approval',
+            is_resolved=False,
+            description__icontains=f"Refund request #{instance.id}"
+        )
+        for alert in alerts:
+            alert.is_resolved = True
+            alert.save()
+
+# -------------------------------
+# Appointment notifications
+# -------------------------------
+@receiver(post_save, sender=Appointment)
+def create_new_appointment_notification(sender, instance, created, **kwargs):
+    if created:
+        if instance.patient and instance.patient.user:
+            patient_name = instance.patient.user.get_full_name()
+        else:
+            patient_name = "Unknown Patient"
+
+        Notification.objects.create(
+            doctor=instance.doctor,
+            message=f"New appointment booked with {patient_name} at {instance.datetime}",
+        )
+        print(f"Signal fired: New appointment #{instance.id} notification created")
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf

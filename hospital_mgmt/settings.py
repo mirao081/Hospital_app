@@ -51,6 +51,11 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django_cron',
   
+<<<<<<< HEAD
+=======
+
+  
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     
     
 
@@ -71,7 +76,11 @@ ROOT_URLCONF = 'hospital_mgmt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+<<<<<<< HEAD
         'DIRS': [],
+=======
+        'DIRS': [BASE_DIR / "templates"],
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -91,6 +100,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'hospital_mgmt.wsgi.application'
 
+<<<<<<< HEAD
+=======
+# 💱 Dummy Exchange Rates (Test Data)
+EXCHANGE_RATES = {
+    "USD": {"symbol": "$", "rate": 1.00, "is_base": True},
+    "EUR": {"symbol": "€", "rate": 0.92},
+    "GBP": {"symbol": "£", "rate": 0.78},
+    "NGN": {"symbol": "₦", "rate": 1500.00},
+    "KES": {"symbol": "KSh", "rate": 130.00},
+    "GHS": {"symbol": "₵", "rate": 15.50},
+    "ZAR": {"symbol": "R", "rate": 19.00},
+    "CAD": {"symbol": "C$", "rate": 1.34},
+    "AUD": {"symbol": "A$", "rate": 1.52},
+    "CNY": {"symbol": "¥", "rate": 7.10},
+    "JPY": {"symbol": "¥", "rate": 145.00},
+    "INR": {"symbol": "₹", "rate": 83.20},
+}
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -101,6 +128,22 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+<<<<<<< HEAD
+=======
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 
 # Password validation
@@ -136,7 +179,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+<<<<<<< HEAD
 
+=======
+MIDDLEWARE += [
+    'core.middleware.AccessLogMiddleware',
+]
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 

@@ -1,6 +1,7 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+<<<<<<< HEAD
 <div class="flex justify-between items-center mb-6">
   <h2 class="text-2xl font-bold text-blue-700">Refund Approval Requests</h2>
   <a href="{% url 'cashier:create_refund_request' %}" 
@@ -52,4 +53,61 @@
     {% endfor %}
   </tbody>
 </table>
+=======
+<div class="bg-red-950 min-h-screen p-6"> <!-- dark red section background -->
+    <h2 class="text-3xl font-bold mb-6 text-white text-center">💰 Refund Approval Requests</h2>
+
+    <div class="overflow-x-auto mb-6">
+        <table class="table-auto w-full border-collapse border border-[aliceblue] shadow-lg">
+            <thead>
+                <tr class="bg-red-950">
+                    <th class="border border-[aliceblue] px-4 py-2 text-blue-900 text-left">Patient</th>
+                    <th class="border border-[aliceblue] px-4 py-2 text-blue-900 text-left">Amount</th>
+                    <th class="border border-[aliceblue] px-4 py-2 text-blue-900 text-left">Reason</th>
+                    <th class="border border-[aliceblue] px-4 py-2 text-blue-900 text-left">Issued By</th>
+                    <th class="border border-[aliceblue] px-4 py-2 text-blue-900 text-left">Status</th>
+                    <th class="border border-[aliceblue] px-4 py-2 text-blue-900 text-left">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for req in refunds %}
+                <tr class="hover:bg-red-800 transition duration-200">
+                    <td class="border border-[aliceblue] px-4 py-2 text-white">{{ req.payment.patient_name }}</td>
+                    <td class="border border-[aliceblue] px-4 py-2 text-white">${{ req.refund_amount }}</td>
+                    <td class="border border-[aliceblue] px-4 py-2 text-white">{{ req.reason }}</td>
+                    <td class="border border-[aliceblue] px-4 py-2 text-white">
+                        {% if req.issued_by %}
+                            {{ req.issued_by.username }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td class="border border-[aliceblue] px-4 py-2 text-white">{{ req.approval_status }}</td>
+                    <td class="border border-[aliceblue] px-4 py-2">
+                        <a href="{% url 'admin_panel:refund_approve' req.id %}"
+                           class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-500 transition duration-200">
+                            Review
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center border border-[aliceblue] px-4 py-2 text-white">
+                        No refund requests
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Back to Dashboard Button -->
+    <div class="text-center mt-6">
+        <a href="{% url 'admin_panel:admin_dashboard' %}"
+           class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition duration-200 inline-block">
+            ⬅ Back to Dashboard
+        </a>
+    </div>
+</div>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 {% endblock %}

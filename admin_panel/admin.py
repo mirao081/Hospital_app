@@ -1,5 +1,12 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from .models import RevenueAging, CostPerPatient, InsuranceClaim, CashFlowForecast,KPITracking,ClinicalMetric,ClinicalComplication
+=======
+from .models import( RevenueAging, CostPerPatient, InsuranceClaim, CashFlowForecast,
+KPITracking,ClinicalMetric,ClinicalComplication,AutomationSettings, OverduePaymentRule, LowInventoryRule,
+ShiftSchedulingRule, AutomationLog
+)
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 
 @admin.register(RevenueAging)
@@ -44,4 +51,29 @@ class ClinicalComplicationAdmin(admin.ModelAdmin):
     fields = ('admission', 'complication_type', 'notes', 'reported_at')  # ✅ Add this line
 
 
+<<<<<<< HEAD
+=======
+@admin.register(AutomationSettings)
+class AutomationSettingsAdmin(admin.ModelAdmin):
+    list_display = ('enabled', 'email_from', 'frequency')
+
+@admin.register(OverduePaymentRule)
+class OverduePaymentRuleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'days_overdue', 'min_amount', 'enabled')
+    list_editable = ('days_overdue', 'min_amount', 'enabled')
+
+@admin.register(LowInventoryRule)
+class LowInventoryRuleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'threshold', 'enabled')
+
+@admin.register(ShiftSchedulingRule)
+class ShiftSchedulingRuleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'create_future_days', 'enabled', 'rotation_enabled')
+
+@admin.register(AutomationLog)
+class AutomationLogAdmin(admin.ModelAdmin):
+    list_display = ('timestamp', 'run_type', 'success')
+    readonly_fields = ('timestamp', 'run_type', 'details', 'success')
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # Register your models here.

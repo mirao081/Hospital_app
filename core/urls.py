@@ -29,6 +29,11 @@ urlpatterns = [
     path('appointment/success/', views.success_page, name='success_page'),
     path('assign-bed/', assign_bed_view, name='assign_bed'),
     path('unassign-bed/<int:bed_id>/', views.unassign_bed_view, name='unassign_bed'),
+<<<<<<< HEAD
+=======
+     path('admin/access-logs/', views.admin_access_logs, name='admin_access_logs'),
+    path('admin/failed-logins/', views.admin_failed_logins, name='admin_failed_logins'),
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
     
 ]

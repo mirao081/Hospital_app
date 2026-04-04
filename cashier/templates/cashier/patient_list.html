@@ -1,0 +1,115 @@
+{% extends 'core/base.html' %}
+{% load humanize %}
+{% block content %}
+<h2 class="text-2xl font-bold bg-red-950 text-white p-4 rounded-none m-0">
+  Patient Billing List
+</h2>
+
+<!-- Filter & Search Form -->
+<form method="get" class="mb-6 p-4 bg-red-950 rounded border-2 border-white text-white">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+
+    <!-- Search input -->
+    <input
+      type="text"
+      name="search"
+      placeholder="Search by name, ID, or invoice #"
+      value="{{ search_query }}"
+      class="p-2 rounded text-black"
+    />
+
+    <!-- Date range -->
+    <input
+      type="date"
+      name="start_date"
+      value="{{ start_date }}"
+      class="p-2 rounded text-black"
+      placeholder="Start Date"
+    />
+    <input
+      type="date"
+      name="end_date"
+      value="{{ end_date }}"
+      class="p-2 rounded text-black"
+      placeholder="End Date"
+    />
+
+    <!-- Payment method dropdown -->
+    <select name="payment_method" class="p-2 rounded text-black">
+      <option value="">All Payment Methods</option>
+      <option value="Cash" {% if payment_method == "Cash" %}selected{% endif %}>Cash</option>
+      <option value="POS" {% if payment_method == "POS" %}selected{% endif %}>POS (Card)</option>
+      <option value="Bank Transfer" {% if payment_method == "Bank Transfer" %}selected{% endif %}>Bank Transfer</option>
+      <option value="Mobile Payment" {% if payment_method == "Mobile Payment" %}selected{% endif %}>Mobile Payment</option>
+      <option value="Insurance" {% if payment_method == "Insurance" %}selected{% endif %}>Insurance</option>
+    </select>
+
+    <!-- Payment status dropdown -->
+    <select name="payment_status" class="p-2 rounded text-black">
+      <option value="">All Payment Status</option>
+      <option value="paid" {% if payment_status == "paid" %}selected{% endif %}>Paid</option>
+      <option value="unpaid" {% if payment_status == "unpaid" %}selected{% endif %}>Unpaid</option>
+    </select>
+
+    <!-- Outstanding balance filter -->
+    <select name="outstanding" class="p-2 rounded text-black">
+      <option value="">Outstanding Balance?</option>
+      <option value="yes" {% if outstanding_filter == "yes" %}selected{% endif %}>Yes</option>
+      <option value="no" {% if outstanding_filter == "no" %}selected{% endif %}>No</option>
+    </select>
+
+  </div>
+
+  <div class="mt-4">
+    <button type="submit" class="bg-green-700 px-4 py-2 rounded hover:bg-green-600 transition">
+      Filter & Search
+    </button>
+    <a href="{% url 'cashier:patient_list' %}" class="ml-4 text-gray-300 hover:underline">Clear</a>
+  </div>
+</form>
+
+<!-- Patients Table -->
+<div class="overflow-x-auto">
+  <table class="min-w-full table-auto border border-gray-300 bg-blue-950 text-white rounded">
+    <thead class="bg-blue-800">
+      <tr>
+        <th class="border px-4 py-2 text-left">Patient</th>
+        <th class="border px-4 py-2 text-left">Outstanding Balance</th>
+        <th class="border px-4 py-2 text-left">Total Paid</th>
+        <th class="border px-4 py-2 text-left">Invoices</th>
+        <th class="border px-4 py-2 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if patients %}
+        {% for patient in patients %}
+          <tr class="hover:bg-blue-900">
+            <td class="border px-4 py-2">
+              {{ patient.user.get_full_name|default:patient.user.username }}
+            </td>
+            <td class="border px-4 py-2 text-red-300">
+              ₦{{ patient.outstanding_balance|default:"0.00"|floatformat:2|intcomma }}
+            </td>
+            <td class="border px-4 py-2">
+              ₦{{ patient.total_paid|default:"0.00"|floatformat:2|intcomma }}
+            </td>
+            <td class="border px-4 py-2">
+              {{ patient.invoice_count|default:"0" }}
+            </td>
+            <td class="border px-4 py-2">
+              <a href="{% url 'cashier:patient_billing_history' patient.id %}" class="text-blue-300 hover:underline">
+                View History
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5" class="text-center py-4 text-gray-300">No patient billing records available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

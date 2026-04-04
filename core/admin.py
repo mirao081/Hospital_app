@@ -1,7 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
+<<<<<<< HEAD
 
+=======
+from django.urls import reverse
+from django.db.models import Count
+from . import views
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 from .models import (
     HeaderSettings, Department, Service, Doctor, Appointment,
     Specialty, AboutSection, HighlightItem, InfoCard, UserReview,
@@ -9,16 +15,28 @@ from .models import (
     Blog, FeaturedBlog, Category, Testimonial,
     ContactInfo, Enquiry, Room, Bed, Message,
     User, Patient, FeaturedDoctor, Shift, StaffProfile, Admission,
+<<<<<<< HEAD
     SurveyResponse, AppointmentReminder, Feedback
+=======
+    SurveyResponse, AppointmentReminder, Feedback, AccessLog,
+    FailedLoginAttempt, PatientAccountNote
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 )
 
 # ------------------- Inlines -------------------
 class PatientInline(admin.StackedInline):
     model = Patient
+<<<<<<< HEAD
     can_delete = False
     verbose_name_plural = 'Patient Info'
 
 # ------------------- Custom User Admin -------------------
+=======
+    fk_name = "user"
+    can_delete = False
+    verbose_name_plural = "Patient Info"
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     inlines = [PatientInline]
@@ -41,14 +59,50 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('username',)
 
 # ------------------- Patient Admin -------------------
+<<<<<<< HEAD
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
     list_display = ['full_name', 'age', 'gender', 'phone', 'referral_source_label']
+=======
+class PatientAdmin(admin.ModelAdmin):
+    list_display = [
+        'full_name', 'age', 'gender', 'phone',
+        'referral_source_label', 'get_referrer', 'created_at'
+    ]
+    search_fields = ['user__first_name', 'user__last_name', 'phone']
+    list_filter = ['referral_source', 'gender', 'created_at']
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
     def referral_source_label(self, obj):
         return obj.get_referral_source_display()
     referral_source_label.short_description = "Referral Source"
 
+<<<<<<< HEAD
+=======
+    def get_referrer(self, obj):
+        if obj.referred_by:
+            return obj.referred_by.get_full_name() or obj.referred_by.username
+        return "-"
+    get_referrer.short_description = "Referred By"
+
+class PatientStatsAdmin(PatientAdmin):
+    change_list_template = "admin/patient_stats_change_list.html"
+
+    def changelist_view(self, request, extra_context=None):
+        stats = (
+            Patient.objects
+            .values("referral_source")
+            .annotate(total=Count("id"))
+            .order_by("-total")
+        )
+        extra_context = extra_context or {}
+        extra_context["stats"] = stats
+        return super().changelist_view(request, extra_context=extra_context)
+
+
+admin.site.register(Patient, PatientStatsAdmin)
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # ------------------- Doctor Admin -------------------
 @admin.register(Doctor)
 class DoctorAdmin(admin.ModelAdmin):
@@ -101,7 +155,10 @@ class AppointmentAdmin(admin.ModelAdmin):
     def get_time(self, obj):
         return obj.datetime.time()
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # ------------------- Room and Bed Admin -------------------
 class BedInline(admin.TabularInline):
     model = Bed
@@ -174,6 +231,49 @@ class FeedbackAdmin(admin.ModelAdmin):
     list_filter = ('feedback_type', 'resolved')
     ordering = ('-submitted_at',)
 
+<<<<<<< HEAD
+=======
+@admin.register(AccessLog)
+class AccessLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'path', 'method', 'ip_address', 'timestamp')
+    list_filter = ('user', 'method')
+    search_fields = ('path', 'ip_address')
+
+@admin.register(FailedLoginAttempt)
+class FailedLoginAttemptAdmin(admin.ModelAdmin):
+    list_display = ('username', 'ip_address', 'user_agent', 'timestamp')
+    search_fields = ('username', 'ip_address', 'user_agent')
+    list_filter = ('timestamp',)
+
+@admin.register(PatientAccountNote)
+class PatientAccountNoteAdmin(admin.ModelAdmin):
+    list_display = ('patient', 'note', 'created_by', 'created_at')
+    list_filter = ('created_at', 'created_by')
+    search_fields = ('patient__user__first_name', 'patient__user__last_name', 'note')
+
+# ------------------- Custom Admin Site -------------------
+class CustomAdminSite(admin.AdminSite):
+    def get_urls(self):
+        from django.urls import path
+        urls = super().get_urls()
+        custom_urls = [
+            path('access-logs/', self.admin_view(views.admin_access_logs)),
+            path('failed-logins/', self.admin_view(views.admin_failed_logins)),
+        ]
+        return custom_urls + urls
+
+    def index(self, request, extra_context=None):
+        if extra_context is None:
+            extra_context = {}
+        extra_context['custom_links'] = [
+            {'name': 'View Access Logs', 'url': reverse('admin_access_logs')},
+            {'name': 'Failed Login Attempts', 'url': reverse('admin_failed_logins')},
+        ]
+        return super().index(request, extra_context=extra_context)
+
+admin_site = CustomAdminSite(name='custom_admin')
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # ------------------- Register Remaining Models -------------------
 admin.site.register(HeaderSettings)
 admin.site.register(Department)

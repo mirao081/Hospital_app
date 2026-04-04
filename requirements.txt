@@ -5,4 +5,7 @@ django-widget-tweaks==1.5.0
 pillow==11.3.0
 sqlparse==0.5.3
 tzdata==2025.2
+<<<<<<< HEAD
 gunicorn
+=======
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf

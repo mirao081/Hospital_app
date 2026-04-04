@@ -4,10 +4,18 @@
 {% block content %}
 <div class="container mt-4">
   <h2>Request Refund</h2>
+<<<<<<< HEAD
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Submit Refund Request</button>
   </form>
+=======
+  <form method="post" action="{% url 'cashier:create_refund_request' payment.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Submit Refund Request</button>
+</form>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 </div>
 {% endblock %}

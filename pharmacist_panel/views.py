@@ -20,6 +20,11 @@ from cashier.models import Invoice
 from .forms import PrescriptionForm
 from core.models import InventoryItem
 from django.db.models import F
+<<<<<<< HEAD
+=======
+from doctor_panel.utils import get_comm_context
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 
 
@@ -51,6 +56,11 @@ def pharmacist_dashboard(request):
         'prescriptions': prescriptions,
 
     }
+<<<<<<< HEAD
+=======
+    context.update(get_comm_context(request.user, scope="all", limit=5))
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     return render(request, 'pharmacist_panel/dashboard.html', context)
 
 @login_required

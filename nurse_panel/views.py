@@ -13,6 +13,7 @@ from .models import NurseTask
 from django.contrib.auth import get_user_model
 from .models import MedicationOrder, MedicationLog, MedicationRequest
 from .forms import MedicationLogForm, MedicationRequestForm
+<<<<<<< HEAD
 User = get_user_model()
 
 
@@ -39,17 +40,57 @@ def nurse_dashboard(request):
             if req_form.is_valid():
                 req_form.save()
                 return redirect('nurse_panel:nurse_dashboard')
+=======
+from doctor_panel.utils import get_comm_context
+from doctor_panel.models import ReferralRequest
+from django.db.models import Q
+User = get_user_model()
+
+
+
+
+
+
+@login_required
+def nurse_dashboard(request):
+    user = request.user
+    if user.role != 'nurse':
+        return render(request, '403.html')
+
+    # Medication-related context
+    medication_orders = MedicationOrder.objects.all().order_by('-start_date')
+    medication_logs = MedicationLog.objects.filter(administered_by=user)
+    med_requests = MedicationRequest.objects.filter(nurse=user)
+    
+    # Referrals for this nurse
+    referrals = ReferralRequest.objects.filter(
+        Q(to_nurse=user) | Q(from_doctor__isnull=False)
+    ).order_by('-created_at')
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
     context = {
         'medication_orders': medication_orders,
         'medication_logs': medication_logs,
         'med_requests': med_requests,
+<<<<<<< HEAD
         'log_form': log_form,
         'req_form': req_form,
     }
 
     return render(request, 'nurse_panel/dashboard.html', context)
 
+=======
+        'referrals': referrals,  # for partial
+    }
+
+    # ✅ pass the user to get_comm_context
+    context.update(get_comm_context(user=user, scope="all", limit=5))
+
+    # ✅ no need to override referrals again unless you want to force only nurse ones
+    # context['referrals'] = referrals  
+
+    return render(request, 'nurse_panel/dashboard.html', context)
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 # View all patients
 @login_required
 def nurse_patient_list(request):

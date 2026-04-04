@@ -1,0 +1,94 @@
+<section class="bg-red-950 py-10 px-5">
+  <div class="container mx-auto">
+    <!-- Heading -->
+    <h2 class="flex items-center justify-center gap-3 text-white text-[29px] font-semibold mb-8">
+      <!-- Icon -->
+      <svg class="w-8 h-8 text-yellow-300" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v1H2V5zm0 3h16v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8zm4 2a1 1 0 100 2h6a1 1 0 100-2H6z" />
+      </svg>
+      Communication & Collaboration
+    </h2>
+
+    <!-- Cards in one row -->
+    <div class="flex flex-nowrap justify-center gap-6">
+
+      <!-- Staff Messages -->
+      <div class="flex-1 max-w-sm scale-[1.02] bg-slate-800 rounded-lg shadow-lg text-white p-5 border-2 border-white overflow-hidden">
+        <div class="flex items-center mb-3 border-b border-white/30 pb-2">
+          <svg class="w-6 h-6 mr-2 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M18 10c0 4.418-3.582 8-8 8s-8-3.582-8-8 3.582-8 8-8 8 3.582 8 8zM9 7h2v6H9V7zm0 8h2v2H9v-2z" />
+          </svg>
+          <h3 class="text-lg font-bold">Internal Staff Messages</h3>
+        </div>
+        {% for msg in staff_messages %}
+          <p class="mb-3">
+            <strong>{{ msg.title }}</strong> - {{ msg.created_at|date:"M d, Y H:i" }}<br>
+            {{ msg.message|truncatewords:25 }}
+          </p>
+          <hr class="border-white/20 mb-3">
+        {% empty %}
+          <p>No announcements.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Referrals -->
+      <div class="flex-1 max-w-sm scale-[1.02] bg-teal-700 rounded-lg shadow-lg text-white p-5 border-2 border-white overflow-hidden">
+        <div class="flex items-center mb-3 border-b border-white/30 pb-2">
+          <svg class="w-6 h-6 mr-2 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M13 7H7v6h6V7z" />
+            <path fill-rule="evenodd" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5zm0-2h10a4 4 0 014 4v10a4 4 0 01-4 4H5a4 4 0 01-4-4V5a4 4 0 014-4z" clip-rule="evenodd" />
+          </svg>
+          <h3 class="text-lg font-bold">Referrals & Consult Requests</h3>
+        </div>
+
+        {% for ref in referrals %}
+          <p class="mb-3">
+            <strong>Patient:</strong> {{ ref.patient.user.get_full_name }} <br>
+            <strong>From:</strong> 
+              {% if ref.created_by %}
+                {{ ref.created_by.get_full_name }} ({{ ref.created_by_role|title }})
+              {% else %}
+                Unknown
+              {% endif %}
+            <br>
+            <strong>To:</strong>
+              {% if ref.to_doctor %}
+                Dr. {{ ref.to_doctor.user.get_full_name }}
+              {% elif ref.to_user %}
+                {{ ref.to_user.get_full_name }} ({{ ref.to_user.role|title }})
+              {% else %}
+                Unassigned
+              {% endif %}
+            <br>
+            <strong>Status:</strong> {{ ref.status|title }} <br>
+            <em>{{ ref.reason|default:"Referred during registration" }}</em>
+          </p>
+          <hr class="border-white/20 mb-3">
+        {% empty %}
+          <p>No referrals yet.</p>
+        {% endfor %}
+      </div>
+
+      <!-- Patient Portal Requests -->
+      <div class="flex-1 max-w-sm scale-[1.02] bg-purple-700 rounded-lg shadow-lg text-white p-5 border-2 border-white overflow-hidden">
+        <div class="flex items-center mb-3 border-b border-white/30 pb-2">
+          <svg class="w-6 h-6 mr-2 text-pink-300" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm14 0H4v10h12V5z" />
+          </svg>
+          <h3 class="text-lg font-bold">Patient Portal Requests</h3>
+        </div>
+        {% for req in patient_requests %}
+          <p class="mb-3">
+            <strong>{{ req.patient_name }}</strong> ({{ req.request_type|title }}) <br>
+            <strong>Status:</strong> {{ req.status|title }} <br>
+            <em>{{ req.message|truncatewords:20 }}</em>
+          </p>
+          <hr class="border-white/20 mb-3">
+        {% empty %}
+          <p>No patient requests.</p>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</section>

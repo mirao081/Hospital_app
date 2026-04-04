@@ -18,6 +18,13 @@ from django.http import HttpResponse
 import weasyprint
 from weasyprint import HTML
 from django.contrib.auth.decorators import user_passes_test
+<<<<<<< HEAD
+=======
+from doctor_panel.utils import get_comm_context
+from doctor_panel.models import ReferralRequest
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 
 @login_required
@@ -45,6 +52,7 @@ def labtech_dashboard(request):
     test_requests = LabTestRequest.objects.filter(status='Pending')
     patients = Patient.objects.all()
     test_types = LabTestRequest.objects.values_list('test_type', flat=True).distinct()
+<<<<<<< HEAD
      # Summary stats
     total_tests = LabTestRequest.objects.count()
     completed_tests = LabTestRequest.objects.filter(status='Completed').count()
@@ -53,6 +61,15 @@ def labtech_dashboard(request):
     completed_requests = LabTestRequest.objects.filter(status='Completed')
 
 
+=======
+
+    # Summary stats
+    total_tests = LabTestRequest.objects.count()
+    completed_tests = LabTestRequest.objects.filter(status='Completed').count()
+    pending_tests = LabTestRequest.objects.filter(status='Pending').count()
+    completed_requests = LabTestRequest.objects.filter(status='Completed')
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     patient_id = request.GET.get('patient')
     test_type = request.GET.get('type')
     date_str = request.GET.get('date')
@@ -74,6 +91,12 @@ def labtech_dashboard(request):
     # ✅ Separate unfiltered pending requests list for dropdown
     pending_requests_all = LabTestRequest.objects.filter(status='Pending')
 
+<<<<<<< HEAD
+=======
+    # ✅ Add referrals for dashboard display
+    referrals = ReferralRequest.objects.all().order_by('-created_at')  # latest first
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     context = {
         'test_requests': test_requests,
         'pending_requests_all': pending_requests_all,
@@ -83,8 +106,16 @@ def labtech_dashboard(request):
         'completed_tests': completed_tests,
         'pending_tests': pending_tests,
         'completed_requests': completed_requests,
+<<<<<<< HEAD
     }
 
+=======
+        'referrals': referrals,  # <-- new
+    }
+
+    context.update(get_comm_context(request.user, scope="all", limit=5))
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     return render(request, 'labtech_panel/dashboard.html', context)
 
 def is_lab_tech(user):

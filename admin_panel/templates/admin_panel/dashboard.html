@@ -1,6 +1,11 @@
 {% extends "core/base.html" %}
 {% load humanize %}
+<<<<<<< HEAD
 {% load custom_filters %}
+=======
+{% load admin_custom_filters %}
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 {% block title %}Admin Dashboard{% endblock %}
 
@@ -32,11 +37,19 @@
 {% endif %}
 
     <!-- Summary Cards -->
+<<<<<<< HEAD
     <div class="bg-gray-900 min-h-screen py-10 px-6 sm:px-12">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Total Patients -->
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+    <div class="bg-blue-950 min-h-screen py-10 px-6 sm:px-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Total Patients -->
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-blue-600 text-white p-3 rounded-full">
                     <!-- Icon -->
@@ -46,14 +59,22 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Patients</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Patients</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ total_patients }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Doctors -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-green-600 text-white p-3 rounded-full">
                     <!-- Same Icon as Patients -->
@@ -63,14 +84,22 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Doctors</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Doctors</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ total_doctors }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Appointments Today -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-purple-600 text-white p-3 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -78,14 +107,22 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Appointments Today</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Appointments Today</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ appointments_today }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Revenue -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-red-600 text-white p-3 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -94,14 +131,25 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Revenue</h2>
                     <p class="text-2xl font-bold text-white">${{ total_revenue }}</p>
                 </div>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Revenue</h2>
+                    <p class="text-2xl font-bold text-white">₦{{ total_revenue }}</p>
+                </div>
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             </div>
         </div>
 
         <!-- Total Nurses -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-teal-600 text-white p-3 rounded-full">
                     <!-- Same Icon as Doctors -->
@@ -111,14 +159,22 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Nurses</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Nurses</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ total_nurses }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Receptionists -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-yellow-500 text-white p-3 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -127,14 +183,22 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Receptionists</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Receptionists</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ total_receptionists }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Pharmacists -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-pink-600 text-white p-3 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -143,14 +207,22 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Pharmacists</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Pharmacists</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ total_pharmacists }}</p>
                 </div>
             </div>
         </div>
 
         <!-- Total Lab Technicians -->
+<<<<<<< HEAD
         <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+        <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
             <div class="flex items-center space-x-4">
                 <div class="bg-indigo-600 text-white p-3 rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,7 +231,11 @@
                     </svg>
                 </div>
                 <div class="text-left">
+<<<<<<< HEAD
                     <h2 class="text-sm text-gray-400 font-medium uppercase">Total Lab Technicians</h2>
+=======
+                    <h2 class="text-sm text-white font-medium uppercase">Total Lab Technicians</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                     <p class="text-2xl font-bold text-white">{{ total_lab_technicians }}</p>
                 </div>
             </div>
@@ -167,7 +243,11 @@
 
         <!-- Total Cashiers -->
         <div class="col-span-full flex justify-left">
+<<<<<<< HEAD
   <div class="bg-gray-800 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+=======
+  <div class="bg-red-950 p-6 rounded-[20px] border-4 border-white shadow hover:shadow-xl transition transform hover:scale-105 duration-300">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     <div class="flex items-center space-x-4">
       <div class="bg-orange-500 text-white p-3 rounded-full">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -176,7 +256,11 @@
         </svg>
       </div>
       <div class="text-left">
+<<<<<<< HEAD
         <h2 class="text-sm text-gray-400 font-medium uppercase">Total Cashiers</h2>
+=======
+        <h2 class="text-sm text-white font-medium uppercase">Total Cashiers</h2>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
         <p class="text-2xl font-bold text-white">{{ total_cashiers }}</p>
       </div>
     </div>
@@ -386,7 +470,11 @@
         {% for payment in recent_payments %}
         <tr class="hover:bg-blue-800 transition">
           <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.patient_name }}</td>
+<<<<<<< HEAD
           <td class="px-6 py-4 text-sm text-white border border-white text-center">${{ payment.amount }}</td>
+=======
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">₦{{ payment.amount }}</td>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
           <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.get_payment_method_display }}</td>
           <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.received_by }}</td>
           <td class="px-6 py-4 text-sm text-white border border-white text-center">{{ payment.date_received|date:"Y-m-d H:i" }}</td>
@@ -508,10 +596,17 @@
             {{ bill.full_name }}
           </td>
           <td class="px-6 py-4 text-sm text-white border border-white text-center">
+<<<<<<< HEAD
             {{ bill.doctor.name }}
           </td>
           <td class="px-6 py-4 text-sm text-white border border-white text-center">
             {{ bill.date|date:"M d, Y" }}
+=======
+            {{ bill.doctor.user.get_full_name|default:"Unknown Doctor" }}
+          </td>
+          <td class="px-6 py-4 text-sm text-white border border-white text-center">
+            {{ bill.datetime|date:"M d, Y" }}
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
           </td>
           <td class="px-6 py-4 text-sm text-red-400 font-semibold border border-white text-center">
             ₦{{ bill.payment_amount|default:"0.00" }}
@@ -525,6 +620,10 @@
         </tr>
         {% endfor %}
       </tbody>
+<<<<<<< HEAD
+=======
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
     </table>
   </div>
 </div>
@@ -889,7 +988,11 @@
   <div class="bg-red-950 shadow-md rounded-lg p-6 text-white">
   <h3 class="text-lg font-semibold text-white mb-4">🏥 Room-wise Bed Occupancy</h3>
   <div class="overflow-x-auto">
+<<<<<<< HEAD
     <table class="min-w-full table-auto border border-white text-sm bg-blue-900">
+=======
+    <table class="min-w-full table-auto border border-white text-sm bg-blue-950">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
       <thead class="bg-blue-950 text-white">
         <tr>
           <th class="px-4 py-3 text-left font-semibold border border-white">Room</th>
@@ -925,6 +1028,7 @@
 </div>
 
 
+<<<<<<< HEAD
 <div class="mt-10 bg-white shadow-md rounded-lg p-6">
   <h2 class="text-xl font-bold text-blue-700 mb-4 text-center">📬 Unread Messages</h2>
 
@@ -935,6 +1039,18 @@
           <div class="flex justify-between">
             <div>
               <p class="text-sm font-semibold text-gray-800">
+=======
+<div class="mt-10 bg-red-950 shadow-md rounded-lg p-6 text-white">
+  <h2 class="text-[29px] font-bold text-white mb-4 text-center">📬 Unread Messages</h2>
+
+  {% if unread_messages %}
+    <ul class="divide-y divide-white border border-white rounded">
+      {% for message in unread_messages %}
+        <li class="py-4 px-3 hover:bg-red-900 transition-colors duration-200">
+          <div class="flex justify-between">
+            <div>
+              <p class="text-sm font-semibold">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
                 {% if message.sender.is_staff %}
                   🧑‍⚕️ From Staff:
                 {% else %}
@@ -943,10 +1059,17 @@
                 {{ message.sender.get_full_name|default:message.sender.username }}
               </p>
               {% if message.subject %}
+<<<<<<< HEAD
                 <p class="text-sm text-gray-600">Subject: {{ message.subject }}</p>
               {% endif %}
             </div>
             <div class="text-sm text-gray-500">
+=======
+                <p class="text-sm">Subject: {{ message.subject }}</p>
+              {% endif %}
+            </div>
+            <div class="text-sm">
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
               {{ message.sent_at|naturaltime }}
             </div>
           </div>
@@ -954,9 +1077,46 @@
       {% endfor %}
     </ul>
   {% else %}
+<<<<<<< HEAD
     <p class="text-gray-500 text-center">No unread messages.</p>
   {% endif %}
 </div>
+=======
+    <p class="text-center">No unread messages.</p>
+  {% endif %}
+</div>
+
+<section class="w-full bg-purple-950 py-4 px-6 rounded-md mb-6">
+  <h3 class="text-[29px] font-bold mb-3 text-white">📩 Contact Form Enquiries</h3>
+
+  {% if enquiries %}
+    <ul class="divide-y divide-gray-700">
+      {% for enquiry in enquiries %}
+        <li class="py-3 px-4 hover:bg-red-950 {% if not enquiry.is_read %}bg-yellow-800{% endif %} rounded-md mb-2">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <p class="text-sm text-green-300">
+                <span class="font-semibold">From:</span> {{ enquiry.name }} ({{ enquiry.email }})
+              </p>
+              <p class="text-sm text-green-300">
+                <span class="font-semibold">Phone:</span> {{ enquiry.phone }} | 
+                <span class="font-semibold">Country:</span> {{ enquiry.country }}
+              </p>
+              <p class="text-sm text-green-300 mt-1">{{ enquiry.message|truncatewords:25 }}</p>
+              <p class="text-xs text-green-200">Received {{ enquiry.created_at|date:"M d, Y H:i" }}</p>
+            </div>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="text-sm text-green-300 mt-4">No enquiries yet.</p>
+  {% endif %}
+</section>
+{% include "doctor_panel/partials/communication_section.html" %}
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 <h2 class="text-2xl font-semibold text-black mt-10 mb-4 text-center">
   📊 Performance Indicators
 </h2>
@@ -997,6 +1157,7 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 <div class="mt-10 bg-red-950 shadow rounded-lg p-6 text-white">
   <h2 class="text-xl font-bold mb-4 text-white text-center">💰 Refund Approval Requests</h2>
   <table class="min-w-full table-auto border border-white bg-blue-950 text-white text-sm">
@@ -1031,6 +1192,24 @@
      💰 Manage Refund Requests
   </a>
 </div>
+=======
+  <div class="relative mt-2" style="margin-top: 10px; background-color:#730202; padding: 20px; display: inline-block;">
+  <div class="relative mt-[10px] bg-red-950 p-6 inline-block">
+  <!-- Triangle -->
+  <div class="absolute -top-4 left-6 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-b-[15px] border-b-blue-950"></div>
+
+  <!-- Button/Text -->
+  <a href="{% url 'admin_panel:refund_approval_list' %}"
+     class="text-green-300 text-[17px] font-semibold px-6 py-3 rounded shadow transition duration-200 hover:text-[#F0F8FF] inline-block">
+     💰 Manage Refund Requests
+  </a>
+</div>
+
+</div>
+<div>
+  
+</div>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 <div class="mt-10 bg-red-950 shadow rounded-lg p-6 text-white">
   <h2 class="text-xl font-bold mb-6 text-white text-center">🔄 Operational Efficiency & Workflow</h2>
 
@@ -1185,6 +1364,7 @@
       <p class="text-white text-sm mt-3 opacity-90">Helps monitor understaffing or overstaffing</p>
     </div>
 
+<<<<<<< HEAD
     <!-- Revenue by Service Type -->
     <div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
       <h3 class="text-lg font-semibold text-red-200 mb-2">Revenue by Service Type</h3>
@@ -1206,6 +1386,41 @@
   </div>
 </div>
 <div>
+=======
+   <!-- Revenue by Service Type -->
+<div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
+  <h3 class="text-lg font-semibold text-red-200 mb-2">Revenue by Service Type</h3>
+
+  <ul class="list-disc pl-5 text-white text-base font-medium leading-relaxed">
+    {% for item in revenue_summary %}
+      <li>{{ item.label }}: {{ item.amount }}</li>
+    {% empty %}
+      <li>No revenue data yet.</li>
+    {% endfor %}
+  </ul>
+
+  <p class="text-white text-sm mt-3 opacity-90">
+    Identifies high- and low-performing services
+  </p>
+</div>
+
+
+
+      <div class="bg-blue-950 border border-red-400 p-6 rounded-2xl shadow-md">
+      <h3 class="text-lg font-semibold text-red-200 mb-2">Referral Source Tracking</h3>
+      <ul class="list-disc pl-5 text-white text-base font-medium leading-relaxed">
+        {% for item in referral_summary %}
+          <li>{{ item.label }}: {{ item.count }}<span class="text-xs text-gray-400"></span></li>
+        {% empty %}
+          <li>No referral data yet.</li>
+        {% endfor %}
+
+      </ul>
+      <p class="text-white text-sm mt-3 opacity-90">Understand how patients find your hospital</p>
+    </div>
+  </div>
+  <div>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
   <div class="w-full flex justify-center mt-5">
   <div class="w-full max-w-5xl h-[75vh] bg-red-950 rounded-lg p-6 overflow-y-auto">
     
@@ -1285,6 +1500,215 @@
     </div>
     {% endif %}
 </div>
+<<<<<<< HEAD
+=======
+<div class="p-6">
+
+  <!-- 🔐 Recent Access Logs -->
+  <h2 class="text-[29px] text-center mb-2">🔐 Recent Access Logs</h2>
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 text-sm text-left">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-4 py-2 border">User</th>
+          <th class="px-4 py-2 border">Path</th>
+          <th class="px-4 py-2 border">Method</th>
+          <th class="px-4 py-2 border">IP</th>
+          <th class="px-4 py-2 border">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in recent_access_logs %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-2 border">{{ log.user }}</td>
+          <td class="px-4 py-2 border">{{ log.path }}</td>
+          <td class="px-4 py-2 border">{{ log.method }}</td>
+          <td class="px-4 py-2 border">{{ log.ip_address }}</td>
+          <td class="px-4 py-2 border">{{ log.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5" class="text-center py-4 text-gray-500">No logs yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 🚫 Failed Login Attempts -->
+  <h2 class="text-[29px] text-center mt-10 mb-2">🚫 Failed Login Attempts</h2>
+  <div class="overflow-x-auto">
+    <table class="min-w-full border border-gray-300 text-sm text-left">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-4 py-2 border">Username</th>
+          <th class="px-4 py-2 border">IP Address</th>
+          <th class="px-4 py-2 border">User Agent</th>
+          <th class="px-4 py-2 border">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for attempt in recent_failed_logins %}
+        <tr class="hover:bg-blue-950">
+          <td class="px-4 py-2 border">{{ attempt.username }}</td>
+          <td class="px-4 py-2 border">{{ attempt.ip_address }}</td>
+          <td class="px-4 py-2 border">{{ attempt.user_agent }}</td>
+          <td class="px-4 py-2 border">{{ attempt.timestamp }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center py-4 text-gray-500">No failed attempts.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</div>
+<div class="p-4 mb-6 border-l-4 border-crimson-600 bg-red-950 shadow transition-colors duration-300 hover:bg-blue-950">
+    <h4 class="text-[29px] text-center mb-5 font-bold">
+        🚀 Automation Summary
+    </h4>
+
+    <table class="w-full border border-white border-collapse bg-blue-950 text-white">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 text-left border border-white">Metric</th>
+                <th class="px-4 py-2 text-left border border-white">Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="transition-colors duration-200 hover:bg-blue-900">
+                <td class="px-4 py-2 border border-white">Overdue Invoices Flagged</td>
+                <td class="px-4 py-2 border border-white">{{ automation_stats.overdue_count }}</td>
+            </tr>
+            <tr class="transition-colors duration-200 hover:bg-blue-900">
+                <td class="px-4 py-2 border border-white">Low Inventory Items</td>
+                <td class="px-4 py-2 border border-white">{{ automation_stats.low_inventory_count }}</td>
+            </tr>
+            <tr class="transition-colors duration-200 hover:bg-blue-900">
+                <td class="px-4 py-2 border border-white">Last Automation Run</td>
+                <td class="px-4 py-2 border border-white">
+                    {% if automation_stats.last_run %}
+                        {{ automation_stats.last_run|date:"Y-m-d H:i" }}
+                    {% else %}
+                        Never
+                    {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<section id="patient-section" class="bg-red-950 text-white border border-white mt-5 rounded-xl p-4">
+  <h2 class="font-bold text-[29px] mb-4 text-center">Manage Patient Medical Notes</h2>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse border border-white">
+      <thead>
+        <tr class="bg-white/10">
+          <th class="border border-white p-2 text-left">Name</th>
+          <th class="border border-white p-2 text-left">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="patient-table-body">
+        {% for patient in patients %}
+          <tr class="hover:bg-blue-900 hover:text-red-800 transition duration-200">
+            <td class="border border-white">{{ patient.full_name }}</td>
+            <td class="border border-white">
+              <a href="{% url 'admin_panel:patient_notes' patient.id %}" class="text-green-400">Manage Notes</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div id="pagination-controls" class="mt-4 flex justify-center gap-3">
+    {% if patients.has_previous %}
+      <button onclick="loadPatients('{{ patients.previous_page_number }}')" class="bg-green-300 px-3 py-1 rounded">Prev</button>
+    {% endif %}
+
+    <!-- Always show page 1 -->
+    <button onclick="loadPatients('1')"
+            class="px-3 py-1 rounded {% if patients.number == 1 %}bg-green-600 text-white{% else %}bg-green-300{% endif %}">
+      1
+    </button>
+
+    {% if patients.number > 4 %}
+      <span class="px-2">…</span>
+    {% endif %}
+
+    {% with start=patients.number|add:'-2' end=patients.number|add:'2' %}
+      {% if start < 2 %}{% with start=2 %}{% endwith %}{% endif %}
+      {% if end > patients.paginator.num_pages %}{% with end=patients.paginator.num_pages %}{% endwith %}{% endif %}
+
+      {% for num in patients.paginator.page_range %}
+        {% if num >= start and num <= end %}
+          <button onclick="loadPatients('{{ num }}')"
+                  class="px-3 py-1 rounded {% if num == patients.number %}bg-green-600 text-white{% else %}bg-green-300{% endif %}">
+            {{ num }}
+          </button>
+        {% endif %}
+      {% endfor %}
+    {% endwith %}
+
+    {% if patients.number < patients.paginator.num_pages|add:'-3' %}
+      <span class="px-2">…</span>
+    {% endif %}
+
+    {% if patients.paginator.num_pages > 1 %}
+      <button onclick="loadPatients('{{ patients.paginator.num_pages }}')"
+              class="px-3 py-1 rounded {% if patients.number == patients.paginator.num_pages %}bg-green-600 text-white{% else %}bg-green-300{% endif %}">
+        {{ patients.paginator.num_pages }}
+      </button>
+    {% endif %}
+
+    {% if patients.has_next %}
+      <button onclick="loadPatients('{{ patients.next_page_number }}')" class="bg-green-300 px-3 py-1 rounded">Next</button>
+    {% endif %}
+  </div>
+</section>
+<!-- Recent Notes History Section -->
+<section id="notes-history" class="bg-red-950 text-white border border-white mt-10 rounded-xl p-4">
+  <h2 class="font-bold text-[26px] mb-4 text-center">Recent Patient Notes History</h2>
+
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse border border-white">
+      <thead>
+        <tr class="bg-white/10">
+          <th class="border border-white p-2 text-left">Date</th>
+          <th class="border border-white p-2 text-left">Patient</th>
+          <th class="border border-white p-2 text-left">Note</th>
+          <th class="border border-white p-2 text-left">Added By</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for note in recent_notes %}
+          <tr class="hover:bg-blue-900 hover:text-red-500 transition">
+            <td class="border border-white p-2">{{ note.created_at|date:"M d, Y H:i" }}</td>
+            <td class="border border-white p-2">{{ note.patient.full_name }}</td>
+            <td class="border border-white p-2">{{ note.note }}</td>
+            <td class="border border-white p-2">
+              {{ note.created_by.get_full_name|default:note.created_by.username }}
+            </td>
+
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="text-center opacity-80 border border-white p-2">No recent notes found.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+
+
+
+
+
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 
 
 {{ wait_time_chart_data|json_script:"wait-time-data" }}
@@ -1477,5 +1901,37 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
+<<<<<<< HEAD
 
+=======
+<script>
+function loadPatients(page) {
+    fetch(`?page=${page}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+        .then(res => res.json())
+        .then(data => {
+            let tbody = document.getElementById("patient-table-body");
+            tbody.innerHTML = "";
+
+            data.patients.forEach(p => {
+                tbody.innerHTML += `
+                  <tr>
+                    <td>${p.full_name}</td>
+                    <td><a href="${p.notes_url}" class="text-green-400">Manage Notes</a></td>
+                  </tr>
+                `;
+            });
+
+            let pagination = document.getElementById("pagination-controls");
+            pagination.innerHTML = "";
+
+            if (data.has_prev) {
+                pagination.innerHTML += `<button onclick="loadPatients(${data.prev_page})" class="bg-green-300 px-3 py-1 rounded">Prev</button>`;
+            }
+            if (data.has_next) {
+                pagination.innerHTML += `<button onclick="loadPatients(${data.next_page})" class="bg-green-300 px-3 py-1 rounded">Next</button>`;
+            }
+        });
+}
+</script>
+>>>>>>> b52f04c4160118931c5fee8708ece2520ef97dcf
 {% endblock %}
